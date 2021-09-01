@@ -5,7 +5,7 @@
 * Attend on time
 * Notify the team if you will be late.
 
-### Misc
+### Expactation
 Do what is expected of you during a sprint, and:
 - Be prepared before attending meetings
 - Keep the scrum board up to date
