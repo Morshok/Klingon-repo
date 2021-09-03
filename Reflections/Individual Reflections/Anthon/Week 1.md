@@ -1,5 +1,5 @@
-#Question: What do I want to learn or understand better?
-##Answer: 
+# Question: What do I want to learn or understand better?
+## Answer: 
 During this sprint we have only just begun to
 learn about the agile workflow, and so what I would like
 to learn and understand better is how to agile workflow 
@@ -14,8 +14,8 @@ project, fetching and displaying weather data using the
 OpenWeatherMap API. This could be useful knowledge when later
 using Open Data Sources for our project.
 
-#Question: How can I help someone else, or the entire team, to learn something new?
-##Answer: 
+# Question: How can I help someone else, or the entire team, to learn something new?
+## Answer: 
 This is one of the points that we've added to our social contract. Our group
 has made a Discord Server for ease of communication, and we've also added a text
 channel dedicated for helping each other out. We decided that if someone knows 
@@ -23,8 +23,8 @@ the answer to a question a fellow team member has asked, you're not obliged to h
 if it means you're not going to finish your own tasks in time, but it is encouraged
 if time isn't an issue.
 
-#Question: What is my contribution towards the team’s use of Scrum?
-##Answer: 
+# Question: What is my contribution towards the team’s use of Scrum?
+## Answer: 
 As of right know, we haven't yet implemented the use of scrum.
 In future sprints, once everybody's projects have started, we would need
 to implement the use of scrum. This would be achieved through selecting 
@@ -35,8 +35,8 @@ be to attend scrum meetings as well as managing the scrum board, and
 potentially, should I become the scrum master, manage all extra tasks
 that comes with the role.
 
-#Question: What is my contribution towards the team’s deliveries?
-##Answer: 
+# Question: What is my contribution towards the team’s deliveries?
+## Answer: 
 As of right now, we've only turned in our Social Contract
 as far as I know. My contribution towards that delivery was partaking 
 in a meeting in which we brainstormed some Social Contract terms, and
