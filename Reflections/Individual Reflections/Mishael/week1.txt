@@ -1,1 +1,12 @@
 ---
+what do I want to learn or understand better?
+I want to learn agile development.
+
+how can I help someone else, or the entire team, to learn something new?
+I can help by answering questions asked by team members and by proactively helping in instances where help might be appreciated.
+
+what is my contribution towards the team’s use of Scrum?
+We have not started development yet.
+
+what is my contribution towards the team’s deliveries?
+I added my input to the Social Contract, which was the team's only deliverable.
