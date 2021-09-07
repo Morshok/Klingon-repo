@@ -45,4 +45,4 @@ Discord
 	Webhosting costs
 
 # Revenue streams
-Donations
+	Donations
