@@ -1,6 +1,6 @@
-#Key partners
-Göteborgs Stad
-OpenStreetMap
+# Key partners
+	Göteborgs Stad
+	OpenStreetMap
 
 # Value propositions
 	Saves time
