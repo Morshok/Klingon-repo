@@ -26,7 +26,7 @@ OpenStreetMap
 	Styr & Ställ infrastructure
 	People with knowledge in web development 
 	Github
-Discord
+	Discord
 
 # Customer relationships
 	----
