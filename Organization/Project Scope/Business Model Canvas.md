@@ -1,6 +1,7 @@
 # Key partners
 	Göteborgs Stad
 	OpenStreetMap
+	CityBikes
 
 # Value propositions
 	Saves time
@@ -23,6 +24,7 @@
 # Key resources
 	Open data from Göteborgs stad
 	Map library and data from OpenStreetMap
+	CityBikes API
 	Styr & Ställ infrastructure
 	People with knowledge in web development 
 	Github
