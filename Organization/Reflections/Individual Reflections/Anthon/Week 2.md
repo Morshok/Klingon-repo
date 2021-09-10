@@ -14,8 +14,8 @@ as try it out, to really learn what it is all about.
 ## Answer: 
 The answer to this question has not changed much, if at all, since last sprint,
 and I would assume it won't change much during the course of the project either.
-One particular thing that comes to mind is learning to tools we are going to 
-use and need, in order to be able to help the other members of the group when
+One particular thing that comes to mind is learning to use the tools we are going 
+to use and need, in order to be able to help the other members of the group when
 they are in need of it.
 
 # Question: What is my contribution towards the team’s use of Scrum?
