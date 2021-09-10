@@ -1,8 +1,8 @@
 # Question: What do I want to learn or understand better?
 ## Answer: 
 During this sprint we have deepened our understanding of the agile workflow
-a little bit, but I would like to understand it better by applying it
-next sprint in when we begin our group prject. We have also discussed tools
+a little bit, but I would like to understand it better by applying it to the
+next sprint when we begin our group project. We have also discussed tools
 that will be used to create our final product. We will amongst other tools
 such as Open Data Sources use java spring to program the backend of our 
 website, which is something I would like to learn but something that I do
