@@ -28,7 +28,7 @@ have to attend all planned meetings, according to our Social Contract,
 along with all the terms that follow with it. In the future, I would also
 have to make sure that the scrum board is always up to date, and to achieve
 this, I would have to make sure that all user stories that I am responsible
-are moved to the right column after each step of the development process.
+for are moved to the right column after each step of the development process.
 
 # Question: What is my contribution towards the team’s deliveries?
 ## Answer: 
