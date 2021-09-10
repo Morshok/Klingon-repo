@@ -38,9 +38,9 @@ that between a meeting that took place this tuesday, and wednesday, we would
 think of a mockup if we were bored during the day, and we would then decide
 which mockup we would choose during the meeting on wednesday. I was also
 helping come up with some of the epics, which we got from our Business Model
-Canvas, and discussed which of them to keep and which of them to throw. 
-In the future, I would need to stay an active member of the group in order
-to contribute towards the team's deliveries, whatever is important at 
-the current situation. Amongst many things, I would for example need to 
-actively review my peers code as per the Social Contract as well as deliver 
-code myself, to be reviewed by my peers.
+Canvas, that we also created together during this meeting, and discussed which 
+of them to keep and which of them to throw. In the future, I would need to stay 
+an active member of the group in order to contribute towards the team's deliveries, 
+whatever is important at the current situation. Amongst many things, I would for 
+example need to actively review my peers code as per the Social Contract as well 
+as deliver code myself, to be reviewed by my peers.
