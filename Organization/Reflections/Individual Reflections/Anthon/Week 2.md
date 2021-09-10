@@ -1,6 +1,6 @@
 # Question: What do I want to learn or understand better?
 ## Answer: 
-During this sprint we have depened our understanding of the agile workflow
+During this sprint we have deepened our understanding of the agile workflow
 a little bit, but I would like to understand it better by applying it
 next sprint in when we begin our group prject. We have also discussed tools
 that will be used to create our final product. We will amongst other tools
