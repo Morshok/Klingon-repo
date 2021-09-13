@@ -1,6 +1,6 @@
 ## Definition of done
 
-* Acceptance criteria met.
+* Acceptance criteria met
 * Runnable
 * Check that implemented code works as intended
 * Code documented
