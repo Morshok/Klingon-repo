@@ -87,6 +87,30 @@ main {
 	background: rgba(0, 0, 0, 0.5);
 }
 
+main p.info {
+	color: white;
+	max-width: 500px;
+	text-align: center;
+	font-size: 1.4em;
+	margin: 35vh auto 0;
+}
+
+main p.info a {
+	color: white;
+}
+
+main p.info a:hover {
+	background: #264bab;
+}
+
+main p.info a:focus {
+	background: #5e81db;
+}
+
+main p.info a:active {
+	background: #18306f;
+}
+
 main div#filters {
 	position: absolute;
 	width: 200px;
