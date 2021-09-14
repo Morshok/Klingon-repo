@@ -41,6 +41,13 @@ header nav {
 
 header nav button#menu_toggle {
 	display: none;
+	font-size: 3em;
+	padding: 0;
+	margin: 0;
+	border: none;
+	background: transparent;
+	color: white;
+	cursor: pointer;
 }
 
 header nav ul {
@@ -104,7 +111,7 @@ main div#filters div.head span {
 }
 
 main div#filters div.head button#filter_toggle {
-	
+	cursor: pointer;
 }
 
 main div#filters div.content {
@@ -134,4 +141,59 @@ footer {
 	color: white;
 	text-align: center;
 	font-size: 1.2em;
+}
+
+@media (max-width: 600px) {
+	header nav {
+  
+	}
+
+	header nav button#menu_toggle {
+		display: block;
+	}
+
+	header nav ul {
+		background: white;
+		position: fixed;
+		top: 0;
+		left: 0;
+		flex-direction: column;
+		height: 100vh;
+		min-width: 60%;
+		z-index: 100;
+		padding: 0;
+		transform: translateX(-100%);
+		transition: transform 0.2s ease;
+		box-shadow: 0 0 10px black;
+	}
+
+	header nav ul.visible {
+		transform: translateX(0);
+	}
+
+	header nav ul li {
+
+	}
+
+	header nav ul li a {
+		color: black;
+	}
+
+	main div#filters {
+		box-sizing: border-box;
+		width: unset;
+		top: 1.5em;
+		right: 1.5em;
+		left: 1.5em;
+		font-size: 1.3em;
+	}
+
+	main div#filters div.head {
+	}
+
+	main div#filters div.head button#filter_toggle {
+		border: 0;
+		background: 0;
+		font-size: 1.5em;
+	}
 }
