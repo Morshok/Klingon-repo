@@ -7,12 +7,34 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * The PumpStationAPIDataHandler is a class responsible
+ * for providing the application with data from the
+ * open data source https://data.goteborg.se/BikeService/v1.2/PumpStations/.
+ *
+ *
+ * which contains
+ * only one static method, that establishes  a connection
+ * with the open data source https://data.goteborg.se/BikeService/v1.2/PumpStations/,
+ * retrieves all pump stations in the Gothenburg area
+ * in the form of a JSONObject, parses the object
+ * and returns a list of said pump stations.
+ *
+ * @author Anthon Lenander
+ * @version 2021-09-15
+ */
 public class PumpStationAPIDataHandler
 {
     //These constants are used to make an API call to the pump station service
     private static final String APP_ID = "612f222b-e5ee-4547-ac83-b191ddc283df";
     private static final String FORMAT = "Json";
 
+    /**
+     * Method for returning a list of all
+     * pump stations in the Gothenburg area.
+     *
+     * @return  Returns a list of all pump stations in the Gothenburg area.
+     */
     public static ArrayList<PumpStation> getAllPumpStations()
     {
         ArrayList<PumpStation> allPumpStations = new ArrayList<>();
