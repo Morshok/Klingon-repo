@@ -3,14 +3,29 @@ package klingon.webserver;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
+
 import org.json.*;
+
+/**
+ * This class handles the json open data about bicycle stations from Göteborgsstad
+ *
+ * @author Phong Nguyen
+ * @version 2021-09-15
+ */
 
 public class JsonParser {
 
-    
-    public static ArrayList<BicycleStation> getBicycleStationData(){
+
+    /**
+     * This method connects and requests data from data.goteborg.se
+     * and parses the data and add each element to a list, and
+     * returns the list of elements as BicycleStation
+     *
+     * @return a list of BicycleStation
+     */
+
+    public static ArrayList<BicycleStation> getBicycleStationData() {
 
         ArrayList<BicycleStation> allBicycleStations = new ArrayList<>();
 
@@ -33,9 +48,9 @@ public class JsonParser {
                 }
                 scanner.close();
 
-                JSONObject jsonObject = new JSONObject("{ Object:" +  inline + "}" );
+                JSONObject jsonObject = new JSONObject("{ Object:" + inline + "}");
                 JSONArray jsonArray = jsonObject.getJSONArray("Object");
-                for(int i = 0; i < jsonArray.length(); i++){
+                for (int i = 0; i < jsonArray.length(); i++) {
                     Long stationId = jsonArray.getJSONObject(i).getLong("StationId");
                     Double latitude = jsonArray.getJSONObject(i).getDouble("Lat");
                     Double longitude = jsonArray.getJSONObject(i).getDouble("Long");

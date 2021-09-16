@@ -3,6 +3,15 @@ package klingon.webserver;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * This class contains relevant variables about the bicycle station
+ * and acts as a table in the database
+ *
+ * @author Phong Nguyen
+ * @version 2021-09-15
+ */
+
+
 @Entity
 public class BicycleStation {
 
@@ -13,10 +22,26 @@ public class BicycleStation {
     private String Address;
     private Integer AvailableBikes;
 
-    public BicycleStation(){
+
+    /**
+     * Constructor for initializing the bicycle station instance
+     * without any parameters
+     */
+
+    public BicycleStation() {
         super();
     }
 
+    /**
+     * Constructor for initializing the bicycle station instance
+     * with parameters
+     *
+     * @param Id             The Id of the bicycle station
+     * @param latitude       The latitude coordination of the bicycle station
+     * @param longitude      The longitude coordination of the bicycle station
+     * @param address        The address of the bicycle station
+     * @param availableBikes The amount of available bikes at the bicycle station
+     */
     public BicycleStation(Long Id, Double latitude, Double longitude, String address, Integer availableBikes) {
         this.ID = Id;
         Latitude = latitude;
@@ -25,54 +50,4 @@ public class BicycleStation {
         AvailableBikes = availableBikes;
     }
 
-    public Long getID() {
-        return ID;
-    }
-
-    public void setID(Long ID) {
-        this.ID = ID;
-    }
-
-    public Double getLatitude() {
-        return Latitude;
-    }
-
-    public void setLatitude(Double lat) {
-        Latitude = lat;
-    }
-
-    public Double getLongitude() {
-        return Longitude;
-    }
-
-    public void setLongitude(Double aLong) {
-        Longitude = aLong;
-    }
-
-    public String getAddress() {
-        return Address;
-    }
-
-    public void setAddress(String address) {
-        Address = address;
-    }
-
-    public int getAvailableBikes() {
-        return AvailableBikes;
-    }
-
-    public void setAvailableBikes(int availableBikes) {
-        AvailableBikes = availableBikes;
-    }
-
-    @Override
-    public String toString() {
-        return "BicycleStation{" +
-                "ID=" + ID +
-                ", Latitude=" + Latitude +
-                ", Longitude=" + Longitude +
-                ", Address='" + Address + '\'' +
-                ", AvailableBikes=" + AvailableBikes +
-                '}';
-    }
 }
