@@ -85,6 +85,7 @@ main {
     flex: 1 1 100%;
     position: relative;
     background: rgba(0, 0, 0, 0.5);
+    min-height: 500px;
 }
 
 main p.info {
@@ -227,11 +228,10 @@ footer {
 
     main div#filters {
         box-sizing: border-box;
-        width: unset;
-        top: 1.5em;
-        right: 1.5em;
-        left: 1.5em;
-        font-size: 1.3em;
+        width: 200px;
+        top: 10px;
+        right: 10px;
+        font-size: 1.1em;
     }
 
     main div#filters div.head {
