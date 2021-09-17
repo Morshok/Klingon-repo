@@ -7,18 +7,18 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.util.List;
 
 @SpringBootApplication
-public class WebserverApplication {
+public class WebserverApplication
+{
+	public static void main(String[] args)
+	{
+		ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
+    BicycleStationRepository bicycleStationRepository = context.getBean(BicycleStationRepository.class);
+		PumpStationRepository pumpStationRepository = context.getBean(PumpStationRepository.class);
 
-    public static void main(String[] args) {
-
-        ConfigurableApplicationContext configurableApplicationContext =
-                SpringApplication.run(WebserverApplication.class, args);
-        BicycleStationRepository bicycleStationRepository =
-                configurableApplicationContext.getBean(BicycleStationRepository.class);
-        List<BicycleStation> bicycleStations = JsonParser.getBicycleStationData();
-        bicycleStationRepository.saveAll(bicycleStations);
-
-    }
-
-
+    List<BicycleStation> bicycleStations = JsonParser.getBicycleStationData();
+		List<PumpStation> allPumpStations = PumpStationAPIDataHandler.getAllPumpStations();
+    
+    bicycleStationRepository.saveAll(bicycleStations);
+		pumpStationRepository.saveAll(allPumpStations);
+	}
 }

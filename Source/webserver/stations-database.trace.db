@@ -1,0 +1,3 @@
+2021-09-15 19:06:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PUMP_STATION" not found; SQL statement:
+select pumpstatio0_.id as id1_0_0_, pumpstatio0_.address as address2_0_0_, pumpstatio0_.comment as comment3_0_0_, pumpstatio0_.latitude as latitude4_0_0_, pumpstatio0_.longitude as longitud5_0_0_ from pump_station pumpstatio0_ where pumpstatio0_.id=? [42102-200]
