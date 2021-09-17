@@ -120,7 +120,6 @@ main div#filters {
 	padding: 0.3em;
 	top: 2em;
 	right: 2em;
-	z-index: 100000000;
 }
 
 main div#filters div.head {
@@ -133,25 +132,6 @@ main div#filters div.head {
 
 main div#filters div.head span {
 
-}
-
-main #geolocator {
-	border-radius: 50%;
-	position: absolute;
-	right: 2em;
-	bottom: 2em;
-	width: 60px;
-	background: #fff;
-	height: 60px;
-	cursor: pointer;
-	border: unset;
-	z-index: 100000000;
-	box-shadow: 0 2px 2px rgba(0,0,0,0.20), 0 2px 2px rgba(0,0,0,0.20);
-}
-
-main #geolocator:hover {
-	transform: scale(0.95);
-	transition: all 0.5s;
 }
 
 main div#filters div.head button#filter_toggle {
