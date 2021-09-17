@@ -1,7 +1,7 @@
 # Question: What do I want to learn or understand better?
 ## Answer: 
   During this weeks sprint, me and Phong has worked on implementing
-  backend java program for populating tables in the h2 database with
+  a backend java program for populating tables in the h2 database with
   information regarding pump- and bicyclestations. We opted towards
   using jpa, which is an in-memory implementation database storage
   architecture. I would like to learn and understand the jdbc
@@ -25,7 +25,7 @@
   This monday, before the supervision session, we had a meeting setup 
   between 9:00-10:50, where we defined the definition of done and worked
   on user stories together. During the supervision session, we discussed
-  with our supervisor, and he said things very looking mighty fine, but 
+  with our supervisor, and he said things were looking mighty fine, but 
   we would need to consider planning our sprints. Hence, this tuesday,
   we planned a meeting for planning the sprint. Together we estimated our
   user stories, and ach and everyone picked one to work. It would seem our
