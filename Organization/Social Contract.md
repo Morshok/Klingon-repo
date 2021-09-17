@@ -12,6 +12,7 @@ Do what is expected of you during a sprint, and:
 - Everybody's opinion and contribution is valuable.
 - Try to keep documentation up to date according to later agreed upon documentation standards.
 - Make sure everyone is fine with their contribution before handing in the project at the end of every sprint.
+- Pull request handed in before 18.00 the day before team reflection
 
 ### Code
 * Do not merge your own request.
