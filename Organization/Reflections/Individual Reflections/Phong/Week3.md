@@ -14,4 +14,4 @@ The task I was handling retreives data from a open datasource and parses it a bu
 
 ### what is my contribution towards the team’s deliveries?
 
-I contributed with handling the tables of the database by communicating with the ones that were involve with similar tasks, and being active when there was issues in our Discord channel
+I contributed with handling the tables of the database by communicating with the ones that were involve with similar tasks, reviewd one of the team's code and being active when there was issues in our Discord channel
