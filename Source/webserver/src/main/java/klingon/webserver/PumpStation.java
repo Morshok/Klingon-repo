@@ -83,37 +83,6 @@ public class PumpStation
     public double getLongitude() { return longitude; }
 
     /**
-     * Method for setting the id of a PumpStation object
-     *
-     * @param id        The id of this PumpStation
-     */
-    public void setId(Long id) { this.id = id; }
-    /**
-     * Method for setting the address of a PumpStation object
-     *
-     * @param address   The address of this PumpStation
-     */
-    public void setAddress(String address) { this.address = address; }
-    /**
-     * Method for setting the comment of a PumpStation object
-     *
-     * @param comment   The comment of this PumpStation
-     */
-    public void setComment(String comment) { this.comment = comment; }
-    /**
-     * Method for setting the latitude of a PumpStation object
-     *
-     * @param latitude  The latitude of this PumpStation
-     */
-    public void setLatitude(double latitude) { this.latitude = latitude; }
-    /**
-     * Method for setting the longitude of a PumpStation object
-     *
-     * @param longitude The longitude of this PumpStation
-     */
-    public void setLongitude(double longitude) { this.longitude = longitude; }
-
-    /**
      * Method for getting PumpStation as a String
      *
      * @return Returns this PumpStation object represented as a String
