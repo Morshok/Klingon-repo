@@ -120,6 +120,7 @@ main div#filters {
 	padding: 0.3em;
 	top: 2em;
 	right: 2em;
+	z-index: 100000000;
 }
 
 main div#filters div.head {
@@ -184,7 +185,7 @@ footer {
 		flex-direction: column;
 		height: 100vh;
 		min-width: 60%;
-		z-index: 100;
+		z-index:  100000001;
 		padding: 0;
 		transform: translateX(-100%);
 		transition: transform 0.2s ease;
