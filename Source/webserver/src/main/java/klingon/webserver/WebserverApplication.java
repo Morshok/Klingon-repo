@@ -12,13 +12,13 @@ public class WebserverApplication
 	public static void main(String[] args)
 	{
 		ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
-    BicycleStationRepository bicycleStationRepository = context.getBean(BicycleStationRepository.class);
+    	BicycleStationRepository bicycleStationRepository = context.getBean(BicycleStationRepository.class);
 		PumpStationRepository pumpStationRepository = context.getBean(PumpStationRepository.class);
 
-    List<BicycleStation> bicycleStations = JsonParser.getBicycleStationData();
-		List<PumpStation> allPumpStations = PumpStationAPIDataHandler.getAllPumpStations();
+    	List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
+    	List<PumpStation> allPumpStations = APIDataHandler.getAllPumpStations();
     
-    bicycleStationRepository.saveAll(bicycleStations);
+    	bicycleStationRepository.saveAll(bicycleStations);
 		pumpStationRepository.saveAll(allPumpStations);
 	}
 }
