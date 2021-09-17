@@ -26,8 +26,8 @@
   between 9:00-10:50, where we defined the definition of done and worked
   on user stories together. During the supervision session, we discussed
   with our supervisor, and he said things were looking mighty fine, but 
-  we would need to consider planning our sprints. Hence, this tuesday,
-  we planned a meeting for planning the sprint. Together we estimated our
+  we would need to consider planning our sprints. Hence, we planned a meeting 
+  this tuesday for planning the sprint. Together we estimated our
   user stories, and ach and everyone picked one to work. It would seem our
   estimations were a bit of, since Mishaels user story was "Literally 3 
   lines of code", and we'd estimated it quite high. During this mornings
