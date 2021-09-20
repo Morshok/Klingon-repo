@@ -88,27 +88,36 @@ main {
     min-height: 500px;
 }
 
-main p.info {
+main div.info {
     color: white;
     max-width: 500px;
     text-align: center;
     font-size: 1.4em;
-    margin: 35vh auto 0;
+    margin: 0 auto;
 }
 
-main p.info a {
+main div.info ul {
+    margin: 0;
+    list-style-type: none;
+}
+
+main div.info ul li {
+    margin: 1em 0;
+}
+
+main div.info ul li a {
     color: white;
 }
 
-main p.info a:hover {
+main div.info ul li a:hover {
     background: #264bab;
 }
 
-main p.info a:focus {
+main div.info ul li a:focus {
     background: #5e81db;
 }
 
-main p.info a:active {
+main div.info ul li a:active {
     background: #18306f;
 }
 
