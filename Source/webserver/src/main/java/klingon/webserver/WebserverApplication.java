@@ -41,8 +41,7 @@ public class WebserverApplication
 	 * Method for updating the BicycleStation table
 	 * in the h2 database every 5 minutes.
 	 */
-	@Async
-	@Scheduled(cron = "* */5 * * * *")
+	@Scheduled(cron = "0 */5 * * * *")
 	public void updateBicycleStations()
 	{
 		List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
@@ -53,8 +52,7 @@ public class WebserverApplication
 	 * Method for updating the BicycleStation table
 	 * in the h2 database every monday at 8am.
 	 */
-	@Async
-	@Scheduled(cron = "* 0 8 * * 1")
+	@Scheduled(cron = "0 0 8 * * 1")
 	public void updatePumpStations()
 	{
 		List<PumpStation> allPumpStations = APIDataHandler.getAllPumpStations();
