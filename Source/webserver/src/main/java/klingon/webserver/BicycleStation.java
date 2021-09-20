@@ -2,6 +2,7 @@ package klingon.webserver;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.sql.Timestamp;
 
 /**
  * This class contains relevant variables about the bicycle station
@@ -19,6 +20,7 @@ public class BicycleStation {
     private Double longitude;
     private String address;
     private Integer availableBikes;
+    private Timestamp lastUpdated;
 
 
     /**
@@ -39,12 +41,14 @@ public class BicycleStation {
      * @param address        The address of the bicycle station
      * @param availableBikes The amount of available bikes at the bicycle station
      */
-    public BicycleStation(Long id, Double latitude, Double longitude, String address, Integer availableBikes) {
+    public BicycleStation(Long id, Double latitude, Double longitude, String address, Integer availableBikes,
+                          Timestamp lastUpdated) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
         this.availableBikes = availableBikes;
+        this.lastUpdated = lastUpdated;
     }
 
     /**

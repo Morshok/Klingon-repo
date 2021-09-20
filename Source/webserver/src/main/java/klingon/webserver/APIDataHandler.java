@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -124,8 +125,11 @@ public class APIDataHandler
                     Double latitude = jsonArray.getJSONObject(i).getDouble("Lat");
                     Double longitude = jsonArray.getJSONObject(i).getDouble("Long");
                     Integer availableBikes = jsonArray.getJSONObject(i).getInt("AvailableBikes");
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                     String name = jsonArray.getJSONObject(i).getString("Name");
-                    BicycleStation bicycleStation = new BicycleStation(stationId, latitude, longitude, name, availableBikes);
+
+                    BicycleStation bicycleStation = new BicycleStation(stationId, latitude, longitude, name,
+                            availableBikes, timestamp);
 
                     allBicycleStations.add(bicycleStation);
                 }
