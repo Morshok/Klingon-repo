@@ -1,6 +1,5 @@
 package klingon.webserver;
 
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -35,17 +34,18 @@ public class WebserverApplication
 	 *
 	 * @return a BicycleStationRepository
 	 */
-	public static BicycleStationRepository getBicycleStationRepository() {
+	public static BicycleStationRepository getBicycleStationRepository()
+	{
 		return bicycleStationRepository;
 	}
-
 
 	/**
 	 * Get method that returns the repository of all pump stations
 	 *
 	 * @return a PumpStationRepository
 	 */
-	public static PumpStationRepository getPumpStationRepository() {
+	public static PumpStationRepository getPumpStationRepository()
+	{
 		return pumpStationRepository;
 	}
 
@@ -76,14 +76,22 @@ public class WebserverApplication
 		pumpStationRepository.saveAll(allPumpStations);
 	}
 
-	@EventListener(ContextStartedEvent.class)
-	protected void onApplicationStartup()
+	private void initDatabase()
 	{
 		bicycleStationRepository.deleteAll();
 		pumpStationRepository.deleteAll();
 
 		populateBicycleStations();
 		populatePumpStations();
+	}
+
+	@EventListener(ContextStartedEvent.class)
+	protected void onApplicationStartup()
+	{
+		initDatabase();
+
+		updateBicycleStations();
+		updatePumpStations();
 	}
 }
 
