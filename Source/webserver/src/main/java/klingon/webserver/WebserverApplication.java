@@ -1,5 +1,6 @@
 package klingon.webserver;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -27,6 +28,25 @@ public class WebserverApplication
     	bicycleStationRepository = context.getBean(BicycleStationRepository.class);
 		pumpStationRepository = context.getBean(PumpStationRepository.class);
 		context.start();
+	}
+
+	/**
+	 * Get method that returns the repository of all bicycle stations
+	 *
+	 * @return a BicycleStationRepository
+	 */
+	public static BicycleStationRepository getBicycleStationRepository() {
+		return bicycleStationRepository;
+	}
+
+
+	/**
+	 * Get method that returns the repository of all pump stations
+	 *
+	 * @return a PumpStationRepository
+	 */
+	public static PumpStationRepository getPumpStationRepository() {
+		return pumpStationRepository;
 	}
 
 	// The spring cron expression should be formatted as follows:
