@@ -2,6 +2,10 @@ package klingon.webserver;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -22,12 +26,33 @@ import java.util.Scanner;
  * @see <a href="https://data.goteborg.se/BikeService/v1.2/PumpStations">data.goteborg.se</a>
  * @see <a href="https://data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations">data.goteborg.se</a>
  */
+
+@RestController
 public class APIDataHandler
 {
     //These constants are used to make an API call to the pump station service
     private static final String PUMP_STATION_APP_ID = "612f222b-e5ee-4547-ac83-b191ddc283df";
     private static final String BICYCLE_STATION_APP_ID = "ad5c61b7-fc05-44b6-8762-30ba6ecda1c2";
     private static final String FORMAT = "Json";
+
+
+    // GET request that adds all bicycle station to http://localhost:8080/bicycleStations
+    @GetMapping("/bicycleStations")
+    public String allJsonObjects(){
+        Iterable <BicycleStation> allStations = WebserverApplication.getBicycleStationRepository().findAll();
+        JSONArray jsonArray  = new JSONArray();
+        for(BicycleStation bs: allStations) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", bs.getID());
+            jsonObject.put("latitude", bs.getLatitude());
+            jsonObject.put("longitude", bs.getLongitude());
+            jsonObject.put("address", bs.getAddress());
+            jsonObject.put("availableBikes", bs.getAvailableBikes());
+            jsonObject.put("lastUpdated", bs.getLastUpdatedString());
+            jsonArray.put(jsonObject);
+        }
+        return jsonArray.toString();
+    }
 
     /**
      * Method for returning a list of all
