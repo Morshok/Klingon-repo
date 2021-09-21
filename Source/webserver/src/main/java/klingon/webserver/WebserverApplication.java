@@ -1,5 +1,6 @@
 package klingon.webserver;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -25,6 +26,9 @@ public class WebserverApplication
 		ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
     	bicycleStationRepository = context.getBean(BicycleStationRepository.class);
 		pumpStationRepository = context.getBean(PumpStationRepository.class);
+		//delete old data if exist(or else we will violate the constraint of creating new elements with same primary key)
+		bicycleStationRepository.deleteAll();
+		pumpStationRepository.deleteAll();
 
 		// Initial population of the h2 database tables
 		List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
@@ -32,6 +36,11 @@ public class WebserverApplication
 
 		List<PumpStation> allPumpStations = APIDataHandler.getAllPumpStations();
 		pumpStationRepository.saveAll(allPumpStations);
+	}
+
+	//Javadoc plz
+	public static BicycleStationRepository getBicycleStationRepository() {
+		return bicycleStationRepository;
 	}
 
 	// The spring cron expression should be formatted as follows:
