@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -34,20 +32,24 @@ import java.util.Scanner;
 
 @RestController
 @RequestMapping("/api")
-public class APIDataHandler
-{
+public class APIDataHandler {
     //These constants are used to make an API call to the pump station service
     private static final String PUMP_STATION_APP_ID = "612f222b-e5ee-4547-ac83-b191ddc283df";
     private static final String BICYCLE_STATION_APP_ID = "ad5c61b7-fc05-44b6-8762-30ba6ecda1c2";
     private static final String FORMAT = "Json";
 
 
-    // GET request that adds all bicycle station to http://localhost:8080/bicycleStations
+    /**
+     * GET request that adds all bicycle station to http://localhost:8080/api/bicycleStations
+     * and gives a JSONArray of the bicycle stations
+     *
+     * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
+     */
     @GetMapping(path = "/bicycleStations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity <Object>allJsonObjects(){
-        Iterable <BicycleStation> allStations = WebserverApplication.getBicycleStationRepository().findAll();
+    public ResponseEntity<Object> jsonBicycleStations() {
+        Iterable<BicycleStation> allStations = WebserverApplication.getBicycleStationRepository().findAll();
         JSONArray jsonArray = new JSONArray();
-        for(BicycleStation bs: allStations) {
+        for (BicycleStation bs : allStations) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", bs.getID());
             jsonObject.put("latitude", bs.getLatitude());
@@ -57,21 +59,41 @@ public class APIDataHandler
             jsonObject.put("lastUpdated", bs.getLastUpdatedString());
             jsonArray.put(jsonObject.toMap());
         }
-        return new ResponseEntity<> (jsonArray.toList(), HttpStatus.OK);
+        return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
+    }
+
+    /**
+     * GET request that adds all bicycle station to http://localhost:8080/api/pumpStations
+     * and gives a JSONArray of the pump stations
+     *
+     * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
+     */
+    @GetMapping(path = "/pumpStations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> jsonPumpStations() {
+        Iterable<PumpStation> allStations = WebserverApplication.getPumpStationRepository().findAll();
+        JSONArray jsonArray = new JSONArray();
+        for (PumpStation pumpStation : allStations) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", pumpStation.getId());
+            jsonObject.put("comment", pumpStation.getComment());
+            jsonObject.put("latitude", pumpStation.getLatitude());
+            jsonObject.put("longitude", pumpStation.getLongitude());
+            jsonObject.put("address", pumpStation.getAddress());
+            jsonArray.put(jsonObject.toMap());
+        }
+        return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
     }
 
     /**
      * Method for returning a list of all
      * pump stations in the Gothenburg area.
      *
-     * @return  Returns a list of all pump stations in the Gothenburg area.
+     * @return Returns a list of all pump stations in the Gothenburg area.
      */
-    public static ArrayList<PumpStation> getAllPumpStations()
-    {
+    public static ArrayList<PumpStation> getAllPumpStations() {
         ArrayList<PumpStation> allPumpStations = new ArrayList<>();
 
-        try
-        {
+        try {
             URL url = new URL("https://data.goteborg.se/BikeService/v1.2/PumpStations/" + PUMP_STATION_APP_ID + "?&format=" + FORMAT);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -79,17 +101,13 @@ public class APIDataHandler
 
             int responseCode = connection.getResponseCode();
 
-            if(responseCode != 200)
-            {
+            if (responseCode != 200) {
                 throw new RuntimeException("HttpResponseCode: " + responseCode);
-            }
-            else
-            {
+            } else {
                 StringBuilder inline = new StringBuilder();
                 Scanner scanner = new Scanner(url.openStream());
 
-                while(scanner.hasNext())
-                {
+                while (scanner.hasNext()) {
                     inline.append(scanner.nextLine());
                 }
 
@@ -98,8 +116,7 @@ public class APIDataHandler
                 JSONObject jsonObject = new JSONObject("{Object: " + inline + "}");
                 JSONArray jsonArray = jsonObject.getJSONArray("Object");
 
-                for(int i = 0; i < jsonArray.length(); i++)
-                {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     Long id = jsonArray.getJSONObject(i).getLong("ID");
                     String address = jsonArray.getJSONObject(i).getString("Address");
                     String comment = jsonArray.getJSONObject(i).getString("Comment");
@@ -110,9 +127,7 @@ public class APIDataHandler
                 }
             }
 
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
