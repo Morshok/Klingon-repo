@@ -2,14 +2,19 @@ package klingon.webserver;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -28,6 +33,7 @@ import java.util.Scanner;
  */
 
 @RestController
+@RequestMapping("/api")
 public class APIDataHandler
 {
     //These constants are used to make an API call to the pump station service
@@ -37,10 +43,10 @@ public class APIDataHandler
 
 
     // GET request that adds all bicycle station to http://localhost:8080/bicycleStations
-    @GetMapping("/bicycleStations")
-    public String allJsonObjects(){
+    @GetMapping(path = "/bicycleStations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity <Object>allJsonObjects(){
         Iterable <BicycleStation> allStations = WebserverApplication.getBicycleStationRepository().findAll();
-        JSONArray jsonArray  = new JSONArray();
+        JSONArray jsonArray = new JSONArray();
         for(BicycleStation bs: allStations) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", bs.getID());
@@ -49,9 +55,9 @@ public class APIDataHandler
             jsonObject.put("address", bs.getAddress());
             jsonObject.put("availableBikes", bs.getAvailableBikes());
             jsonObject.put("lastUpdated", bs.getLastUpdatedString());
-            jsonArray.put(jsonObject);
+            jsonArray.put(jsonObject.toMap());
         }
-        return jsonArray.toString();
+        return new ResponseEntity<> (jsonArray.toList(), HttpStatus.OK);
     }
 
     /**
