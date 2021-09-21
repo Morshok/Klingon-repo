@@ -2,18 +2,19 @@ package klingon.webserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.*;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.util.Date;
 import java.util.List;
 
+@Service
 @SpringBootApplication
 public class WebserverApplication
 {
@@ -25,43 +26,75 @@ public class WebserverApplication
 		ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
     	bicycleStationRepository = context.getBean(BicycleStationRepository.class);
 		pumpStationRepository = context.getBean(PumpStationRepository.class);
-
-		// Initial population of the h2 database tables
-		List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
-		bicycleStationRepository.saveAll(bicycleStations);
-
-		List<PumpStation> allPumpStations = APIDataHandler.getAllPumpStations();
-		pumpStationRepository.saveAll(allPumpStations);
+		context.start();
 	}
 
 	// The spring cron expression should be formatted as follows:
 	// seconds minutes hours day_of_month month day(s)_of_week.
 
-	/**
-	 * Method for updating the BicycleStation table
-	 * in the h2 database every 5 minutes.
-	 */
 	@Scheduled(cron = "0 */5 * * * *")
-	public void updateBicycleStations()
+	protected void updateBicycleStations()
+	{
+		populateBicycleStations();
+	}
+	
+	@Scheduled(cron = "0 0 8 * * 1")
+	protected void updatePumpStations()
+	{
+		populatePumpStations();
+	}
+
+	private void populateBicycleStations()
 	{
 		List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
 		bicycleStationRepository.saveAll(bicycleStations);
 	}
 
-	/**
-	 * Method for updating the BicycleStation table
-	 * in the h2 database every monday at 8am.
-	 */
-	@Scheduled(cron = "0 0 8 * * 1")
-	public void updatePumpStations()
+	private void populatePumpStations()
 	{
 		List<PumpStation> allPumpStations = APIDataHandler.getAllPumpStations();
 		pumpStationRepository.saveAll(allPumpStations);
 	}
+
+	@EventListener(ContextStartedEvent.class)
+	protected void onApplicationStartup()
+	{
+		bicycleStationRepository.deleteAll();
+		pumpStationRepository.deleteAll();
+
+		populateBicycleStations();
+		populatePumpStations();
+	}
 }
 
 @Configuration
+@EnableAsync
 @EnableScheduling
-class SchedulingConfiguration
+class SchedulingConfiguration implements AsyncConfigurer
 {
+	// Number of tasks to run in parallel,
+	// Which would be 2 for our purposes.
+	// Increase THREAD_COUNT by one for
+	// every additionally added tasks.
+	private static final int THREAD_COUNT = 2;
+
+	@Bean
+	public ThreadPoolTaskScheduler threadPoolTaskScheduler()
+	{
+		ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+		threadPoolTaskScheduler.setPoolSize(THREAD_COUNT);
+		return threadPoolTaskScheduler;
+	}
+
+	@Override
+	@Bean(name = "taskExecutor")
+	public ThreadPoolTaskExecutor getAsyncExecutor()
+	{
+		ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+		threadPoolTaskExecutor.setCorePoolSize(THREAD_COUNT);
+		threadPoolTaskExecutor.setMaxPoolSize(THREAD_COUNT);
+		threadPoolTaskExecutor.setQueueCapacity(THREAD_COUNT);
+		threadPoolTaskExecutor.initialize();
+		return threadPoolTaskExecutor;
+	}
 }
