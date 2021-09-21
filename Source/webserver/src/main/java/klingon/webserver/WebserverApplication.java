@@ -26,9 +26,6 @@ public class WebserverApplication
 		ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
     	bicycleStationRepository = context.getBean(BicycleStationRepository.class);
 		pumpStationRepository = context.getBean(PumpStationRepository.class);
-		//delete old data if exist(or else we will violate the constraint of creating new elements with same primary key)
-		bicycleStationRepository.deleteAll();
-		pumpStationRepository.deleteAll();
 
 		// Initial population of the h2 database tables
 		List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
@@ -38,9 +35,23 @@ public class WebserverApplication
 		pumpStationRepository.saveAll(allPumpStations);
 	}
 
-	//Javadoc plz
+	/**
+	 * Get method that returns the repository of all bicycle stations
+	 *
+	 * @return a BicycleStationRepository
+	 */
 	public static BicycleStationRepository getBicycleStationRepository() {
 		return bicycleStationRepository;
+	}
+
+
+	/**
+	 * Get method that returns the repository of all pump stations
+	 *
+	 * @return a PumpStationRepository
+	 */
+	public static PumpStationRepository getPumpStationRepository() {
+		return pumpStationRepository;
 	}
 
 	// The spring cron expression should be formatted as follows:
