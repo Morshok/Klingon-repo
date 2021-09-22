@@ -2,6 +2,17 @@ $("button#filter_toggle").click(function (e) {
     $("div#filters").toggleClass("closed");
     $("button#filter_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
+const bicycleStations = document.querySelector('#bicycles');
+bicycleStations.addEventListener('change',function (e){
+    alert("There are no bikes");
+
+});
+const pumpStations = document.querySelector('#pumps');
+pumpStations.addEventListener('change',function (e){
+    alert("There are no pumps");
+});
+
+
 
 $("button#menu_toggle").click(function (e) {
     $("nav ul").toggleClass("visible");
@@ -42,3 +53,4 @@ L.control.zoom({
 }).addTo(window.leafletMap);
 var marker = L.marker([57.690072772287735, 11.974254546462964]).addTo(window.leafletMap);
 marker.bindPopup("<b>Chalmers Johanneberg</b><br>Campus").openPopup();
+

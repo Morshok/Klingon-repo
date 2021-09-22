@@ -142,8 +142,44 @@ main div#filters div.head button#filter_toggle {
 
 main div#filters div.content {
     border-top: 3px solid rgba(38, 75, 171, 1);
-    padding-top: 0.3em;
+    padding-top: 0.3em;}
+
+input[type=checkbox] + label {
+    display: block;
+    margin: 0.2em;
+    cursor: pointer;
+    padding: 0.2em;
 }
+
+input[type=checkbox] {
+    display: none;
+}
+
+input[type=checkbox] + label:before {
+    content: "\2714";
+    border: 2px solid rgba(38, 75, 171, 1);
+    border-radius: 0.1em;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    padding-left: 0.2em;
+    padding-bottom: 0.3em;
+    margin-right: 0.2em;
+    vertical-align: bottom;
+    color: transparent;
+    transition: 0.2s;
+}
+
+input[type=checkbox] + label:active:before {
+    transform: scale(0);
+}
+
+input[type=checkbox]:checked + label:before {
+    background: rgba(38, 75, 171, 1);
+    border: 3px solid rgba(38, 75, 171, 1);
+    color: #ffffff;
+}
+
 
 main div#filters.closed div.head {
     padding: 0;
