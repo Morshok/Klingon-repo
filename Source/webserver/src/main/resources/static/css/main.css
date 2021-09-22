@@ -128,7 +128,7 @@ main div#filters {
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    top: 2em;
+    top: 10px;
     right: 10px;
     z-index: 999;
 }
@@ -168,6 +168,10 @@ main div#map {
     position: absolute;
 }
 
+main div#map div.leaflet-routing-container {
+    display: none;
+}
+
 main #geolocator {
     border-radius: 50%;
     position: absolute;
@@ -186,6 +190,21 @@ main #geolocator {
 main #geolocator:not([disabled]):hover {
     transform: scale(0.95);
     transition: all 0.5s;
+}
+
+main div#navigation {
+    position: absolute;
+    z-index: 1000;
+    bottom: 10px;
+    left: 10px;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    font-size: 1.1em;
+    padding: 0.3em;
+}
+
+main div#navigation button#navigation_button {
+
 }
 
 footer {
