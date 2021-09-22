@@ -25,7 +25,7 @@ import java.util.Scanner;
  * and returns a list of parsed objects.
  *
  * @author Anthon Lenander, Phong Nguyen
- * @version 2021-09-17
+ * @version 2021-09-21
  * @see <a href="https://data.goteborg.se/BikeService/v1.2/PumpStations">data.goteborg.se</a>
  * @see <a href="https://data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations">data.goteborg.se</a>
  */
@@ -41,7 +41,7 @@ public class APIDataHandler {
 
     /**
      * GET request that adds all bicycle station to http://localhost:8080/api/bicycleStations
-     * and gives a JSONArray of the bicycle stations
+     * and gives a JSONArray of the bicycle stations from the repository
      *
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */
@@ -64,7 +64,7 @@ public class APIDataHandler {
 
     /**
      * GET request that adds all bicycle station to http://localhost:8080/api/pumpStations
-     * and gives a JSONArray of the pump stations
+     * and gives a JSONArray of the pump stations from the repository
      *
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */

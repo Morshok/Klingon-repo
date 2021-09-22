@@ -14,6 +14,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * This class is a initializer to boot up the applications backend
+ * and handles different execution of the built in database
+ *
+ *  * @author Anthon Lenander, Phong Nguyen
+ *  * @version 2021-09-21
+ *
+ */
+
 @Service
 @SpringBootApplication
 public class WebserverApplication
