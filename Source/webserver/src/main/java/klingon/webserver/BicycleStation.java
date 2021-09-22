@@ -59,32 +59,46 @@ public class BicycleStation {
     public Long getID() { return id; }
 
     /**
-     * Method for getting the id from a BicycleStation object
+     * Method for getting the latitude from a BicycleStation object
      *
-     * @return Returns the id of this BicycleStation
+     * @return Returns the latitude of this BicycleStation
      */
     public Double getLatitude() { return latitude; }
 
     /**
-     * Method for getting the id from a BicycleStation object
+     * Method for getting the longitude from a BicycleStation object
      *
-     * @return Returns the id of this BicycleStation
+     * @return Returns the longitude of this BicycleStation
      */
     public Double getLongitude() { return longitude; }
 
     /**
-     * Method for getting the id from a BicycleStation object
+     * Method for getting the address from a BicycleStation object
      *
-     * @return Returns the id of this BicycleStation
+     * @return Returns the address of this BicycleStation
      */
     public String getAddress() { return address; }
 
     /**
-     * Method for getting the id from a BicycleStation object
+     * Method for getting the amount of available bicycle from a BicycleStation object
      *
-     * @return Returns the id of this BicycleStation
+     * @return Returns the amount of available bicycle of this BicycleStation
      */
     public int getAvailableBikes() { return availableBikes; }
+
+    /**
+     * Method for getting last updated timestamp from a BicycleStation object
+     *
+     * @return Returns the last updated timestamp of this BicycleStation
+     */
+    public Timestamp getLastUpdated() { return lastUpdated; }
+
+    /**
+     * Method for getting last updated timestamp from a BicycleStation object
+     *
+     * @return Returns a String of the last updated timestamp of this BicycleStation
+     */
+    public String getLastUpdatedString() { return lastUpdated.toString(); }
 
     /**
      * Method for getting BicycleStation as a String
@@ -93,12 +107,14 @@ public class BicycleStation {
      */
     @Override
     public String toString() {
+
         return "BicycleStation{" +
-                "ID=" + id +
-                ", Latitude=" + latitude +
-                ", Longitude=" + longitude +
-                ", Address='" + address + '\'' +
-                ", AvailableBikes=" + availableBikes +
+                "id=" + id +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", address='" + address + '\'' +
+                ", availableBikes=" + availableBikes +
+                ", lastUpdated=" + lastUpdated +
                 '}';
     }
 }
