@@ -2,6 +2,7 @@ $("button#filter_toggle").click(function (e) {
     $("div#filters").toggleClass("closed");
     $("button#filter_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
+
 const bicycleStations = document.querySelector('#bicycles');
 bicycleStations.addEventListener('change',function (e){
     alert("There are no bikes");
@@ -11,6 +12,7 @@ const pumpStations = document.querySelector('#pumps');
 pumpStations.addEventListener('change',function (e){
     alert("There are no pumps");
 });
+
 
 
 
