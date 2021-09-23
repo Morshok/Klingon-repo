@@ -26,8 +26,8 @@ import java.util.Scanner;
  *
  * @author Anthon Lenander, Phong Nguyen
  * @version 2021-09-21
- * @see <a href="https://data.goteborg.se/BikeService/v1.2/PumpStations">data.goteborg.se</a>
- * @see <a href="https://data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations">data.goteborg.se</a>
+ * @see <a href="https://data.goteborg.se/BikeService/v1.2/PumpStations">data.goteborg.se/BikeService/v1.2/PumpStations</a>
+ * @see <a href="https://data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations">data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations</a>
  */
 
 @RestController
