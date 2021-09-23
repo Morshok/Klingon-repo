@@ -31,7 +31,7 @@ public class WebserverApplication
 	public static void main(String[] args)
 	{
 		ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
-    	bicycleStationRepository = context.getBean(BicycleStationRepository.class);
+    		bicycleStationRepository = context.getBean(BicycleStationRepository.class);
 		pumpStationRepository = context.getBean(PumpStationRepository.class);
 		context.start();
 	}
