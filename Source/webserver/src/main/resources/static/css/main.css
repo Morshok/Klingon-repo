@@ -193,6 +193,36 @@ main div#map {
     position: absolute;
 }
 
+main div#map .station-popups > .content > p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+footer .attribution {
+    margin: 0 auto;
+    width: 100px;
+    position: relative;
+}
+
+footer .attribution > .popup {
+    position: absolute;
+    background: #ffff;
+    width: 247px;
+    height: 50px;
+    bottom: 25px;
+    z-index: 10000;
+    border-radius: 5px;
+    color: black;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.20), 0 2px 2px rgba(0, 0, 0, 0.20);
+    border: 3px solid #264bab;
+    display: none;
+    left: -80px;
+}
+
+footer .attribution:hover > .popup {
+    display: block;
+}
+
 main #geolocator {
     border-radius: 50%;
     position: absolute;
