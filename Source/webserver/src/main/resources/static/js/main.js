@@ -124,3 +124,66 @@ $("#geolocator").click(function (e) {
         enableHighAccuracy: true,
     });
 });
+
+$("button#navigation_button").click(function (e){
+    addRoute(57.74, 11.94, 57.6792, 11.949);
+});
+
+window.leafletMap = L.map('map', { zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16);
+L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=7Y1QmhU25CpvrabZ6trI', {
+    attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+}).addTo(window.leafletMap);
+
+L.control.zoom({
+	position:'bottomright'
+}).addTo(window.leafletMap);
+
+var marker = L.marker([57.690072772287735, 11.974254546462964]).addTo(window.leafletMap);
+marker.bindPopup("<b>Chalmers Johanneberg</b><br>Campus").openPopup();
+
+const router = L.routing.openrouteservice("", {
+    "timeout": 30 * 1000,
+    "format": "json",
+    "host": "./api/routing",
+    "service": "directions",
+    "api_version": "v2",
+    "profile": "cycling-regular",
+    "routingQueryParams": {
+        "attributes": [
+            "avgspeed",
+            "percentage"
+        ],
+        "language": "en-us",
+        "maneuvers": "true",
+        "preference": "recommended",
+    }
+});
+
+window.routeControl = null;
+function addRoute(startLatitude, startLongitude, endLatitude, endLongitude){
+    if(window.routeControl != null){
+        removeRoute();
+    }
+
+    window.routeControl = L.Routing.control({
+        router: router,
+        defaultErrorHandler: false,
+        waypoints: [
+            L.latLng(startLatitude, startLongitude),
+            L.latLng(endLatitude, endLongitude)
+        ]
+    }).on('routingerror', function(e){
+        onErrorHandler(e);
+    }).addTo(window.leafletMap);
+}
+
+function removeRoute(){
+    if(window.routeControl != null){
+        window.leafletMap.removeControl(window.routeControl);
+        window.routeControl = null;
+    }
+}
+
+function onErrorHandler(event){
+    console.log(event);
+}

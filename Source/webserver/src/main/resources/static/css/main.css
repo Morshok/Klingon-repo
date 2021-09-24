@@ -88,27 +88,36 @@ main {
     min-height: 500px;
 }
 
-main p.info {
+main div.info {
     color: white;
     max-width: 500px;
     text-align: center;
     font-size: 1.4em;
-    margin: 35vh auto 0;
+    margin: 0 auto;
 }
 
-main p.info a {
+main div.info ul {
+    margin: 0;
+    list-style-type: none;
+}
+
+main div.info ul li {
+    margin: 1em 0;
+}
+
+main div.info ul li a {
     color: white;
 }
 
-main p.info a:hover {
+main div.info ul li a:hover {
     background: #264bab;
 }
 
-main p.info a:focus {
+main div.info ul li a:focus {
     background: #5e81db;
 }
 
-main p.info a:active {
+main div.info ul li a:active {
     background: #18306f;
 }
 
@@ -119,7 +128,7 @@ main div#filters {
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    top: 2em;
+    top: 10px;
     right: 10px;
     z-index: 999;
 }
@@ -193,6 +202,10 @@ main div#map {
     position: absolute;
 }
 
+main div#map div.leaflet-routing-container {
+    display: none;
+}
+
 main div#map .station-popups > .content > p {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -241,6 +254,21 @@ main #geolocator {
 main #geolocator:not([disabled]):hover {
     transform: scale(0.95);
     transition: all 0.5s;
+}
+
+main div#navigation {
+    position: absolute;
+    z-index: 1000;
+    bottom: 10px;
+    left: 10px;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    font-size: 1.1em;
+    padding: 0.3em;
+}
+
+main div#navigation button#navigation_button {
+
 }
 
 footer {
