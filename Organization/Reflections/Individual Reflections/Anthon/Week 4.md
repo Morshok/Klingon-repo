@@ -38,7 +38,7 @@
   for the group reflection, and together reflected on said topics, and
   handed it in together. We also decided to meet next monday as per usual,
   but this monday we would need to produce a ton of user stories to work 
-  on, an potentially even come up with another Epic, so that we won't run
+  on, and potentially even come up with another Epic, so that we won't run
   out of user stories to work on before the end of the project.
 
 # Question: What is my contribution towards the team’s deliveries?
