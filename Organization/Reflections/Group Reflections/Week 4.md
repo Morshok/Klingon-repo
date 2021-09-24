@@ -20,11 +20,14 @@
 # Application of Scrum
 ## The roles you have used within the team and their impact on your work
   Product owner: The product owner reviews the completed tasks and gives the confirmation if the task was met or there were any minor fixes that needed to be done.
+ 
   Scrum master: The scrum master delegates tasks according to previous sprints tasks to facilitate the progress of frontend and backend of the application.
   the agile practices you have used and their impact on your work
   Meetings: Through regular meetings twice a week we have been able to monitor the performance of the team. This has ensured that the project's development is progressing well     and also checks if there are any obstacles during the process. 
+  
   Product backlogs: The product backlogs are created together as a team with the PO so that there is a clear vision of the product. The product backlogs also have an estimate of   their difficulty and are prioritized accordingly so that the most important tasks are delivered in order. 
-  Code review: Each member is assigned to review another member's code. Code reviews allow us to work independently and asynchronously without it affecting the quality of our     deliverables.
+  
+  Code review: Each member is assigned to review another member's code. Code reviews allow us to work independently and asynchronously without it affecting the quality of our deliverables.
 ## The sprint review and how it relates to your scope and customer value (Did you have a PO, if yes, who?, if no, how did you carry out the review? Did the review result in a re-prioritisation of user stories? How did the reviews relate to your DoD? Did the feedback change your way of working?)
   We have had a PO during “the course of the course”, being Phong, but we all agree that having a PO who is also part of the development team is a bit abstract to say the least.   During sprint reviews, everyone shows what they have done, and Phong comments on our achievements and decides if they are accepted. We make sure that our tasks are meeting the   definition of done criteria before sprint reviewing, so that we don’t have to worry about that during the actual review. We have not re-prioritized user stories, since they     follow each other in a very nice order of implementation, and the limited feedback we have all had hasn’t changed our way of working as of yet.
 ## Best practices for learning and using new tools and technologies (IDEs, version control, scrum boards etc.; do not only describe which tools you used but focus on how you     developed the expertise to use them)
