@@ -1,0 +1,11 @@
+what do I want to learn or understand better?
+So far, I've felt comfortable with all the tools and systems we use, although I did improve my understanding of the Spring framework, which I've only briefly tested before. Besides finishing my tasks, my goal for next week is to learn more about Github Actions. Also, while my understanding of Agile & Scrum has vastly improved compared to before the course, I do believe that I need to continue to read about it.
+
+how can I help someone else, or the entire team, to learn something new?
+The answer hasn't changed. We've continued to urge everyone to ask for help if they need it, and the advice has so far been followed. People ask for help via group chat or directly to others. And, so far, everyone has managed to complete their tasks in time.
+
+what is my contribution towards the team’s use of Scrum?
+We have two planned meetings every week where we sprint plan and reflect on the sprint, I have attended each one. I contributed to estimating our tasks and delegation of them.
+
+what is my contribution towards the team’s deliveries?
+I completed my tasks and attended the important sprint meetings.
