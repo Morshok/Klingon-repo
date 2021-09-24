@@ -44,7 +44,7 @@
 # Question: What is my contribution towards the team’s deliveries?
 ## Answer: 
   As mentioned in the previous question, as well as last week, I attended 
-  a meeting in which all team embers together wrote the group discussion for this 
+  a meeting in which all team members together wrote the group discussion for this 
   week. Other than that, my contribution towards the groups deliveries this 
   week has been to code my task, which was to implement update functionality
   for the database, so that information on bicycle stations would be renewed
