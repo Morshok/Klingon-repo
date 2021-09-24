@@ -18,11 +18,9 @@ import java.util.List;
  * This class is a initializer to boot up the applications backend
  * and handles different execution of the built in database
  *
- *  * @author Anthon Lenander, Phong Nguyen
- *  * @version 2021-09-21
- *
+ *  @author Anthon Lenander, Phong Nguyen
+ *  @version 2021-09-21
  */
-
 @Service
 @SpringBootApplication
 public class WebserverApplication
@@ -33,7 +31,7 @@ public class WebserverApplication
 	public static void main(String[] args)
 	{
 		ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
-    	bicycleStationRepository = context.getBean(BicycleStationRepository.class);
+    		bicycleStationRepository = context.getBean(BicycleStationRepository.class);
 		pumpStationRepository = context.getBean(PumpStationRepository.class);
 		context.start();
 	}
@@ -101,37 +99,5 @@ public class WebserverApplication
 
 		updateBicycleStations();
 		updatePumpStations();
-	}
-}
-
-@Configuration
-@EnableAsync
-@EnableScheduling
-class SchedulingConfiguration implements AsyncConfigurer
-{
-	// Number of tasks to run in parallel,
-	// Which would be 2 for our purposes.
-	// Increase THREAD_COUNT by one for
-	// every additionally added tasks.
-	private static final int THREAD_COUNT = 2;
-
-	@Bean
-	public ThreadPoolTaskScheduler threadPoolTaskScheduler()
-	{
-		ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
-		threadPoolTaskScheduler.setPoolSize(THREAD_COUNT);
-		return threadPoolTaskScheduler;
-	}
-
-	@Override
-	@Bean(name = "taskExecutor")
-	public ThreadPoolTaskExecutor getAsyncExecutor()
-	{
-		ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-		threadPoolTaskExecutor.setCorePoolSize(THREAD_COUNT);
-		threadPoolTaskExecutor.setMaxPoolSize(THREAD_COUNT);
-		threadPoolTaskExecutor.setQueueCapacity(THREAD_COUNT);
-		threadPoolTaskExecutor.initialize();
-		return threadPoolTaskExecutor;
 	}
 }
