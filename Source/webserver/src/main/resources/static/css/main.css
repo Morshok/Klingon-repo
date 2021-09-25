@@ -1,24 +1,24 @@
 html {
-	font-size: 16px;
-	font-family: sans-serif;
+    font-size: 16px;
+    font-family: sans-serif;
 }
 
 div.wrapper {
-	min-height: 100vh;
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
-	flex: 0 0 0;
-	box-sizing: border-box;
-	width: 100%;
-	padding: 0.5em;
-	background: rgba(38, 75, 171, 1);
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+    flex: 0 0 0;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.5em;
+    background: rgba(38, 75, 171, 1);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 header div#logo {
@@ -30,32 +30,32 @@ header div#logo a {
 }
 
 header div#logo a img {
-	max-width: 100px;
+    max-width: 100px;
 }
 
 header nav {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 header nav button#menu_toggle {
-	display: none;
-	font-size: 3em;
-	padding: 0;
-	margin: 0;
-	border: none;
-	background: transparent;
-	color: white;
-	cursor: pointer;
+    display: none;
+    font-size: 3em;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: white;
+    cursor: pointer;
 }
 
 header nav ul {
-	margin: 0;
-	list-style-type: none;
-	display: flex;
-	flex-direction: row;
-	font-size: 1.4em;
+    margin: 0;
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    font-size: 1.4em;
 }
 
 header nav ul li {
@@ -63,71 +63,82 @@ header nav ul li {
 }
 
 header nav ul li a {
-	display: block;
-	color: white;
-	text-decoration: none;
-	padding: 0.5em 1em;
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 0.5em 1em;
 }
 
 header nav ul li a:hover {
-	background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 header nav ul li a:focus {
-	background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 header nav ul li a:active {
-	background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
 }
 
 main {
-	flex: 1 1 500px;
-	position: relative;
-	background: rgba(0, 0, 0, 0.5);
+    flex: 1 1 100%;
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    min-height: 500px;
 }
 
-main p.info {
-	color: white;
-	max-width: 500px;
-	text-align: center;
-	font-size: 1.4em;
-	margin: 35vh auto 0;
+main div.info {
+    color: white;
+    max-width: 500px;
+    text-align: center;
+    font-size: 1.4em;
+    margin: 0 auto;
 }
 
-main p.info a {
-	color: white;
+main div.info ul {
+    margin: 0;
+    list-style-type: none;
 }
 
-main p.info a:hover {
-	background: #264bab;
+main div.info ul li {
+    margin: 1em 0;
 }
 
-main p.info a:focus {
-	background: #5e81db;
+main div.info ul li a {
+    color: white;
 }
 
-main p.info a:active {
-	background: #18306f;
+main div.info ul li a:hover {
+    background: #264bab;
+}
+
+main div.info ul li a:focus {
+    background: #5e81db;
+}
+
+main div.info ul li a:active {
+    background: #18306f;
 }
 
 main div#filters {
-	position: absolute;
-	width: 200px;
-	background: white;
-	border: 3px solid rgba(38, 75, 171, 1);
-	font-size: 1.1em;
-	padding: 0.3em;
-	top: 2em;
-	right: 2em;
+    position: absolute;
+    width: 200px;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    font-size: 1.1em;
+    padding: 0.3em;
+    top: 10px;
+    right: 10px;
+    z-index: 999;
 }
 
 main div#filters div.head {
-	padding-bottom: 0.3em;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
+    padding-bottom: 0.3em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 main div#filters div.head span {
@@ -135,89 +146,192 @@ main div#filters div.head span {
 }
 
 main div#filters div.head button#filter_toggle {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 main div#filters div.content {
-	border-top: 3px solid rgba(38, 75, 171, 1);
-	padding-top: 0.3em;
+    border-top: 3px solid rgba(38, 75, 171, 1);
+    padding-top: 0.3em;}
+
+input[type=checkbox] + label {
+    display: block;
+    margin: 0.2em;
+    cursor: pointer;
+    padding: 0.2em;
 }
 
+input[type=checkbox] {
+    display: none;
+}
+
+input[type=checkbox] + label:before {
+
+    content: "\2713";
+    border: 3px solid rgba(38, 75, 171, 1);
+    border-radius: 0.1em;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    padding-left: 0.2em;
+    padding-bottom: 0.2em;
+    margin-right: 0.2em;
+    vertical-align: bottom;
+    color: transparent;
+    transition: 0.2s;
+}
+
+input[type=checkbox]:checked + label:before {
+
+    background: rgba(38, 75, 171, 1);
+    border: 3px solid rgba(38, 75, 171, 1);
+    color: white;
+}
+
+
 main div#filters.closed div.head {
-	padding: 0;
+    padding: 0;
 }
 
 main div#filters.closed div.content {
-	display: none;
+    display: none;
 }
 
 main div#map {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+main div#map div.leaflet-routing-container {
+    display: none;
+}
+
+main div#map .station-popups > .content > p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+footer .attribution {
+    margin: 0 auto;
+    width: 100px;
+    position: relative;
+}
+
+footer .attribution > .popup {
+    position: absolute;
+    background: #ffff;
+    width: 247px;
+    height: 50px;
+    bottom: 25px;
+    z-index: 10000;
+    border-radius: 5px;
+    color: black;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.20), 0 2px 2px rgba(0, 0, 0, 0.20);
+    border: 3px solid #264bab;
+    display: none;
+    left: -80px;
+}
+
+footer .attribution:hover > .popup {
+    display: block;
+}
+
+main #geolocator {
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    bottom: 100px;
+    width: 33px;
+    background: #fff;
+    height: 33px;
+    cursor: pointer;
+    border: unset;
+    z-index: 1000;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.20), 0 2px 2px rgba(0, 0, 0, 0.20);
+    padding: 0;
+}
+
+main #geolocator:not([disabled]):hover {
+    transform: scale(0.95);
+    transition: all 0.5s;
+}
+
+main div#navigation {
+    position: absolute;
+    z-index: 1000;
+    bottom: 10px;
+    left: 10px;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    font-size: 1.1em;
+    padding: 0.3em;
+}
+
+main div#navigation button#navigation_button {
+
 }
 
 footer {
-	flex: 0 0 0;
-	box-sizing: border-box;
-	width: 100%;
-	padding: 1em;
-	background: rgba(38, 75, 171, 1);
-	color: white;
-	text-align: center;
-	font-size: 1.2em;
+    flex: 0 0 0;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 1em;
+    background: rgba(38, 75, 171, 1);
+    color: white;
+    text-align: center;
+    font-size: 1.2em;
 }
 
 @media (max-width: 600px) {
-	header nav {
-  
-	}
+    header nav {
 
-	header nav button#menu_toggle {
-		display: block;
-	}
+    }
 
-	header nav ul {
-		background: white;
-		position: fixed;
-		top: 0;
-		left: 0;
-		flex-direction: column;
-		height: 100vh;
-		min-width: 60%;
-		z-index:  100000001;
-		padding: 0;
-		transform: translateX(-100%);
-		transition: transform 0.2s ease;
-		box-shadow: 0 0 10px black;
-	}
+    header nav button#menu_toggle {
+        display: block;
+    }
 
-	header nav ul.visible {
-		transform: translateX(0);
-	}
+    header nav ul {
+        background: white;
+        position: fixed;
+        top: 0;
+        left: 0;
+        flex-direction: column;
+        height: 100vh;
+        min-width: 60%;
+        z-index: 1001;
+        padding: 0;
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+        box-shadow: 0 0 10px black;
+    }
 
-	header nav ul li {
+    header nav ul.visible {
+        transform: translateX(0);
+    }
 
-	}
+    header nav ul li {
 
-	header nav ul li a {
-		color: black;
-	}
+    }
 
-	main div#filters {
-		box-sizing: border-box;
-		width: unset;
-		top: 1.5em;
-		right: 1.5em;
-		left: 1.5em;
-		font-size: 1.3em;
-	}
+    header nav ul li a {
+        color: black;
+    }
 
-	main div#filters div.head {
-	}
+    main div#filters {
+        box-sizing: border-box;
+        width: 200px;
+        top: 10px;
+        right: 10px;
+        font-size: 1.1em;
+    }
 
-	main div#filters div.head button#filter_toggle {
-		border: 0;
-		background: 0;
-		font-size: 1.5em;
-	}
+    main div#filters div.head {
+    }
+
+    main div#filters div.head button#filter_toggle {
+        border: 0;
+        background: 0;
+        font-size: 1.5em;
+    }
 }
