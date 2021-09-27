@@ -40,6 +40,7 @@ public class BicycleStation {
      * @param longitude      The longitude coordination of the bicycle station
      * @param address        The address of the bicycle station
      * @param availableBikes The amount of available bikes at the bicycle station
+     * @param lastUpdated    The timestamp last updated
      */
     public BicycleStation(Long id, Double latitude, Double longitude, String address, Integer availableBikes,
                           Timestamp lastUpdated) {
@@ -56,49 +57,63 @@ public class BicycleStation {
      *
      * @return Returns the id of this BicycleStation
      */
-    public Long getID() { return id; }
+    public Long getID() {
+        return id;
+    }
 
     /**
      * Method for getting the latitude from a BicycleStation object
      *
      * @return Returns the latitude of this BicycleStation
      */
-    public Double getLatitude() { return latitude; }
+    public Double getLatitude() {
+        return latitude;
+    }
 
     /**
      * Method for getting the longitude from a BicycleStation object
      *
      * @return Returns the longitude of this BicycleStation
      */
-    public Double getLongitude() { return longitude; }
+    public Double getLongitude() {
+        return longitude;
+    }
 
     /**
      * Method for getting the address from a BicycleStation object
      *
      * @return Returns the address of this BicycleStation
      */
-    public String getAddress() { return address; }
+    public String getAddress() {
+        return address;
+    }
 
     /**
      * Method for getting the amount of available bicycle from a BicycleStation object
      *
      * @return Returns the amount of available bicycle of this BicycleStation
      */
-    public int getAvailableBikes() { return availableBikes; }
+    public int getAvailableBikes() {
+        return availableBikes;
+    }
 
     /**
      * Method for getting last updated timestamp from a BicycleStation object
      *
      * @return Returns the last updated timestamp of this BicycleStation
      */
-    public Timestamp getLastUpdated() { return lastUpdated; }
+    public Timestamp getLastUpdated() {
+        return lastUpdated;
+    }
 
     /**
      * Method for getting last updated timestamp from a BicycleStation object
      *
      * @return Returns a String of the last updated timestamp of this BicycleStation
      */
-    public String getLastUpdatedString() { return lastUpdated.toString(); }
+    public String getLastUpdatedString() {
+        return lastUpdated.toString();
+    }
 
     /**
      * Method for getting BicycleStation as a String

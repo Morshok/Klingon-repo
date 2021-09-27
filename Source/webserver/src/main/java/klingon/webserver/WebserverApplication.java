@@ -18,86 +18,89 @@ import java.util.List;
  * This class is a initializer to boot up the applications backend
  * and handles different execution of the built in database
  *
- *  @author Anthon Lenander, Phong Nguyen
- *  @version 2021-09-21
+ * @author Anthon Lenander, Phong Nguyen
+ * @version 2021-09-21
  */
 @Service
 @SpringBootApplication
-public class WebserverApplication
-{
-	private static BicycleStationRepository bicycleStationRepository;
-	private static PumpStationRepository pumpStationRepository;
+public class WebserverApplication {
+    private static BicycleStationRepository bicycleStationRepository;
+    private static PumpStationRepository pumpStationRepository;
+    private static BicycleStandRepository bicycleStandRepository;
 
-	public static void main(String[] args)
-	{
-		ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
-    		bicycleStationRepository = context.getBean(BicycleStationRepository.class);
-		pumpStationRepository = context.getBean(PumpStationRepository.class);
-		context.start();
-	}
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
+        bicycleStationRepository = context.getBean(BicycleStationRepository.class);
+        pumpStationRepository = context.getBean(PumpStationRepository.class);
+        bicycleStandRepository = context.getBean(BicycleStandRepository.class);
+        context.start();
+    }
 
-	/**
-	 * Get method that returns the repository of all bicycle stations
-	 *
-	 * @return a BicycleStationRepository
-	 */
-	public static BicycleStationRepository getBicycleStationRepository()
-	{
-		return bicycleStationRepository;
-	}
+    /**
+     * Get method that returns the repository of all bicycle stations
+     *
+     * @return a BicycleStationRepository
+     */
+    public static BicycleStationRepository getBicycleStationRepository() {
+        return bicycleStationRepository;
+    }
 
-	/**
-	 * Get method that returns the repository of all pump stations
-	 *
-	 * @return a PumpStationRepository
-	 */
-	public static PumpStationRepository getPumpStationRepository()
-	{
-		return pumpStationRepository;
-	}
+    /**
+     * Get method that returns the repository of all pump stations
+     *
+     * @return a PumpStationRepository
+     */
+    public static PumpStationRepository getPumpStationRepository() {
+        return pumpStationRepository;
+    }
 
-	// The spring cron expression should be formatted as follows:
-	// seconds minutes hours day_of_month month day(s)_of_week.
+    public static BicycleStandRepository getBicycleStandRepository() {
+        return bicycleStandRepository;
+    }
 
-	@Scheduled(cron = "0 */5 * * * *")
-	protected void updateBicycleStations()
-	{
-		populateBicycleStations();
-	}
-	
-	@Scheduled(cron = "0 0 8 * * 1")
-	protected void updatePumpStations()
-	{
-		populatePumpStations();
-	}
+    // The spring cron expression should be formatted as follows:
+    // seconds minutes hours day_of_month month day(s)_of_week.
 
-	private void populateBicycleStations()
-	{
-		List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
-		bicycleStationRepository.saveAll(bicycleStations);
-	}
+    @Scheduled(cron = "0 */5 * * * *")
+    protected void updateBicycleStations() {
+        populateBicycleStations();
+    }
 
-	private void populatePumpStations()
-	{
-		List<PumpStation> allPumpStations = APIDataHandler.getAllPumpStations();
-		pumpStationRepository.saveAll(allPumpStations);
-	}
+    @Scheduled(cron = "0 0 8 * * 1")
+    protected void updatePumpStations() {
+        populatePumpStations();
+    }
 
-	private void initDatabase()
-	{
-		bicycleStationRepository.deleteAll();
-		pumpStationRepository.deleteAll();
+    private void populateBicycleStations() {
+        List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
+        bicycleStationRepository.saveAll(bicycleStations);
+    }
 
-		populateBicycleStations();
-		populatePumpStations();
-	}
+    private void populatePumpStations() {
+        List<PumpStation> allPumpStations = APIDataHandler.getPumpStationData();
+        pumpStationRepository.saveAll(allPumpStations);
+    }
 
-	@EventListener(ContextStartedEvent.class)
-	protected void onApplicationStartup()
-	{
-		initDatabase();
+    private void populateBicycleStands() {
+        List<BicycleStand> allBicycleStands = APIDataHandler.getBicycleStandData();
+        bicycleStandRepository.saveAll(allBicycleStands);
+    }
 
-		updateBicycleStations();
-		updatePumpStations();
-	}
+    private void initDatabase() {
+        bicycleStationRepository.deleteAll();
+        pumpStationRepository.deleteAll();
+        bicycleStandRepository.deleteAll();
+
+        populateBicycleStations();
+        populatePumpStations();
+        populateBicycleStands();
+    }
+
+    @EventListener(ContextStartedEvent.class)
+    protected void onApplicationStartup() {
+        initDatabase();
+
+        updateBicycleStations();
+        updatePumpStations();
+    }
 }
