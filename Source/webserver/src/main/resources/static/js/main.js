@@ -142,6 +142,7 @@ const router = L.routing.openrouteservice("", {
             "percentage"
         ],
         "language": "en-us",
+        "elevation": "true",
         "maneuvers": "true",
         "preference": "recommended",
     }
@@ -162,6 +163,8 @@ function addRoute(startLatitude, startLongitude, endLatitude, endLongitude){
         ]
     }).on('routingerror', function(e){
         onErrorHandler(e);
+    }).on('routesfound', function(e){
+        onRouteFound(e);
     }).addTo(window.leafletMap);
 }
 
@@ -174,6 +177,22 @@ function removeRoute(){
 
 function onErrorHandler(event){
     console.log(event);
+}
+
+function onRouteFound(event){
+    let distance = formatDistanceFromMeters(event.routes[0].summary.totalDistance);
+    let time = formatTimeFromSeconds(event.routes[0].summary.totalTime);
+    let ascend = event.routes[0].summary.totalAscend;
+    let descend = event.routes[0].summary.totalDescend;
+
+    if(ascend === undefined){
+        ascend = 0;
+    }
+
+    if(descend === undefined){
+        descend = 0;
+    }
+    }
 }
 
 function formatTimeFromSeconds(totSeconds, template){
