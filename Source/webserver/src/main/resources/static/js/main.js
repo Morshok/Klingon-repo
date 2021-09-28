@@ -175,3 +175,31 @@ function removeRoute(){
 function onErrorHandler(event){
     console.log(event);
 }
+
+function formatTimeFromSeconds(totSeconds, template){
+    let hours = Math.floor(totSeconds / 60 / 60);
+    let minutes = Math.ceil((totSeconds / 60) % 60);
+
+    if(template === undefined){
+        return hours + "h " + minutes + "m";
+    }else{
+         template.replace("%h", hours);
+         template.replace("%m", minutes);
+
+         return template;
+    }
+}
+
+function formatDistanceFromMeters(totMeters, template){
+    let kilometers = Math.floor(totMeters / 1000);
+    let meters = Math.floor(totMeters % 1000);
+
+    if(template === undefined){
+        return kilometers + "km " + meters + "m";
+    }else{
+        template = template.replace("%km", kilometers);
+        template = template.replace("%m", meters);
+
+        return template;
+    }
+}
