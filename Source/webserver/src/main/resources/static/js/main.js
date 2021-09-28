@@ -11,7 +11,8 @@ $("button#menu_toggle").click(function () {
 
 window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }))
     .addControl(L.control.zoom({
         position: 'bottomright'
     }));
@@ -21,19 +22,23 @@ const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
 const bicycleIcon = L.icon({
     iconUrl: '/images/cykelstation.png',
-    iconSize:     [32, 32],
+    iconSize: [50, 50],
+});
+const pumpIcon = L.icon({
+    iconUrl: '/images/pump.png',
+    iconSize: [50, 50],
 });
 
 function loadMarker() {
-    let bicycleTemplate = function (station) {
-        let timeDiff = seRelTime.from(Date.parse(station.lastUpdated));
+    let bicycleTemplate = function (bicycleStation) {
+        let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
         return `
-            <div data-stationId="${station.id}" clasS="station-popups bicycle">
-                <div class="title"><b>${station.address}</b></div>
+            <div data-stationId="${bicycleStation.id}" class="station-popups bicycle">
+                <div class="title"><b>${bicycleStation.address}</b></div>
                 <hr>
                 <div class="content">
                     <p>Styr & Ställ</p>
-                    <p>Tillgängliga cyklar: <b>${station.availableBikes}</b></p>
+                    <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
                     <p>Updaterades: ${timeDiff}</p>
                 </div>
                 <div class="footer">
@@ -41,14 +46,14 @@ function loadMarker() {
             <div>
         `
     }
-    let pumpTemplate = function (station) {
+    let pumpTemplate = function (pumpStation) {
         return `
-            <div data-stationId="${station.id}" class="station-popups pump">
-                <div class="title"><b>${station.address}</b></div>
+            <div data-stationId="${pumpStation.id}" class="station-popups pump">
+                <div class="title"><b>${pumpStation.address}</b></div>
                 <hr>
                 <div class="content">
                     <p>Pumpstation</p>
-                    <p>${station.comment}</p>
+                    <p>${pumpStation.comment}</p>
                 </div>
                 <div class="footer">
                     <button>Start here</button>
@@ -58,7 +63,7 @@ function loadMarker() {
         `
     }
 
-    let callApi = function (apiPath, markerTemplate, layerGroup, markerIcon = null) {
+    let callApi = function (apiPath, markerTemplate, layerGroup, markerIcon = null, type) {
         if (!window.leafletMap.hasLayer(layerGroup)) {
             layerGroup.addTo(window.leafletMap);
 
@@ -68,13 +73,28 @@ function loadMarker() {
                 complete: function (response) {
                     if (response.status === 200) {
                         let data = response.responseJSON;
-                        data.forEach(function (station) {
-                            L.marker([station.latitude, station.longitude], markerIcon ? { icon: markerIcon} : {})
-                                .bindPopup(function () {
-                                    return markerTemplate(station)
-                                })
-                                .addTo(layerGroup);
-                        });
+                        if (type == 1) {
+                            data.forEach(function (bicycleStation) {
+                                if (bicycleStation.availableBikes < 10) {
+                                    L.marker([bicycleStation.latitude, bicycleStation.longitude], markerIcon ? {icon: markerIcon} : {})
+                                        .bindPopup(function () {
+                                            return markerTemplate(bicycleStation)
+                                        })
+                                        .addTo(layerGroup);
+                                }
+                            });
+                        }
+                        if (type == 2) {
+                            data.forEach(function (pumpStation) {
+                                L.marker([pumpStation.latitude, pumpStation.longitude], markerIcon ? {icon: markerIcon} : {})
+                                    .bindPopup(function () {
+                                        return markerTemplate(pumpStation)
+                                    })
+                                    .addTo(layerGroup);
+
+                            });
+                        }
+
                     }
                 },
             })
@@ -82,20 +102,21 @@ function loadMarker() {
     }
 
     if ($("#bicycles").prop("checked")) {
-        callApi("/api/bicycleStations", bicycleTemplate, bicycleStationGroup, bicycleIcon)
-    }else{
+        callApi("/api/bicycleStations", bicycleTemplate, bicycleStationGroup, bicycleIcon, 1)
+    } else {
         bicycleStationGroup.clearLayers().remove();
     }
 
     if ($("#pumps").prop("checked")) {
-        callApi("/api/pumpStations", pumpTemplate, pumpStationGroup)
-    }else{
+        callApi("/api/pumpStations", pumpTemplate, pumpStationGroup, pumpIcon, 2)
+    } else {
         pumpStationGroup.clearLayers().remove();
     }
 }
+
 loadMarker();
 
-$("#pumps, #bicycles").change(function(){
+$("#pumps, #bicycles").change(function () {
     loadMarker();
 });
 
@@ -124,16 +145,17 @@ $("#geolocator").click(function (e) {
     });
 });
 
-$("button#navigation_button").click(function (e){
+$("button#navigation_button").click(function (e) {
     addRoute(57.74, 11.94, 57.6792, 11.949);
 });
 
-window.leafletMap = L.map('map', { zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16);
+window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(window.leafletMap);
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(window.leafletMap);
 
 L.control.zoom({
-	position:'bottomright'
+    position: 'bottomright'
 }).addTo(window.leafletMap);
 
 var marker = L.marker([57.690072772287735, 11.974254546462964]).addTo(window.leafletMap);
@@ -158,8 +180,9 @@ const router = L.routing.openrouteservice("", {
 });
 
 window.routeControl = null;
-function addRoute(startLatitude, startLongitude, endLatitude, endLongitude){
-    if(window.routeControl != null){
+
+function addRoute(startLatitude, startLongitude, endLatitude, endLongitude) {
+    if (window.routeControl != null) {
         removeRoute();
     }
 
@@ -170,18 +193,18 @@ function addRoute(startLatitude, startLongitude, endLatitude, endLongitude){
             L.latLng(startLatitude, startLongitude),
             L.latLng(endLatitude, endLongitude)
         ]
-    }).on('routingerror', function(e){
+    }).on('routingerror', function (e) {
         onErrorHandler(e);
     }).addTo(window.leafletMap);
 }
 
-function removeRoute(){
-    if(window.routeControl != null){
+function removeRoute() {
+    if (window.routeControl != null) {
         window.leafletMap.removeControl(window.routeControl);
         window.routeControl = null;
     }
 }
 
-function onErrorHandler(event){
+function onErrorHandler(event) {
     console.log(event);
 }
