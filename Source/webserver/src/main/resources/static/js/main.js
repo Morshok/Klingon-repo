@@ -203,10 +203,10 @@ function formatTimeFromSeconds(totSeconds, template){
         template = "";
 
         if(hours > 0){
-            template += hours + "h ";
+            template += hours + " h ";
         }
 
-        template += minutes + "m";
+        template += minutes + " m";
     }else{
          template.replace("%h", hours);
          template.replace("%m", minutes);
@@ -223,10 +223,10 @@ function formatDistanceFromMeters(totMeters, template){
         template = "";
 
         if(kilometers > 0){
-            template += kilometers + "km ";
+            template += kilometers + " km ";
         }
 
-        template += meters + "m";
+        template += meters + " m";
     }else{
         template = template.replace("%km", kilometers);
         template = template.replace("%m", meters);
