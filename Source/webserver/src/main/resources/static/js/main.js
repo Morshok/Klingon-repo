@@ -75,7 +75,7 @@ function loadMarker() {
                         let data = response.responseJSON;
                         if (type == 1) {
                             data.forEach(function (bicycleStation) {
-                                if (bicycleStation.availableBikes < 10) {
+                                if (bicycleStation.availableBikes >0) {
                                     L.marker([bicycleStation.latitude, bicycleStation.longitude], markerIcon ? {icon: markerIcon} : {})
                                         .bindPopup(function () {
                                             return markerTemplate(bicycleStation)
