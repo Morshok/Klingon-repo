@@ -202,8 +202,8 @@ function onRouteFound(event){
                     <ul>
                         <li title="Avstånd"><i class="fa fa-route"></i>${routeInfo.distance}</li>
                         <li title="Tid"><i class="fa fa-stopwatch"></i>${routeInfo.time}</li>
-                        <li title="Höjd ökning"><i class="fa fa-level-up-alt"></i>${routeInfo.ascend}</li>
-                        <li title="Höjd sänkning"><i class="fa fa-level-down-alt"></i>${routeInfo.descend}</li>
+                        <li title="Höjd ökning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>${routeInfo.ascend}</li>
+                        <li title="Höjd sänkning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6h-6z"/></svg>${routeInfo.descend}</li>
                     </ul>
                 </div>
             </div>

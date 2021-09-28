@@ -147,6 +147,13 @@ main div#route_info div.content ul li i {
     margin-right: 0.1em;
 }
 
+main div#route_info div.content ul li svg {
+    min-width: 25px;
+    height: 17px;
+    text-align: center;
+    margin-right: 0.1em;
+}
+
 main div#filters, main div#route_info {
     position: absolute;
     width: 200px;
