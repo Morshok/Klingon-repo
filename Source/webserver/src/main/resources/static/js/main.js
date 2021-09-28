@@ -165,6 +165,8 @@ function addRoute(startLatitude, startLongitude, endLatitude, endLongitude){
         onErrorHandler(e);
     }).on('routesfound', function(e){
         onRouteFound(e);
+    }).on('routingstart', function(e){
+        onRoutingStarted(e);
     }).addTo(window.leafletMap);
 }
 
@@ -180,19 +182,46 @@ function onErrorHandler(event){
 }
 
 function onRouteFound(event){
-    let distance = formatDistanceFromMeters(event.routes[0].summary.totalDistance);
-    let time = formatTimeFromSeconds(event.routes[0].summary.totalTime);
-    let ascend = event.routes[0].summary.totalAscend;
-    let descend = event.routes[0].summary.totalDescend;
-
-    if(ascend === undefined){
-        ascend = 0;
+    let routeInfo = {
+        "distance": formatDistanceFromMeters(event.routes[0].summary.totalDistance),
+        "time": formatTimeFromSeconds(event.routes[0].summary.totalTime),
+        "ascend": (event.routes[0].summary.totalAscend === undefined) ? "0 m" : event.routes[0].summary.totalAscend + " m",
+        "descend": (event.routes[0].summary.totalDescend === undefined) ? "0 m" : event.routes[0].summary.totalDescend + " m"
     }
 
-    if(descend === undefined){
-        descend = 0;
+    let routeInfoTemplate = function (routeInfo) {
+        return `
+            <div id="route_info">
+                <div class="head">
+                    <span>Route information</span>
+                    <button id="route_info_toggle">
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                </div>
+                <div class="content">
+                    <ul>
+                        <li title="Avstånd"><i class="fa fa-route"></i>${routeInfo.distance}</li>
+                        <li title="Tid"><i class="fa fa-stopwatch"></i>${routeInfo.time}</li>
+                        <li title="Höjd ökning"><i class="fa fa-level-up-alt"></i>${routeInfo.ascend}</li>
+                        <li title="Höjd sänkning"><i class="fa fa-level-down-alt"></i>${routeInfo.descend}</li>
+                    </ul>
+                </div>
+            </div>
+        `
     }
-    }
+
+    let routeInfoElement = routeInfoTemplate(routeInfo);
+
+    $("main").prepend(routeInfoElement);
+
+    $("button#route_info_toggle").on("click", function(e){
+        $("div#route_info").toggleClass("closed");
+        $("button#route_info_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
+    });
+}
+
+function onRoutingStarted(event){
+    $("main div#route_info").remove();
 }
 
 function formatTimeFromSeconds(totSeconds, template){
