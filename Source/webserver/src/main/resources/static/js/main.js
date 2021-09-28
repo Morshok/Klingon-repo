@@ -91,7 +91,6 @@ function loadMarker() {
                                         return markerTemplate(pumpStation)
                                     })
                                     .addTo(layerGroup);
-
                             });
                         }
 
