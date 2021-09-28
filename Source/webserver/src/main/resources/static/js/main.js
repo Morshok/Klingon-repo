@@ -10,8 +10,9 @@ $("button#menu_toggle").click(function () {
 });
 
 window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
-    .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
+    .addLayer(L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=7Y1QmhU25CpvrabZ6trI', {
+        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+    }))
     .addControl(L.control.zoom({
         position: 'bottomright'
     }));
@@ -127,17 +128,6 @@ $("#geolocator").click(function (e) {
 $("button#navigation_button").click(function (e){
     addRoute(57.74, 11.94, 57.6792, 11.949);
 });
-
-window.leafletMap = L.map('map', { zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(window.leafletMap);
-
-L.control.zoom({
-    position:'bottomright'
-}).addTo(window.leafletMap);
-
-var marker = L.marker([57.690072772287735, 11.974254546462964]).addTo(window.leafletMap);
-marker.bindPopup("<b>Chalmers Johanneberg</b><br>Campus").openPopup();
 
 const router = L.routing.openrouteservice("", {
     "timeout": 30 * 1000,
