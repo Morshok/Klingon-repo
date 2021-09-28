@@ -121,7 +121,34 @@ main div.info ul li a:active {
     background: #18306f;
 }
 
-main div#filters {
+main div#route_info {
+    right: auto !important;
+    left: 10px;
+    width: auto !important;
+}
+
+main div#route_info div.head span {
+    margin-right: 1em;
+}
+
+main div#route_info div.content ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    text-size: 1.1em;
+}
+
+main div#route_info div.content ul li {
+    margin: 0.2em 0;
+}
+
+main div#route_info div.content ul li i {
+    min-width: 25px;
+    text-align: center;
+    margin-right: 0.1em;
+}
+
+main div#filters, main div#route_info {
     position: absolute;
     width: 200px;
     background: white;
@@ -133,7 +160,7 @@ main div#filters {
     z-index: 999;
 }
 
-main div#filters div.head {
+main div#filters div.head, main div#route_info div.head {
     padding-bottom: 0.3em;
     display: flex;
     flex-direction: row;
@@ -145,11 +172,13 @@ main div#filters div.head span {
 
 }
 
-main div#filters div.head button#filter_toggle {
+main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
+    border: 0;
+    background: 0;
     cursor: pointer;
 }
 
-main div#filters div.content {
+main div#filters div.content, main div#route_info div.content {
     border-top: 3px solid rgba(38, 75, 171, 1);
     padding-top: 0.3em;}
 
@@ -188,11 +217,11 @@ input[type=checkbox]:checked + label:before {
 }
 
 
-main div#filters.closed div.head {
+main div#filters.closed div.head, main div#route_info.closed div.head {
     padding: 0;
 }
 
-main div#filters.closed div.content {
+main div#filters.closed div.content, main div#route_info.closed div.content {
     display: none;
 }
 
@@ -329,9 +358,7 @@ footer {
     main div#filters div.head {
     }
 
-    main div#filters div.head button#filter_toggle {
-        border: 0;
-        background: 0;
+    main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
         font-size: 1.5em;
     }
 }
