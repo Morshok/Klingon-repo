@@ -28,7 +28,10 @@ const pumpIcon = L.icon({
     iconUrl: '/images/pump.png',
     iconSize: [50, 50],
 });
-
+const locationIcon = L.icon({
+    iconUrl: '/images/location.png',
+    iconSize: [25, 40],
+});
 function loadMarker() {
     let bicycleTemplate = function (bicycleStation) {
         let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
@@ -133,6 +136,7 @@ $("#geolocator").click(function (e) {
     navigator.geolocation.getCurrentPosition(function (pos) {
         // pos.coords.latitude, pos.coords.longitude
         window.leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 15);
+        L.marker([pos.coords.latitude, pos.coords.longitude], { icon: locationIcon }).addTo(window.leafletMap);
         e.currentTarget.removeAttribute("disabled")
     }, function () {
         alert("Sorry, failed to retrieve your location");
