@@ -22,11 +22,11 @@ const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
 const bicycleIcon = L.icon({
     iconUrl: '/images/cykelstation.png',
-    iconSize: [50, 50],
+    iconSize: [40, 40],
 });
 const pumpIcon = L.icon({
     iconUrl: '/images/pump.png',
-    iconSize: [50, 50],
+    iconSize: [40, 40],
 });
 const locationIcon = L.icon({
     iconUrl: '/images/location.png',
