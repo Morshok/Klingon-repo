@@ -181,13 +181,19 @@ function formatTimeFromSeconds(totSeconds, template){
     let minutes = Math.ceil((totSeconds / 60) % 60);
 
     if(template === undefined){
-        return hours + "h " + minutes + "m";
+        template = "";
+
+        if(hours > 0){
+            template += hours + "h ";
+        }
+
+        template += minutes + "m";
     }else{
          template.replace("%h", hours);
          template.replace("%m", minutes);
-
-         return template;
     }
+
+    return template;
 }
 
 function formatDistanceFromMeters(totMeters, template){
@@ -195,11 +201,17 @@ function formatDistanceFromMeters(totMeters, template){
     let meters = Math.floor(totMeters % 1000);
 
     if(template === undefined){
-        return kilometers + "km " + meters + "m";
+        template = "";
+
+        if(kilometers > 0){
+            template += kilometers + "km ";
+        }
+
+        template += meters + "m";
     }else{
         template = template.replace("%km", kilometers);
         template = template.replace("%m", meters);
-
-        return template;
     }
+
+    return template;
 }
