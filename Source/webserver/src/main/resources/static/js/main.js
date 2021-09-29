@@ -27,7 +27,7 @@ const bicycleIcon = L.icon({
 });
 const bicycleStandIcon = L.icon({
     iconUrl: '/images/parking.png',
-    iconSize:   [20, 20],
+    iconSize:   [26, 26],
 })
 
 function loadMarker() {

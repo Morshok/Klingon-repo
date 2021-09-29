@@ -214,7 +214,8 @@ public class APIDataHandler {
 
     /**
      * This method connects and requests data from data.goteborg.se
-     * and parses the data and add each element to a list, and
+     * and parses the data and add each element to a list.
+     * Filters out duplicated address and adds the amount of space to the same address
      * returns the list of elements as BicycleStand
      *
      * @return a list of BicycleStand
@@ -222,7 +223,7 @@ public class APIDataHandler {
 
     public static ArrayList<BicycleStand> getBicycleStandData() {
 
-        ArrayList<BicycleStand> allBicycleStations = new ArrayList<>();
+        ArrayList<BicycleStand> allBicycleStands = new ArrayList<>();
 
         try {
             URL url = new URL("http://data.goteborg.se/ParkingService/v2.1/BikeParkings/" + BICYCLE_STATION_AND_STAND_APP_ID + "?&format=" + FORMAT);
@@ -235,14 +236,12 @@ public class APIDataHandler {
             if (responseCode != 200) {
                 throw new RuntimeException("HttpResponseCode: " + responseCode);
             } else {
-
                 StringBuilder inline = new StringBuilder();
                 Scanner scanner = new Scanner(url.openStream());
                 while (scanner.hasNext()) {
                     inline.append(scanner.nextLine());
                 }
                 scanner.close();
-
 
                 JSONArray jsonArray = new JSONArray(inline.toString());
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -255,16 +254,32 @@ public class APIDataHandler {
                     BicycleStand bicycleStand = new BicycleStand(id, latitude, longitude, address, parkingSpace);
 
                     if (bicycleStand.getParkingSpace() > 0) {
-                        allBicycleStations.add(bicycleStand);
+                        allBicycleStands.add(bicycleStand);
                     }
-
                 }
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return allBicycleStations;
+
+        ArrayList<BicycleStand> noCopiesList = new ArrayList<>();
+
+        for (BicycleStand bs : allBicycleStands) {
+            if (noCopiesList.isEmpty()) {
+                noCopiesList.add(bs);
+            } else {
+                boolean newAddress = true;
+                for (BicycleStand b2 : noCopiesList) {
+                    if (b2.getAddress().equals(bs.getAddress())) {
+                        b2.setParkingSpace(b2.getParkingSpace() + bs.getParkingSpace());
+                        newAddress = false;
+                    }
+                }
+                if (newAddress) {
+                    noCopiesList.add(bs);
+                }
+            }
+        }
+        return noCopiesList;
     }
 }
