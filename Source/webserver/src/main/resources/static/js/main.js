@@ -74,6 +74,8 @@ function loadMarker() {
                         <p>Antal platser: <b>${station.parkingSpaces}</b></p>
                     </div>
                     <div class="footer">
+                        <button>Start here </button>
+                        <button> End Here </button>
                     </div>
                 <div>
             `
