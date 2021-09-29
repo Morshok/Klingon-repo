@@ -414,7 +414,9 @@ div.dialog div.head span {
 }
 
 div.dialog div.head button.dialog_close_button {
-
+    border: 0;
+    background: 0;
+    cursor: pointer;
 }
 
 div.dialog div.content {
@@ -433,5 +435,5 @@ div.dialog div.controls {
 }
 
 div.dialog div.controls button.dialog_close_button {
-
+    cursor: pointer;
 }
