@@ -377,3 +377,61 @@ footer {
         font-size: 1.5em;
     }
 }
+
+div.dialog {
+    position: absolute;
+    margin: 0 auto;
+    min-width: 400px;
+    width: 60vw;
+    max-height: 70vh;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    padding: 0.3em;
+    font-size: 1.1em;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+div.dialog div.head {
+    flex: 0 0 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.3em;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+div.dialog div.head span {
+
+}
+
+div.dialog div.head button.dialog_close_button {
+
+}
+
+div.dialog div.content {
+    flex: 1 1 100%;
+    border-top: 3px solid rgba(38, 75, 171, 1);
+    border-bottom: 3px solid rgba(38, 75, 171, 1);
+    padding: 0.3em 0;
+    width: 100%;
+    overflow: auto;
+}
+
+div.dialog div.controls {
+    flex: 0 0 0;
+    align-self: end;
+    padding-top: 0.3em;
+}
+
+div.dialog div.controls button.dialog_close_button {
+
+}

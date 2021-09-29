@@ -220,6 +220,14 @@ function onRouteFound(event){
         $("div#route_info").toggleClass("closed");
         $("button#route_info_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
     });
+
+    $("i#co2_info_toggle").on("click", function(e){
+        let dialogContent = {
+            "title": "Beräkning av CO<sub>2</sub>",
+            "text": "Sparade CO<sub>2</sub> utsläppen beräknas som distansen i km gånger 120g CO<sub>2</sub>/km. Beräkning tar inte hänsyn till cyklistens CO<sub>2</sub> utsläpp. 120g CO<sub>2</sub>/km siffran är baserade på data från Trafikverket för genomsnittlig CO<sub>2</sub>/km utsläpp för bilar drivna av fossila bränslen under 2019. 2020 datan användes inte på grund av drastisk ändrad användning av bilar under pandemin.<br><br>Se länk till datan på Om sidan."
+        }
+
+        showDialog(dialogContent);
     });
 }
 
@@ -270,4 +278,31 @@ function formatDistanceFromMeters(totMeters, template){
 function calculateEmissions(distance){
     return (Math.round((distance / 1000) * 120)) + " g";
 }
+
+function showDialog(dialogContent){
+    let dialogContentTemplate = function (dialogContent) {
+        return `
+            <div class="dialog">
+                <div class="head">
+                    <span>${dialogContent.title}</span>
+                    <button class="dialog_close_button"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="content">
+                    ${dialogContent.text}
+                </div>
+                <div class="controls">
+                    <button class="dialog_close_button">Okej</button>
+                </div>
+            </div>
+        `
+    }
+
+    let dialogContentElement = $($.parseHTML(dialogContentTemplate(dialogContent)));
+    dialogContentElement.find(".dialog_close_button").each(function(index, element){
+        $(element).on("click", function(event){
+            $("div.dialog").remove();
+        });
+    });
+
+    $("body").append(dialogContentElement);
 }
