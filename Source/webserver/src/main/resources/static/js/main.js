@@ -186,7 +186,8 @@ function onRouteFound(event){
         "distance": formatDistanceFromMeters(event.routes[0].summary.totalDistance),
         "time": formatTimeFromSeconds(event.routes[0].summary.totalTime),
         "ascend": (event.routes[0].summary.totalAscend === undefined) ? "0 m" : event.routes[0].summary.totalAscend + " m",
-        "descend": (event.routes[0].summary.totalDescend === undefined) ? "0 m" : event.routes[0].summary.totalDescend + " m"
+        "descend": (event.routes[0].summary.totalDescend === undefined) ? "0 m" : event.routes[0].summary.totalDescend + " m",
+        "savedEmission": calculateEmissions(event.routes[0].summary.totalDistance)
     }
 
     let routeInfoTemplate = function (routeInfo) {
@@ -200,10 +201,11 @@ function onRouteFound(event){
                 </div>
                 <div class="content">
                     <ul>
-                        <li title="Avstånd"><i class="fa fa-route"></i>${routeInfo.distance}</li>
-                        <li title="Tid"><i class="fa fa-stopwatch"></i>${routeInfo.time}</li>
-                        <li title="Höjd ökning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>${routeInfo.ascend}</li>
-                        <li title="Höjd sänkning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6h-6z"/></svg>${routeInfo.descend}</li>
+                        <li><span title="Avstånd"><i class="fa fa-route"></i>${routeInfo.distance}</span></li>
+                        <li><span title="Tid"><i class="fa fa-stopwatch"></i>${routeInfo.time}</span></li>
+                        <li><span title="Höjd ökning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>${routeInfo.ascend}</span></li>
+                        <li><span title="Höjd sänkning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6h-6z"/></svg>${routeInfo.descend}</span></li>
+                        <li><span title="Sparad CO2 mängd"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><rect fill="none" height="24" width="24"/><path d="M14,9h-3c-0.55,0-1,0.45-1,1v4c0,0.55,0.45,1,1,1h3c0.55,0,1-0.45,1-1v-4C15,9.45,14.55,9,14,9z M13.5,13.5h-2v-3h2V13.5z M8,13v1c0,0.55-0.45,1-1,1H4c-0.55,0-1-0.45-1-1v-4c0-0.55,0.45-1,1-1h3c0.55,0,1,0.45,1,1v1H6.5v-0.5h-2v3h2V13H8z M20.5,15.5h-2 v1h3V18H17v-2.5c0-0.55,0.45-1,1-1h2v-1h-3V12h3.5c0.55,0,1,0.45,1,1v1.5C21.5,15.05,21.05,15.5,20.5,15.5z"/></svg>${routeInfo.savedEmission}</span><i id="co2_info_toggle" class="info_icon fas fa-info-circle"></i></li>
                     </ul>
                 </div>
             </div>
@@ -217,6 +219,7 @@ function onRouteFound(event){
     $("button#route_info_toggle").on("click", function(e){
         $("div#route_info").toggleClass("closed");
         $("button#route_info_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
+    });
     });
 }
 
@@ -262,4 +265,9 @@ function formatDistanceFromMeters(totMeters, template){
     }
 
     return template;
+}
+
+function calculateEmissions(distance){
+    return (Math.round((distance / 1000) * 120)) + " g";
+}
 }

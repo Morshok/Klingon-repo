@@ -139,6 +139,8 @@ main div#route_info div.content ul {
 
 main div#route_info div.content ul li {
     margin: 0.2em 0;
+    display: flex;
+    justify-content: space-between;
 }
 
 main div#route_info div.content ul li i {
@@ -152,6 +154,13 @@ main div#route_info div.content ul li svg {
     height: 17px;
     text-align: center;
     margin-right: 0.1em;
+}
+
+main div#route_info div.content ul li i.info_icon {
+    text-align: right;
+    min-width: 0;
+    align-self: center;
+    cursor: pointer;
 }
 
 main div#filters, main div#route_info {
