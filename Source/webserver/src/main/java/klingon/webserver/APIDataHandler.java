@@ -254,7 +254,10 @@ public class APIDataHandler {
 
                     BicycleStand bicycleStand = new BicycleStand(id, latitude, longitude, address, parkingSpace);
 
-                    allBicycleStations.add(bicycleStand);
+                    if (bicycleStand.getParkingSpace() > 0) {
+                        allBicycleStations.add(bicycleStand);
+                    }
+
                 }
 
             }

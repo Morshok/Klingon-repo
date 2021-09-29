@@ -91,4 +91,19 @@ public class BicycleStand {
     public Integer getParkingSpace() {
         return parkingSpace;
     }
+
+    public void setParkingSpace(Integer parkingSpace) {
+        this.parkingSpace = parkingSpace;
+    }
+
+    @Override
+    public String toString() {
+        return "BicycleStand{" +
+                "id=" + id +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", address='" + address + '\'' +
+                ", parkingSpace=" + parkingSpace +
+                '}';
+    }
 }

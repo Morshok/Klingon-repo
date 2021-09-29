@@ -20,10 +20,15 @@ window.leafletMap = L.map('map', {zoomControl: false}).setView([57.6900727722877
 const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
+const bicycleStandGroup = L.layerGroup();
 const bicycleIcon = L.icon({
     iconUrl: '/images/cykelstation.png',
     iconSize:     [32, 32],
 });
+const bicycleStandIcon = L.icon({
+    iconUrl: '/images/parking.png',
+    iconSize:   [20, 20],
+})
 
 function loadMarker() {
     let bicycleTemplate = function (station) {
@@ -59,6 +64,21 @@ function loadMarker() {
         `
     }
 
+        let bicycleStandTemplate = function (station) {
+            return `
+                <div data-stationId="${station.id}" class="station-popups bicycle stand">
+                    <div class="title"><b>${station.address}</b></div>
+                    <hr>
+                    <div class="content">
+                        <p>Cykelställ</p>
+                        <p>Antal platser: <b>${station.parkingSpaces}</b></p>
+                    </div>
+                    <div class="footer">
+                    </div>
+                <div>
+            `
+        }
+
     let callApi = function (apiPath, markerTemplate, layerGroup, markerIcon = null) {
         if (!window.leafletMap.hasLayer(layerGroup)) {
             layerGroup.addTo(window.leafletMap);
@@ -84,8 +104,18 @@ function loadMarker() {
 
     if ($("#bicycles").prop("checked")) {
         callApi("/api/bicycleStations", bicycleTemplate, bicycleStationGroup, bicycleIcon)
+        window.leafletMap.on('zoomend', function() {
+
+            if (window.leafletMap.getZoom() < 16){
+                    bicycleStandGroup.clearLayers().remove();
+            }
+            else {
+                    callApi("/api/bicycleStands", bicycleStandTemplate, bicycleStandGroup, bicycleStandIcon)
+                }
+        });
     }else{
         bicycleStationGroup.clearLayers().remove();
+        bicycleStandGroup.clearLayers().remove();
     }
 
     if ($("#pumps").prop("checked")) {
@@ -96,9 +126,11 @@ function loadMarker() {
 }
 loadMarker();
 
+
 $("#pumps, #bicycles").change(function(){
     loadMarker();
 });
+
 
 $("#geolocator").click(function (e) {
     if (!('geolocation' in navigator)) {
