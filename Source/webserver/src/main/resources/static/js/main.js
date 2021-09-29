@@ -43,7 +43,7 @@ function loadMarker() {
                 <div class="content">
                     <p>Styr & Ställ</p>
                     <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
-                    <p>Updaterades: ${timeDiff}</p>
+                    <p>Uppdaterades: ${timeDiff}</p>
                 </div>
                 <div class="footer">
                 </div>
