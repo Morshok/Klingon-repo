@@ -22,6 +22,7 @@ const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
 const bicycleStandGroup = L.layerGroup();
 
+
 let locationMarker = {};
 
 const bicycleIcon = L.icon({
@@ -38,7 +39,7 @@ const locationIcon = L.icon({
 });
 const bicycleStandIcon = L.icon({
     iconUrl: '/images/parking.png',
-    iconSize:   [26, 26],
+    iconSize: [26, 26],
 })
 const noBikeIcon = L.icon({
     iconUrl: '/images/noBike.png',
@@ -79,8 +80,8 @@ function loadMarker() {
         `
     }
 
-        let bicycleStandTemplate = function (station) {
-            return `
+    let bicycleStandTemplate = function (station) {
+        return `
                 <div data-stationId="${station.id}" class="station-popups bicycle stand">
                     <div class="title"><b>${station.address}</b></div>
                     <hr>
@@ -94,7 +95,7 @@ function loadMarker() {
                     </div>
                 <div>
             `
-        }
+    }
 
     let callApi = function (apiPath, markerTemplate, layerGroup, markerIcon = null, type) {
         if (!window.leafletMap.hasLayer(layerGroup)) {
@@ -150,18 +151,8 @@ function loadMarker() {
 
     if ($("#bicycles").prop("checked")) {
         callApi("/api/bicycleStations", bicycleTemplate, bicycleStationGroup, bicycleIcon, 1)
-        window.leafletMap.on('zoomend', function() {
-
-            if (window.leafletMap.getZoom() < 16){
-                    bicycleStandGroup.clearLayers().remove();
-            }
-            else {
-                    callApi("/api/bicycleStands", bicycleStandTemplate, bicycleStandGroup, bicycleStandIcon, 3)
-                }
-        });
-    }else{
+    } else {
         bicycleStationGroup.clearLayers().remove();
-        bicycleStandGroup.clearLayers().remove();
     }
 
     if ($("#pumps").prop("checked")) {
@@ -169,12 +160,18 @@ function loadMarker() {
     } else {
         pumpStationGroup.clearLayers().remove();
     }
+
+    if ($("#parking").prop("checked")) {
+        callApi("/api/bicycleStands", bicycleStandTemplate, bicycleStandGroup, bicycleStandIcon, 3)
+    } else {
+        bicycleStandGroup.clearLayers().remove();
+    }
 }
 
 loadMarker();
 
 
-$("#pumps, #bicycles").change(function () {
+$("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
 });
 
