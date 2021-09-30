@@ -59,7 +59,7 @@ public class WebserverApplication
 	// The spring cron expression should be formatted as follows:
 	// seconds minutes hours day_of_month month day(s)_of_week.
 
-	@Scheduled(cron = "0 */5 * * * *")
+	@Scheduled(cron = "0 */15 * * * *")
 	protected void updateBicycleStations()
 	{
 		populateBicycleStations();
