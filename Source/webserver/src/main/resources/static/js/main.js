@@ -20,6 +20,8 @@ window.leafletMap = L.map('map', {zoomControl: false}).setView([57.6900727722877
 const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
+const bicycleStandGroup = L.layerGroup();
+
 let locationMarker = {};
 
 const bicycleIcon = L.icon({
@@ -34,6 +36,10 @@ const locationIcon = L.icon({
     iconUrl: '/images/locationRed.png',
     iconSize: [25, 40],
 });
+const bicycleStandIcon = L.icon({
+    iconUrl: '/images/parking.png',
+    iconSize:   [26, 26],
+})
 const noBikeIcon = L.icon({
     iconUrl: '/images/noBike.png',
     iconSize: [40, 40],
@@ -73,6 +79,23 @@ function loadMarker() {
         `
     }
 
+        let bicycleStandTemplate = function (station) {
+            return `
+                <div data-stationId="${station.id}" class="station-popups bicycle stand">
+                    <div class="title"><b>${station.address}</b></div>
+                    <hr>
+                    <div class="content">
+                        <p>Cykelställ</p>
+                        <p>Antal platser: <b>${station.parkingSpaces}</b></p>
+                    </div>
+                    <div class="footer">
+                        <button>Start here </button>
+                        <button> End Here </button>
+                    </div>
+                <div>
+            `
+        }
+
     let callApi = function (apiPath, markerTemplate, layerGroup, markerIcon = null, type) {
         if (!window.leafletMap.hasLayer(layerGroup)) {
             layerGroup.addTo(window.leafletMap);
@@ -109,6 +132,15 @@ function loadMarker() {
                                     .addTo(layerGroup);
                             });
                         }
+                        if (type == 3) {
+                            data.forEach(function (bicycleStand) {
+                                L.marker([bicycleStand.latitude, bicycleStand.longitude], markerIcon ? {icon: markerIcon} : {})
+                                    .bindPopup(function () {
+                                        return markerTemplate(bicycleStand)
+                                    })
+                                    .addTo(layerGroup);
+                            });
+                        }
 
                     }
                 },
@@ -118,8 +150,18 @@ function loadMarker() {
 
     if ($("#bicycles").prop("checked")) {
         callApi("/api/bicycleStations", bicycleTemplate, bicycleStationGroup, bicycleIcon, 1)
-    } else {
+        window.leafletMap.on('zoomend', function() {
+
+            if (window.leafletMap.getZoom() < 16){
+                    bicycleStandGroup.clearLayers().remove();
+            }
+            else {
+                    callApi("/api/bicycleStands", bicycleStandTemplate, bicycleStandGroup, bicycleStandIcon, 3)
+                }
+        });
+    }else{
         bicycleStationGroup.clearLayers().remove();
+        bicycleStandGroup.clearLayers().remove();
     }
 
     if ($("#pumps").prop("checked")) {
@@ -131,10 +173,10 @@ function loadMarker() {
 
 loadMarker();
 
+
 $("#pumps, #bicycles").change(function () {
     loadMarker();
 });
-
 
 let markerIsPlaced = false;
 $("#geolocator").click(function (e) {
