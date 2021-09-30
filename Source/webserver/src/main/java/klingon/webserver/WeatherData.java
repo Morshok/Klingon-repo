@@ -13,7 +13,7 @@ import javax.persistence.Id;
  * a single one, namely this class (the bean).
  *
  * @author Anthon Lenander
- * @version 2021-09-29
+ * @version 2021-09-30
  */
 @Entity
 public class WeatherData
@@ -56,6 +56,13 @@ public class WeatherData
         this.windDegree = windDegree;
         this.cloudsPercentage = cloudsPercentage;
     }
+
+    /**
+     * Method for getting the id of the WeatherData object
+     *
+     * @return  returns the id of the WeatherData object
+     */
+    public Long getId() { return this.id; }
 
     /**
      * Method for getting the location of the WeatherData object

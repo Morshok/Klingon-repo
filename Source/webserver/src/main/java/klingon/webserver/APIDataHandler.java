@@ -25,7 +25,7 @@ import java.util.Scanner;
  * and returns a list of parsed objects.
  *
  * @author Anthon Lenander, Phong Nguyen
- * @version 2021-09-21
+ * @version 2021-09-30
  * @see <a href="https://data.goteborg.se/BikeService/v1.2/PumpStations">data.goteborg.se/BikeService/v1.2/PumpStations</a>
  * @see <a href="https://data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations">data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations</a>
  */
@@ -82,6 +82,36 @@ public class APIDataHandler {
             jsonObject.put("address", pumpStation.getAddress());
             jsonArray.put(jsonObject.toMap());
         }
+        return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
+    }
+
+    /**
+     * GET request that adds all weather data to http://localhost:8080/api/weatherData
+     * and gives a JSONArray of the weather data from the repository
+     *
+     * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
+     */
+    @GetMapping(path = "/weatherData", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> jsonWeatherData()
+    {
+        Iterable<WeatherData> weatherDataIterable = WebserverApplication.getWeatherDataRepository().findAll();
+        JSONArray jsonArray = new JSONArray();
+
+        for(WeatherData weatherData : weatherDataIterable)
+        {
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("id", weatherData.getId());
+            jsonObject.put("location", weatherData.getLocation());
+            jsonObject.put("weatherDescription", weatherData.getWeatherDescription());
+            jsonObject.put("temperature", weatherData.getTemperature());
+            jsonObject.put("windSpeed", weatherData.getWindSpeed());
+            jsonObject.put("windDegree", weatherData.getWindDegree());
+            jsonObject.put("cloudPercentage", weatherData.getCloudsPercentage());
+
+            jsonArray.put(jsonObject.toMap());
+        }
+
         return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
     }
 
