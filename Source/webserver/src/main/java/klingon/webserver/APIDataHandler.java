@@ -197,6 +197,9 @@ public class APIDataHandler {
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                     String name = jsonArray.getJSONObject(i).getString("Name");
 
+                    if(name.startsWith("BIKE")){
+                        name = "Bike on the loose";
+                    }
                     BicycleStation bicycleStation = new BicycleStation(stationId, latitude, longitude, name,
                             availableBikes, timestamp);
 
@@ -208,9 +211,8 @@ public class APIDataHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return allBicycleStations;
+        return mergeCloseBicycleStations(allBicycleStations);
     }
-
 
     /**
      * This method connects and requests data from data.goteborg.se
@@ -262,24 +264,58 @@ public class APIDataHandler {
             e.printStackTrace();
         }
 
-        ArrayList<BicycleStand> noCopiesList = new ArrayList<>();
+
+        return mergeCloseBicycleStand(allBicycleStands);
+    }
+
+    private static ArrayList <BicycleStation> mergeCloseBicycleStations(ArrayList<BicycleStation> allBicycleStation){
+        ArrayList<BicycleStation> newList = new ArrayList<>();
+
+        for (BicycleStation bs: allBicycleStation){
+            if(newList.isEmpty()){
+                newList.add(bs);
+            }
+            else{
+                boolean newAddress = true;
+                for(BicycleStation bs2: newList){
+                    double x = Math.pow(bs2.getLatitude() - bs.getLatitude(), 2);
+                    double y = Math.pow(bs2.getLongitude() - bs.getLongitude(), 2);
+                    double z = Math.sqrt(x + y);
+                    if(z < 0.0002 && (bs.getAddress().equals(bs2.getAddress()))){
+                        bs2.setAvailableBikes(bs2.getAvailableBikes() + bs.getAvailableBikes());
+                        newAddress = false;
+                    }
+                }
+                if(newAddress){
+                    newList.add(bs);
+                }
+            }
+        }
+        return newList;
+    }
+
+    private static ArrayList<BicycleStand> mergeCloseBicycleStand(ArrayList<BicycleStand> allBicycleStands){
+        ArrayList<BicycleStand> newList = new ArrayList<>();
 
         for (BicycleStand bs : allBicycleStands) {
-            if (noCopiesList.isEmpty()) {
-                noCopiesList.add(bs);
+            if (newList.isEmpty()) {
+                newList.add(bs);
             } else {
                 boolean newAddress = true;
-                for (BicycleStand b2 : noCopiesList) {
-                    if (b2.getAddress().equals(bs.getAddress())) {
-                        b2.setParkingSpace(b2.getParkingSpace() + bs.getParkingSpace());
+                for (BicycleStand bs2 : newList) {
+                    double x = Math.pow(bs2.getLatitude() - bs.getLatitude(), 2);
+                    double y = Math.pow(bs2.getLongitude() - bs.getLongitude(), 2);
+                    double z = Math.sqrt(x + y);
+                    if(z < 0.0003 || (bs.getAddress().equals(bs2.getAddress()))){
+                        bs2.setParkingSpace(bs2.getParkingSpace() + bs.getParkingSpace());
                         newAddress = false;
                     }
                 }
                 if (newAddress) {
-                    noCopiesList.add(bs);
+                    newList.add(bs);
                 }
             }
         }
-        return noCopiesList;
+        return newList;
     }
 }

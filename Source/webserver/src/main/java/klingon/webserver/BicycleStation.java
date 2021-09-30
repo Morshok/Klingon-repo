@@ -115,6 +115,10 @@ public class BicycleStation {
         return lastUpdated.toString();
     }
 
+    public void setAvailableBikes(Integer availableBikes) {
+        this.availableBikes = availableBikes;
+    }
+
     /**
      * Method for getting BicycleStation as a String
      *
