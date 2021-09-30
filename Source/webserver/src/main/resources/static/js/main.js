@@ -8,9 +8,9 @@ $("button#menu_toggle").click(function () {
     $("nav ul").toggleClass("visible");
     $("nav button#menu_toggle .fa").toggleClass("fa-bars fa-times");
 });
-
 window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }))
     .addControl(L.control.zoom({
@@ -158,6 +158,7 @@ $("button#navigation_button").click(function (e) {
     addRoute(57.74, 11.94, 57.6792, 11.949);
 });
 
+
 window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -165,6 +166,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 L.control.zoom({
     position: 'bottomright'
+
 }).addTo(window.leafletMap);
 
 var marker = L.marker([57.690072772287735, 11.974254546462964]).addTo(window.leafletMap);
