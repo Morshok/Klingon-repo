@@ -20,6 +20,8 @@ window.leafletMap = L.map('map', {zoomControl: false}).setView([57.6900727722877
 const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
+let locationMarker = {};
+
 const bicycleIcon = L.icon({
     iconUrl: '/images/cykelstation.png',
     iconSize: [40, 40],
@@ -139,10 +141,15 @@ $("#geolocator").click(function (e) {
     navigator.geolocation.getCurrentPosition(function (pos) {
         // pos.coords.latitude, pos.coords.longitude
         window.leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 15);
-        if(markerIsPlaced==false){
-            L.marker([pos.coords.latitude, pos.coords.longitude], {icon: locationIcon}).addTo(window.leafletMap);
+
+        if (markerIsPlaced == false) {
+            locationMarker = L.marker([pos.coords.latitude, pos.coords.longitude], {icon: locationIcon}).addTo(window.leafletMap);
             markerIsPlaced=true;
+        } else {
+            locationMarker.setLatLng([pos.coords.latitude, pos.coords.longitude]);
         }
+
+
         e.currentTarget.removeAttribute("disabled")
     }, function () {
         alert("Sorry, failed to retrieve your location");
