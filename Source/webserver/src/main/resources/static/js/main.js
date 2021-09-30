@@ -123,6 +123,8 @@ $("#pumps, #bicycles").change(function () {
     loadMarker();
 });
 
+
+let markerIsPlaced = false;
 $("#geolocator").click(function (e) {
     if (!('geolocation' in navigator)) {
         alert("Your computer does not have the ability to use GeoLocation");
@@ -137,7 +139,10 @@ $("#geolocator").click(function (e) {
     navigator.geolocation.getCurrentPosition(function (pos) {
         // pos.coords.latitude, pos.coords.longitude
         window.leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 15);
-        L.marker([pos.coords.latitude, pos.coords.longitude], {icon: locationIcon}).addTo(window.leafletMap);
+        if(markerIsPlaced==false){
+            L.marker([pos.coords.latitude, pos.coords.longitude], {icon: locationIcon}).addTo(window.leafletMap);
+            markerIsPlaced=true;
+        }
         e.currentTarget.removeAttribute("disabled")
     }, function () {
         alert("Sorry, failed to retrieve your location");
