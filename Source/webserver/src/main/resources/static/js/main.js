@@ -3,6 +3,11 @@ $("button#filter_toggle").click(function () {
     $("button#filter_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
 
+$("button#weather-data-toggle").click(function()
+{
+    $("div#weather-data").toggleClass("closed");
+    $("button#weather-data-toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
+});
 
 $("button#menu_toggle").click(function () {
     $("nav ul").toggleClass("visible");
@@ -15,6 +20,29 @@ window.leafletMap = L.map('map', {zoomControl: false}).setView([57.6900727722877
     .addControl(L.control.zoom({
         position: 'bottomright'
     }));
+
+function toggleLocationDropdownMenu()
+{
+    document.getElementById("location-dropdown-menu").classList.toggle("show");
+}
+
+window.onclick = function(event)
+{
+    if(!event.target.matches('.location-dropdown-button'))
+    {
+        var dropdowns = document.getElementsByClassName("location-dropdown-content");
+        
+        var i;
+        for(i = 0; i < dropdowns.length; i++)
+        {
+            var openDropdown = dropdowns[i];
+            if(openDropdown.classList.contains("show"))
+            {
+                openDropdown.classList.remove("show");
+            }
+        }
+    }
+}
 
 const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
@@ -95,9 +123,15 @@ function loadMarker() {
 }
 loadMarker();
 
+var index = 1;
 var repeater;
-function loadWeatherData()
+function loadWeatherData(f_index)
 {
+    if(f_index === undefined)
+    {
+        f_index = 1;
+    }
+    
     let callAPI = function(apiPath)
     {
         $.ajax(apiPath,
@@ -110,12 +144,12 @@ function loadWeatherData()
                     {
                         let data = response.responseJSON;
 
-                        $('#location').html('Plats: ' + data[1].location);
-                        $('#description').html('Beskrivning: ' + data[1].weatherDescription);
-                        $('#temperature').html('Temperatur: ' + data[1].temperature + '&deg;C');
-                        $('#windSpeed').html('Vindhastighet: ' + data[1].windSpeed + 'm/s&sup2;');
-                        $('#windDegree').html('Vindvinkel: ' + data[1].windDegree + '&deg;');
-                        $('#cloudsPercentage').html('Moln: ' + data[1].cloudPercentage + '%');
+                        $('#location').html('Plats: ' + data[f_index].location);
+                        $('#description').html('Beskrivning: ' + data[f_index].weatherDescription);
+                        $('#temperature').html('Temperatur: ' + data[f_index].temperature + '&deg;C');
+                        $('#windSpeed').html('Vindhastighet: ' + data[f_index].windSpeed + 'm/s&sup2;');
+                        $('#windDegree').html('Vindvinkel: ' + data[f_index].windDegree + '&deg;');
+                        $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
                     }
                 }
         })
@@ -123,9 +157,16 @@ function loadWeatherData()
 
     callAPI("/api/weatherData");
 
-    repeater = setTimeout(loadWeatherData, 1000);
+    repeater = setTimeout(loadWeatherData, 60000);
 }
-$(document).ready(loadWeatherData());
+$(document).ready(loadWeatherData(index));
+
+function changeWeatherDataIndex(obj)
+{
+    this.index = obj.id;
+    clearTimeout(repeater);
+    loadWeatherData(index);
+}
 
 $("#pumps, #bicycles").change(function(){
     loadMarker();

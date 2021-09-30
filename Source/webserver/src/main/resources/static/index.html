@@ -35,7 +35,7 @@
         <div id="wrapper">
             <div id="filters">
                 <div class="head">
-                    <span>Filter</span>
+                    <span>Filter:</span>
                     <!-- Hide/show toggle -->
                     <button id="filter_toggle"><i class="fa fa-angle-down"></i></button>
                 </div>
@@ -50,8 +50,18 @@
             </div>
             <div id="weather-data">
                 <div class="head">
-                    <span>Vädret</span>
-                    <button id="location-dropdown"><i class="fa fa-angle-down"></i></button>
+                    <span>Vädret:</span>
+                    <div class="location-dropdown">
+                        <button type="button" onClick="toggleLocationDropdownMenu()" class="location-dropdown-button">Välj plats</button>
+                        <div id="location-dropdown-menu" class="location-dropdown-content">
+                            <a id="0" onClick="changeWeatherDataIndex(this)">Angered</a><br>
+                            <a id="1" onClick="changeWeatherDataIndex(this)">Göteborg</a><br>
+                            <a id="2" onClick="changeWeatherDataIndex(this)">Mölndal</a><br>
+                            <a id="3" onClick="changeWeatherDataIndex(this)">Torslanda</a>
+                        </div>
+                    </div>
+                    <!-- Hide/show toggle -->
+                    <button id="weather-data-toggle"><i class="fa fa-angle-down"></i></button>
                 </div>
                 <div class="content">
                     <form>
