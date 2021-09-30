@@ -20,6 +20,8 @@ window.leafletMap = L.map('map', {zoomControl: false}).setView([57.6900727722877
 const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
+let locationMarker = {};
+
 const bicycleIcon = L.icon({
     iconUrl: '/images/cykelstation.png',
     iconSize: [40, 40],
@@ -31,6 +33,10 @@ const pumpIcon = L.icon({
 const locationIcon = L.icon({
     iconUrl: '/images/locationRed.png',
     iconSize: [25, 40],
+});
+const noBikeIcon = L.icon({
+    iconUrl: '/images/noBike.png',
+    iconSize: [40, 40],
 });
 
 function loadMarker() {
@@ -79,7 +85,13 @@ function loadMarker() {
                         let data = response.responseJSON;
                         if (type == 1) {
                             data.forEach(function (bicycleStation) {
-                                if (bicycleStation.availableBikes > 0) {
+                                if (bicycleStation.availableBikes  == 0) {
+                                    L.marker([bicycleStation.latitude, bicycleStation.longitude], markerIcon ? {icon: noBikeIcon} : {})
+                                        .bindPopup(function () {
+                                            return markerTemplate(bicycleStation)
+                                        })
+                                        .addTo(layerGroup);
+                                }else{
                                     L.marker([bicycleStation.latitude, bicycleStation.longitude], markerIcon ? {icon: markerIcon} : {})
                                         .bindPopup(function () {
                                             return markerTemplate(bicycleStation)
@@ -123,6 +135,8 @@ $("#pumps, #bicycles").change(function () {
     loadMarker();
 });
 
+
+let markerIsPlaced = false;
 $("#geolocator").click(function (e) {
     if (!('geolocation' in navigator)) {
         alert("Your computer does not have the ability to use GeoLocation");
@@ -137,7 +151,15 @@ $("#geolocator").click(function (e) {
     navigator.geolocation.getCurrentPosition(function (pos) {
         // pos.coords.latitude, pos.coords.longitude
         window.leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 15);
-        L.marker([pos.coords.latitude, pos.coords.longitude], {icon: locationIcon}).addTo(window.leafletMap);
+
+        if (markerIsPlaced == false) {
+            locationMarker = L.marker([pos.coords.latitude, pos.coords.longitude], {icon: locationIcon}).addTo(window.leafletMap);
+            markerIsPlaced=true;
+        } else {
+            locationMarker.setLatLng([pos.coords.latitude, pos.coords.longitude]);
+        }
+
+
         e.currentTarget.removeAttribute("disabled")
     }, function () {
         alert("Sorry, failed to retrieve your location");
