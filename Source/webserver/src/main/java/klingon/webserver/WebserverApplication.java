@@ -27,12 +27,14 @@ public class WebserverApplication
 {
 	private static BicycleStationRepository bicycleStationRepository;
 	private static PumpStationRepository pumpStationRepository;
+	private static WeatherDataRepository weatherDataRepository;
 
 	public static void main(String[] args)
 	{
 		ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
-    		bicycleStationRepository = context.getBean(BicycleStationRepository.class);
+		bicycleStationRepository = context.getBean(BicycleStationRepository.class);
 		pumpStationRepository = context.getBean(PumpStationRepository.class);
+		weatherDataRepository = context.getBean(WeatherDataRepository.class);
 		context.start();
 	}
 
@@ -56,6 +58,13 @@ public class WebserverApplication
 		return pumpStationRepository;
 	}
 
+	/**
+	 * Method for returning the WeatherData Repository
+	 *
+	 * @return	Returns the WeatherData Repository
+	 */
+	public static WeatherDataRepository getWeatherDataRepository() { return weatherDataRepository; }
+
 	// The spring cron expression should be formatted as follows:
 	// seconds minutes hours day_of_month month day(s)_of_week.
 
@@ -71,6 +80,9 @@ public class WebserverApplication
 		populatePumpStations();
 	}
 
+	@Scheduled(cron = "*/15 * * * * *")
+	protected void updateWeatherData() { populateWeatherData(); }
+
 	private void populateBicycleStations()
 	{
 		List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
@@ -83,13 +95,21 @@ public class WebserverApplication
 		pumpStationRepository.saveAll(allPumpStations);
 	}
 
+	private void populateWeatherData()
+	{
+		List<WeatherData> weatherDataList = APIDataHandler.getWeatherData();
+		weatherDataRepository.saveAll(weatherDataList);
+	}
+
 	private void initDatabase()
 	{
 		bicycleStationRepository.deleteAll();
 		pumpStationRepository.deleteAll();
+		weatherDataRepository.deleteAll();
 
 		populateBicycleStations();
 		populatePumpStations();
+		populateWeatherData();
 	}
 
 	@EventListener(ContextStartedEvent.class)
@@ -99,5 +119,6 @@ public class WebserverApplication
 
 		updateBicycleStations();
 		updatePumpStations();
+		updateWeatherData();
 	}
 }

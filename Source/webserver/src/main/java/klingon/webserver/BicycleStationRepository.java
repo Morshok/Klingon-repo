@@ -10,6 +10,4 @@ import org.springframework.stereotype.Repository;
  * @version 2021-09-05
  */
 @Repository
-public interface BicycleStationRepository extends CrudRepository<BicycleStation, Long>
-{
-}
+public interface BicycleStationRepository extends CrudRepository<BicycleStation, Long> { }
