@@ -274,6 +274,7 @@ footer .attribution > .popup {
     border: 3px solid #264bab;
     display: none;
     left: -80px;
+    padding: 15px;
 }
 
 footer .attribution:hover > .popup {
@@ -300,19 +301,59 @@ main #geolocator:not([disabled]):hover {
     transition: all 0.5s;
 }
 
-main div#navigation {
+main div.navigation {
     position: absolute;
     z-index: 1000;
     bottom: 10px;
     left: 10px;
+}
+
+main div.navigation > .main-panel {
+    display: none;
+    border: 3px solid rgba(38, 75, 171, 1);
+    width: 300px;
+    min-height: 100px;
+    background: #fff;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+main div.navigation > .main-panel.hasRoute > .route-setup {
+    display: none;
+}
+
+main div.navigation > .main-panel:not(.hasRoute) > .route-information {
+    display: none;
+}
+
+main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper > div {
+   flex: 1 1 100%;
+}
+
+main div.navigation > .main-panel > .route-setup > .input {
+    display: block;
+    width: 100%;
+    padding: 5px;
+}
+
+.select2-result-item > .panel > p {
+    margin: 0;
+}
+
+main div.navigation > .button-panel {
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-}
-
-main div#navigation button#navigation_button {
-
+    max-width: 135px;
+    text-align: center;
 }
 
 footer {
@@ -324,58 +365,6 @@ footer {
     color: white;
     text-align: center;
     font-size: 1.2em;
-}
-
-@media (max-width: 600px) {
-    header nav {
-
-    }
-
-    header nav button#menu_toggle {
-        display: block;
-    }
-
-    header nav ul {
-        background: white;
-        position: fixed;
-        top: 0;
-        left: 0;
-        flex-direction: column;
-        height: 100vh;
-        min-width: 60%;
-        z-index: 1001;
-        padding: 0;
-        transform: translateX(-100%);
-        transition: transform 0.2s ease;
-        box-shadow: 0 0 10px black;
-    }
-
-    header nav ul.visible {
-        transform: translateX(0);
-    }
-
-    header nav ul li {
-
-    }
-
-    header nav ul li a {
-        color: black;
-    }
-
-    main div#filters {
-        box-sizing: border-box;
-        width: 200px;
-        top: 10px;
-        right: 10px;
-        font-size: 1.1em;
-    }
-
-    main div#filters div.head {
-    }
-
-    main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
-        font-size: 1.5em;
-    }
 }
 
 div.dialog {
@@ -436,4 +425,63 @@ div.dialog div.controls {
 
 div.dialog div.controls button.dialog_close_button {
     cursor: pointer;
+}
+
+
+@media (max-width: 600px) {
+    header nav {
+
+    }
+
+    header nav button#menu_toggle {
+        display: block;
+    }
+
+    header nav ul {
+        background: white;
+        position: fixed;
+        top: 0;
+        left: 0;
+        flex-direction: column;
+        height: 100vh;
+        min-width: 60%;
+        z-index: 1001;
+        padding: 0;
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+        box-shadow: 0 0 10px black;
+    }
+
+    header nav ul.visible {
+        transform: translateX(0);
+    }
+
+    header nav ul li {
+
+    }
+
+    header nav ul li a {
+        color: black;
+    }
+
+    main div#filters {
+        box-sizing: border-box;
+        width: 200px;
+        top: 10px;
+        right: 10px;
+        font-size: 1.1em;
+    }
+
+    main div#filters div.head {
+    }
+
+    main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
+        font-size: 1.5em;
+    }
+}
+
+@media(max-width: 350px){
+    main div.navigation > .main-panel {
+        width: 250px;
+    }
 }
