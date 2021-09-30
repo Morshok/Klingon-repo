@@ -40,6 +40,7 @@ function loadMarker() {
                 <div class="content">
                     <p>Styr & Ställ</p>
                     <p>Tillgängliga cyklar: <b>${station.availableBikes}</b></p>
+                    <p>Lat : <b>${station.latitude}</b> Long: <b>${station.longitude}</b></p>
                     <p>Updaterades: ${timeDiff}</p>
                 </div>
                 <div class="footer">
