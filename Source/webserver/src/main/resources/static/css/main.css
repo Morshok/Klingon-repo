@@ -121,7 +121,49 @@ main div.info ul li a:active {
     background: #18306f;
 }
 
-main div#filters {
+main div#route_info {
+    right: auto !important;
+    left: 10px;
+    width: auto !important;
+}
+
+main div#route_info div.head span {
+    margin-right: 1em;
+}
+
+main div#route_info div.content ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+main div#route_info div.content ul li {
+    margin: 0.2em 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+main div#route_info div.content ul li i {
+    min-width: 25px;
+    text-align: center;
+    margin-right: 0.1em;
+}
+
+main div#route_info div.content ul li svg {
+    min-width: 25px;
+    height: 17px;
+    text-align: center;
+    margin-right: 0.1em;
+}
+
+main div#route_info div.content ul li i.info_icon {
+    text-align: right;
+    min-width: 0;
+    align-self: center;
+    cursor: pointer;
+}
+
+main div#filters, main div#route_info {
     position: absolute;
     width: 200px;
     background: white;
@@ -133,7 +175,7 @@ main div#filters {
     z-index: 999;
 }
 
-main div#filters div.head {
+main div#filters div.head, main div#route_info div.head {
     padding-bottom: 0.3em;
     display: flex;
     flex-direction: row;
@@ -145,11 +187,13 @@ main div#filters div.head span {
 
 }
 
-main div#filters div.head button#filter_toggle {
+main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
+    border: 0;
+    background: 0;
     cursor: pointer;
 }
 
-main div#filters div.content {
+main div#filters div.content, main div#route_info div.content {
     border-top: 3px solid rgba(38, 75, 171, 1);
     padding-top: 0.3em;}
 
@@ -188,11 +232,11 @@ input[type=checkbox]:checked + label:before {
 }
 
 
-main div#filters.closed div.head {
+main div#filters.closed div.head, main div#route_info.closed div.head {
     padding: 0;
 }
 
-main div#filters.closed div.content {
+main div#filters.closed div.content, main div#route_info.closed div.content {
     display: none;
 }
 
@@ -329,9 +373,67 @@ footer {
     main div#filters div.head {
     }
 
-    main div#filters div.head button#filter_toggle {
-        border: 0;
-        background: 0;
+    main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
         font-size: 1.5em;
     }
+}
+
+div.dialog {
+    position: absolute;
+    margin: 0 auto;
+    min-width: 400px;
+    width: 60vw;
+    max-height: 70vh;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    padding: 0.3em;
+    font-size: 1.1em;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+div.dialog div.head {
+    flex: 0 0 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.3em;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+div.dialog div.head span {
+
+}
+
+div.dialog div.head button.dialog_close_button {
+    border: 0;
+    background: 0;
+    cursor: pointer;
+}
+
+div.dialog div.content {
+    flex: 1 1 100%;
+    border-top: 3px solid rgba(38, 75, 171, 1);
+    border-bottom: 3px solid rgba(38, 75, 171, 1);
+    padding: 0.3em 0;
+    width: 100%;
+    overflow: auto;
+}
+
+div.dialog div.controls {
+    flex: 0 0 0;
+    align-self: end;
+    padding-top: 0.3em;
+}
+
+div.dialog div.controls button.dialog_close_button {
+    cursor: pointer;
 }
