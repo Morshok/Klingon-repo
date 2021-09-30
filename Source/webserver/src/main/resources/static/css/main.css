@@ -121,16 +121,19 @@ main div.info ul li a:active {
     background: #18306f;
 }
 
-main div#filters {
+main div#wrapper {
     position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 999;
+}
+
+main div#filters {
     width: 200px;
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    top: 10px;
-    right: 10px;
-    z-index: 999;
 }
 
 main div#filters div.head {
@@ -142,7 +145,6 @@ main div#filters div.head {
 }
 
 main div#filters div.head span {
-
 }
 
 main div#filters div.head button#filter_toggle {
@@ -151,7 +153,8 @@ main div#filters div.head button#filter_toggle {
 
 main div#filters div.content {
     border-top: 3px solid rgba(38, 75, 171, 1);
-    padding-top: 0.3em;}
+    padding-top: 0.3em;
+}
 
 input[type=checkbox] + label {
     display: block;
@@ -165,7 +168,6 @@ input[type=checkbox] {
 }
 
 input[type=checkbox] + label:before {
-
     content: "\2713";
     border: 3px solid rgba(38, 75, 171, 1);
     border-radius: 0.1em;
@@ -193,6 +195,39 @@ main div#filters.closed div.head {
 }
 
 main div#filters.closed div.content {
+    display: none;
+}
+
+main div#weather-data {
+    width: 200px;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    font-size: 1.1em;
+    padding: 0.3em;
+    margin-top: 10px;
+}
+
+main div#weather-data div.head {
+    padding-bottom: 0.3em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+main div#weather-data div.head span {
+}
+
+main div#weather-data div.content {
+    border-top: 3px solid rgba(38, 75, 171, 1);
+    padding-top: 0.3em;
+}
+
+main div#weather-data.closed div.head {
+    padding: 0;
+}
+
+main div#weather-data.closed div.content {
     display: none;
 }
 
@@ -333,5 +368,16 @@ footer {
         border: 0;
         background: 0;
         font-size: 1.5em;
+    }
+
+    main div#weather-data {
+        box-sizing: border-box;
+        width: 200px;
+        top: 10px;
+        right: 10px;
+        font-size: 1.1em;
+    }
+
+    main div#weather-data div.head {
     }
 }

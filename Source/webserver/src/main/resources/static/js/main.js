@@ -95,6 +95,38 @@ function loadMarker() {
 }
 loadMarker();
 
+var repeater;
+function loadWeatherData()
+{
+    let callAPI = function(apiPath)
+    {
+        $.ajax(apiPath,
+        {
+            contentType: "application/json",
+            dataType: "json",
+            complete: function(response)
+                {
+                    if(response.status === 200)
+                    {
+                        let data = response.responseJSON;
+
+                        $('#location').html('Plats: ' + data[1].location);
+                        $('#description').html('Beskrivning: ' + data[1].weatherDescription);
+                        $('#temperature').html('Temperatur: ' + data[1].temperature + '&deg;C');
+                        $('#windSpeed').html('Vindhastighet: ' + data[1].windSpeed + 'm/s&sup2;');
+                        $('#windDegree').html('Vindvinkel: ' + data[1].windDegree + '&deg;');
+                        $('#cloudsPercentage').html('Moln: ' + data[1].cloudPercentage + '%');
+                    }
+                }
+        })
+    }
+
+    callAPI("/api/weatherData");
+
+    repeater = setTimeout(loadWeatherData, 1000);
+}
+$(document).ready(loadWeatherData());
+
 $("#pumps, #bicycles").change(function(){
     loadMarker();
 });
