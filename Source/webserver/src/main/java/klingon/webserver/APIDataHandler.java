@@ -197,7 +197,7 @@ public class APIDataHandler {
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                     String name = jsonArray.getJSONObject(i).getString("Name");
 
-                    if(name.startsWith("BIKE")){
+                    if (name.startsWith("BIKE")) {
                         name = "Bike on the loose";
                     }
                     BicycleStation bicycleStation = new BicycleStation(stationId, latitude, longitude, name,
@@ -268,51 +268,50 @@ public class APIDataHandler {
         return mergeCloseBicycleStand(allBicycleStands);
     }
 
-    private static ArrayList <BicycleStation> mergeCloseBicycleStations(ArrayList<BicycleStation> allBicycleStation){
+    private static ArrayList<BicycleStation> mergeCloseBicycleStations(ArrayList<BicycleStation> allBicycleStation) {
         ArrayList<BicycleStation> newList = new ArrayList<>();
 
-        for (BicycleStation bs: allBicycleStation){
-            if(newList.isEmpty()){
-                newList.add(bs);
-            }
-            else{
+        for (BicycleStation bicycleStation : allBicycleStation) {
+            if (newList.isEmpty()) {
+                newList.add(bicycleStation);
+            } else {
                 boolean newAddress = true;
-                for(BicycleStation bs2: newList){
-                    double x = Math.pow(bs2.getLatitude() - bs.getLatitude(), 2);
-                    double y = Math.pow(bs2.getLongitude() - bs.getLongitude(), 2);
+                for (BicycleStation bicycleStation2 : newList) {
+                    double x = Math.pow(bicycleStation2.getLatitude() - bicycleStation.getLatitude(), 2);
+                    double y = Math.pow(bicycleStation2.getLongitude() - bicycleStation.getLongitude(), 2);
                     double z = Math.sqrt(x + y);
-                    if(z < 0.0002 && (bs.getAddress().equals(bs2.getAddress()))){
-                        bs2.setAvailableBikes(bs2.getAvailableBikes() + bs.getAvailableBikes());
+                    if (z < 0.0002 && (bicycleStation.getAddress().equals(bicycleStation2.getAddress()))) {
+                        bicycleStation2.setAvailableBikes(bicycleStation2.getAvailableBikes() + bicycleStation.getAvailableBikes());
                         newAddress = false;
                     }
                 }
-                if(newAddress){
-                    newList.add(bs);
+                if (newAddress) {
+                    newList.add(bicycleStation);
                 }
             }
         }
         return newList;
     }
 
-    private static ArrayList<BicycleStand> mergeCloseBicycleStand(ArrayList<BicycleStand> allBicycleStands){
+    private static ArrayList<BicycleStand> mergeCloseBicycleStand(ArrayList<BicycleStand> allBicycleStands) {
         ArrayList<BicycleStand> newList = new ArrayList<>();
 
-        for (BicycleStand bs : allBicycleStands) {
+        for (BicycleStand bicycleStand : allBicycleStands) {
             if (newList.isEmpty()) {
-                newList.add(bs);
+                newList.add(bicycleStand);
             } else {
                 boolean newAddress = true;
-                for (BicycleStand bs2 : newList) {
-                    double x = Math.pow(bs2.getLatitude() - bs.getLatitude(), 2);
-                    double y = Math.pow(bs2.getLongitude() - bs.getLongitude(), 2);
+                for (BicycleStand bicycleStand2 : newList) {
+                    double x = Math.pow(bicycleStand2.getLatitude() - bicycleStand.getLatitude(), 2);
+                    double y = Math.pow(bicycleStand2.getLongitude() - bicycleStand.getLongitude(), 2);
                     double z = Math.sqrt(x + y);
-                    if(z < 0.0003 || (bs.getAddress().equals(bs2.getAddress()))){
-                        bs2.setParkingSpace(bs2.getParkingSpace() + bs.getParkingSpace());
+                    if (z < 0.0003 || (bicycleStand.getAddress().equals(bicycleStand2.getAddress()))) {
+                        bicycleStand2.setParkingSpace(bicycleStand2.getParkingSpace() + bicycleStand.getParkingSpace());
                         newAddress = false;
                     }
                 }
                 if (newAddress) {
-                    newList.add(bs);
+                    newList.add(bicycleStand);
                 }
             }
         }
