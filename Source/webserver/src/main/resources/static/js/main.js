@@ -148,7 +148,7 @@ function loadWeatherData(f_index)
                         $('#description').html('Beskrivning: ' + data[f_index].weatherDescription);
                         $('#temperature').html('Temperatur: ' + data[f_index].temperature + '&deg;C');
                         $('#windSpeed').html('Vindhastighet: ' + data[f_index].windSpeed + 'm/s&sup2;');
-                        $('#windDegree').html('Vindvinkel: ' + data[f_index].windDegree + '&deg;');
+                        $('#windDegree').html('Vindriktning: ' + data[f_index].windDegree + '&deg;');
                         $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
                     }
                 }
