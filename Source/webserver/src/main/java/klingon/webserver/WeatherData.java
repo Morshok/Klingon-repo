@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * The PumpStation class is essentially a Java Bean
+ * The WeatherData class is essentially a Java Bean
  * class, which is used to encapsulate a number of
  * objects into a single one. Hence this class
  * encapsulates multiple WeatherData objects into
