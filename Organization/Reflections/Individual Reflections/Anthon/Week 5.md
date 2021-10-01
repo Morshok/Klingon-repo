@@ -70,5 +70,5 @@
   million api calls a month. Instead, we store the weatherdata in our database,
   and access it from there instead. Imagine if instead every user made an api call
   each to OpenWeatherMap every 5th minute. Would that be the case, we would easily
-  go over the limit of api calls each month, so our solution, ot the best solution, 
+  go over the limit of api calls each month, so our solution, not the best solution, 
   but we are poor, we don't have that kind of money to pay for a paid plan... ;)
