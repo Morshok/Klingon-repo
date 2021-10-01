@@ -132,34 +132,29 @@ function loadWeatherData(f_index)
         f_index = 1;
     }
     
-    let callAPI = function(apiPath)
+    $.ajax("/api/weatherData",
     {
-        $.ajax(apiPath,
+        contentType: "application/json",
+        dataType: "json",
+        complete: function(response)                
         {
-            contentType: "application/json",
-            dataType: "json",
-            complete: function(response)
+                if(response.status === 200)
                 {
-                    if(response.status === 200)
-                    {
-                        let data = response.responseJSON;
+                    let data = response.responseJSON;
 
-                        $('#location').html('Plats: ' + data[f_index].location);
-                        $('#description').html('Beskrivning: ' + data[f_index].weatherDescription);
-                        $('#temperature').html('Temperatur: ' + data[f_index].temperature + '&deg;C');
-                        $('#windSpeed').html('Vindhastighet: ' + data[f_index].windSpeed + 'm/s&sup2;');
-                        $('#windDegree').html('Vindriktning: ' + data[f_index].windDegree + '&deg;');
-                        $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
-                    }
+                    $('#location').html('Plats: ' + data[f_index].location);
+                    $('#description').html('Beskrivning: ' + data[f_index].weatherDescription);
+                    $('#temperature').html('Temperatur: ' + data[f_index].temperature + '&deg;C');
+                    $('#windSpeed').html('Vindhastighet: ' + data[f_index].windSpeed + 'm/s&sup2;');
+                    $('#windDegree').html('Vindriktning: ' + data[f_index].windDegree + '&deg;');
+                    $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
                 }
-        })
-    }
-
-    callAPI("/api/weatherData");
+        }
+    })
 
     repeater = setTimeout(loadWeatherData, 60000);
 }
-$(document).ready(loadWeatherData(index));
+$(document).ready(loadWeatherData(this.index));
 
 function changeWeatherDataIndex(obj)
 {
