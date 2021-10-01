@@ -1,8 +1,3 @@
-const seRelTime = new RelativeTime({locale: "sv"})
-const bicycleStationGroup = L.layerGroup();
-const pumpStationGroup = L.layerGroup();
-const bicycleStandGroup = L.layerGroup();
-
 const bicycleIcon = L.icon({
     iconUrl: '/images/bicycleStation.png',
     iconSize: [40, 40],
@@ -24,6 +19,64 @@ const noBikeIcon = L.icon({
     iconSize: [32, 32],
 });
 
+const seRelTime = new RelativeTime({locale: "sv"})
+const bicycleStationGroup = L.layerGroup();
+const pumpStationGroup = L.layerGroup();
+const bicycleStandGroup = L.layerGroup();
+const markerGroups = [
+    {
+        title: "Styr & Ställ",
+        check: function () {
+            return $("#bicycles").prop("checked");
+        },
+        apiPath: "/api/bicycleStations",
+        template: function (bicycleStation, baseTemplate) {
+            let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
+            return baseTemplate(bicycleStation.id, bicycleStation.address,
+                `<p>Styr & Ställ</p>
+                <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
+                <p>Uppdaterades: ${timeDiff}</p>`
+            );
+        },
+        layer: bicycleStationGroup,
+        icon: function (state) {
+            if (state.availableBikes < 5) {
+                return noBikeIcon;
+            }
+            return bicycleIcon;
+        },
+    },
+    {
+        title: "Pumpstationer",
+        check: function () {
+            return $("#pumps").prop("checked");
+        },
+        apiPath: "/api/pumpStations",
+        template: function (pumpStation, baseTemplate) {
+            return baseTemplate(pumpStation.id, pumpStation.address,
+                `<p>Pumpstation</p>
+                 <p>${pumpStation.comment}</p>`
+            );
+        },
+        layer: pumpStationGroup,
+        icon: pumpIcon,
+    },
+    {
+        title: "Cykelställ",
+        check: function () {
+            return $("#parking").prop("checked");
+        },
+        apiPath: "/api/bicycleStands",
+        template: function (station, baseTemplate) {
+            return baseTemplate(station.id, station.address,
+                `<p>Cykelställ</p>
+                 <p>Antal platser: <b>${station.parkingSpaces}</b></p>`
+            );
+        },
+        layer: bicycleStandGroup,
+        icon: bicycleStandIcon,
+    },
+];
 
 let allMarkers = {};
 let userPosition = {
@@ -52,32 +105,13 @@ function updateUserPosition(latitude, longitude) {
 }
 
 function loadMarker() {
-    let bicycleTemplate = function (bicycleStation) {
-        let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
+    let baseTemplate = function (id, title, content) {
         return `
-            <div data-station-id="${bicycleStation.id}" class="station-popups bicycle">
-                <div class="title"><b>${bicycleStation.address}</b></div>
+            <div data-station-id="${id}" class="station-popups">
+                <div class="title"><b>${title}</b></div>
                 <hr>
                 <div class="content">
-                    <p>Styr & Ställ</p>
-                    <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
-                    <p>Uppdaterades: ${timeDiff}</p>
-                </div>
-                <div class="footer">
-                    <button class="navigation-routing-point" data-type="startPoint">Börja här</button>
-                    <button class="navigation-routing-point" data-type="endPoint">Sluta här</button>
-                </div>
-            <div>
-        `
-    }
-    let pumpTemplate = function (pumpStation) {
-        return `
-            <div data-station-id="${pumpStation.id}" class="station-popups pump">
-                <div class="title"><b>${pumpStation.address}</b></div>
-                <hr>
-                <div class="content">
-                    <p>Pumpstation</p>
-                    <p>${pumpStation.comment}</p>
+                    ${content}
                 </div>
                 <div class="footer">
                     <button class="navigation-routing-point" data-type="startPoint">Börja här</button>
@@ -87,87 +121,59 @@ function loadMarker() {
         `
     }
 
-    let bicycleStandTemplate = function (station) {
-        return `
-                <div data-stationId="${station.id}" class="station-popups bicycle stand">
-                    <div class="title"><b>${station.address}</b></div>
-                    <hr>
-                    <div class="content">
-                        <p>Cykelställ</p>
-                        <p>Antal platser: <b>${station.parkingSpaces}</b></p>
-                    </div>
-                    <div class="footer">
-                        <button>Start here </button>
-                        <button> End Here </button>
-                    </div>
-                <div>
-            `
+    let buildMarkerGroup = function (markerGroup) {
+        // Do not add the group to the map if a route is active
+        if (!gpsEvenListenerId)
+            markerGroup.layer.addTo(window.leafletMap);
+
+        $.ajax(markerGroup.apiPath, {
+            contentType: "application/json",
+            dataType: "json",
+            complete: function (response) {
+                if (response.status === 200) {
+                    let data = response.responseJSON;
+                    data.forEach(function (station) {
+                        let icon = typeof markerGroup.icon === "function" ?
+                            markerGroup.icon(station) : markerGroup.icon;
+
+                        let marker = L.marker([station.latitude, station.longitude], icon ? {icon: icon} : {})
+                            .bindPopup(function () {
+                                return markerGroup.template(station, baseTemplate)
+                            })
+                            .addTo(markerGroup.layer);
+
+                        station.groupTitle = markerGroup.title;
+                        if (!allMarkers[markerGroup.apiPath]) allMarkers[markerGroup.apiPath] = [];
+                        allMarkers[markerGroup.apiPath].push({marker: marker, data: station});
+                    });
+                    updateSearchResults();
+                }
+            },
+        })
     }
 
-    let buildMarkerGroup = function (apiPath, markerTemplate, layerGroup, markerIcon = null, fnDataCheck = null) {
-        if (!window.leafletMap.hasLayer(layerGroup)) {
-            // Do not add the group to the map if a route is active
-            if(!gpsEvenListenerId)
-                layerGroup.addTo(window.leafletMap);
-
-            $.ajax(apiPath, {
-                contentType: "application/json",
-                dataType: "json",
-                complete: function (response) {
-                    if (response.status === 200) {
-                        let data = response.responseJSON;
-                        data.forEach(function (station) {
-                            if (!fnDataCheck || fnDataCheck(station)) {
-                                let marker = L.marker([station.latitude, station.longitude], markerIcon ? {icon: markerIcon} : {})
-                                    .bindPopup(function () {
-                                        return markerTemplate(station)
-                                    })
-                                    .addTo(layerGroup);
-
-                                if (!allMarkers[apiPath]) allMarkers[apiPath] = [];
-                                allMarkers[apiPath].push({marker: marker, data: station});
-                                updateSearchResults();
-                            }
-                        });
-                    }
-                },
-            })
+    let calledApi = false, changedData = false;
+    markerGroups.forEach(function (item) {
+        if (item.check()) {
+            if (!window.leafletMap.hasLayer(item.layer)) {
+                calledApi = true;
+                buildMarkerGroup(item);
+            }
+        } else {
+            item.layer.clearLayers().remove();
+            allMarkers[item.apiPath] = [];
+            changedData = true
         }
-    }
+    });
 
-    let changedData = false;
-    if ($("#bicycles").prop("checked")) {
-        buildMarkerGroup("/api/bicycleStations", bicycleTemplate, bicycleStationGroup, bicycleIcon, function (station) {
-            return station.availableBikes > 0;
-        });
-    } else {
-        bicycleStationGroup.clearLayers().remove();
-        allMarkers["/api/bicycleStations"] = [];
-        changedData = true;
-    }
-
-    if ($("#pumps").prop("checked")) {
-        buildMarkerGroup("/api/pumpStations", pumpTemplate, pumpStationGroup, pumpIcon)
-    } else {
-        pumpStationGroup.clearLayers().remove();
-        allMarkers["/api/pumpStations"] = [];
-        changedData = true;
-    }
-
-    if ($("#parking").prop("checked")) {
-        callApi("/api/bicycleStands", bicycleStandTemplate, bicycleStandGroup, bicycleStandIcon, 3)
-    } else {
-        bicycleStandGroup.clearLayers().remove();
-    }
-
-    if (changedData) {
+    if (calledApi !== changedData && !calledApi) {
         updateSearchResults()
     }
 }
 
 loadMarker();
 
-$("#pumps, #bicycles").change(function () {
+$("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
 });
 
@@ -229,16 +235,16 @@ $("#geolocator").click(function (e) {
     if (gpsEvenListenerId) {
         window.leafletMap.setView([userPosition.pos.latitude, userPosition.pos.longitude], 16);
         e.currentTarget.removeAttribute("disabled")
-        return;
+    } else {
+        getGeoLocation(function (pos) {
+                window.leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
+                e.currentTarget.removeAttribute("disabled")
+            },
+            function () {
+                e.currentTarget.removeAttribute("disabled")
+            }
+        )
     }
-    getGeoLocation(function (pos) {
-            window.leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
-            e.currentTarget.removeAttribute("disabled")
-        },
-        function () {
-            e.currentTarget.removeAttribute("disabled")
-        }
-    )
 });
 
 $("button#navigation_button").click(function () {
@@ -257,7 +263,7 @@ $(".navigation-select").select2({
 
         return $(`
             <div class="select2-result-item">
-                <label><b>${item.address}</b></label>
+                <label><i>${item.groupTitle}</i> - <b>${item.address}</b></label>
                 <div class="panel">
                     ${availableBikesStr}
                     ${distanceStr}
@@ -286,7 +292,9 @@ $("main #map").on("click", ".navigation-routing-point", function () {
     window.leafletMap.closePopup();
 })
 
+
 function updateSearchResults() {
+    console.log("Called updateSearchResults, ", Date.now());
     let $navigationSelects = $(".navigation-select");
     $navigationSelects.prop("disabled", true);
     $navigationSelects.empty();
@@ -328,7 +336,6 @@ $("#start_route").click(function () {
 $("#stop_route").click(function () {
     removeRoute();
 });
-
 
 function startRoute(gpsLocation, startValue, endValue) {
     let startPoint, endPoint;
@@ -490,26 +497,27 @@ function onRouteFound(event) {
 }
 
 function onRoutingStarted(event, start, end) {
+    markerGroups.forEach(function (group) {
+        window.leafletMap.removeLayer(group.layer);
+    });
+
     if (!('geolocation' in navigator) || !window.isSecureContext) {
         console.log("Cannot use geolocation.");
-        return;
+    } else {
+        gpsEvenListenerId = navigator.geolocation.watchPosition(
+            function (pos) {
+                updateUserPosition(pos.coords.latitude, pos.coords.longitude);
+            },
+            function (error) {
+                console.log(error);
+            },
+            options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 5000
+            }
+        );
     }
-
-    window.leafletMap.removeLayer(bicycleStationGroup);
-    window.leafletMap.removeLayer(pumpStationGroup);
-    gpsEvenListenerId = navigator.geolocation.watchPosition(
-        function (pos) {
-            updateUserPosition(pos.coords.latitude, pos.coords.longitude);
-        },
-        function (error) {
-            console.log(error);
-        },
-        options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 5000
-        }
-    );
 
     $("main .navigation > .main-panel").addClass("hasRoute");
     $("main .navigation > .main-panel #route-info-start").text(start.text)
