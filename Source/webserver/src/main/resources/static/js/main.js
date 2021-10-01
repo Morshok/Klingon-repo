@@ -124,6 +124,7 @@ function loadMarker() {
         allMarkers["/api/pumpStations"] = [];
         changedData = true;
     }
+
     if (changedData) {
         updateSearchResults()
     }
@@ -246,6 +247,7 @@ $("main #map").on("click", ".navigation-routing-point", function () {
     } else {
         alert("Station could not be found");
     }
+    $("main .navigation > .main-panel").show();
     window.leafletMap.closePopup();
 })
 
@@ -385,6 +387,7 @@ function removeRoute() {
 
     if (gpsEvenListenerId) {
         navigator.geolocation.clearWatch(gpsEvenListenerId);
+        gpsEvenListenerId = null;
     }
 
     if (!window.leafletMap.hasLayer(bicycleStationGroup))
@@ -478,7 +481,7 @@ function onRoutingStarted(event, start, end) {
     $("main .navigation > .main-panel #route-info-end").text(end.text)
 }
 
-
+/** Helper functions **/
 function showDialog(dialogContent) {
     let dialogContentTemplate = function (dialogContent) {
         return `
@@ -507,7 +510,6 @@ function showDialog(dialogContent) {
     $("body").append(dialogContentElement);
 }
 
-/** Helper functions **/
 function formatTimeFromSeconds(totSeconds, template) {
     let hours = Math.floor(totSeconds / 60 / 60);
     let minutes = Math.ceil((totSeconds / 60) % 60);
