@@ -26,7 +26,7 @@ class SchedulingConfiguration implements AsyncConfigurer
     // Which would be 2 for our purposes.
     // Increase THREAD_COUNT by one for
     // every additionally added tasks.
-    private static final int THREAD_COUNT = 2;
+    private static final int THREAD_COUNT = 3;
 
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler()

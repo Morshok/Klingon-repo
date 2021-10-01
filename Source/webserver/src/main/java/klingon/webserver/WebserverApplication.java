@@ -80,7 +80,7 @@ public class WebserverApplication
 		populatePumpStations();
 	}
 
-	@Scheduled(cron = "*/15 * * * * *")
+	@Scheduled(cron = "0 */5 * * * *")
 	protected void updateWeatherData() { populateWeatherData(); }
 
 	private void populateBicycleStations()
