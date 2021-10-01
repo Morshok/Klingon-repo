@@ -26,12 +26,12 @@ const bicycleStandGroup = L.layerGroup();
 let locationMarker = {};
 
 const bicycleIcon = L.icon({
-    iconUrl: '/images/cykelstation.png',
+    iconUrl: '/images/bicycleStation.png',
     iconSize: [40, 40],
 });
 const pumpIcon = L.icon({
-    iconUrl: '/images/pump.png',
-    iconSize: [40, 40],
+    iconUrl: '/images/orangePump.png',
+    iconSize: [30, 30],
 });
 const locationIcon = L.icon({
     iconUrl: '/images/locationRed.png',
@@ -42,8 +42,8 @@ const bicycleStandIcon = L.icon({
     iconSize: [26, 26],
 })
 const noBikeIcon = L.icon({
-    iconUrl: '/images/noBike.png',
-    iconSize: [40, 40],
+    iconUrl: '/images/redBicycle.png',
+    iconSize: [32, 32],
 });
 
 function loadMarker() {
