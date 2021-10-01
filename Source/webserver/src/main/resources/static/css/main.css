@@ -122,6 +122,45 @@ main div.info ul li a:active {
 }
 
 main div#wrapper {
+}
+
+main div#route_info div.head span {
+    margin-right: 1em;
+}
+
+main div#route_info div.content ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+main div#route_info div.content ul li {
+    margin: 0.2em 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+main div#route_info div.content ul li i {
+    min-width: 25px;
+    text-align: center;
+    margin-right: 0.1em;
+}
+
+main div#route_info div.content ul li svg {
+    min-width: 25px;
+    height: 17px;
+    text-align: center;
+    margin-right: 0.1em;
+}
+
+main div#route_info div.content ul li i.info_icon {
+    text-align: right;
+    min-width: 0;
+    align-self: center;
+    cursor: pointer;
+}
+
+main div#filters, main div#route_info {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -136,7 +175,7 @@ main div#filters {
     padding: 0.3em;
 }
 
-main div#filters div.head {
+main div#filters div.head, main div#route_info div.head {
     padding-bottom: 0.3em;
     display: flex;
     flex-direction: row;
@@ -147,11 +186,13 @@ main div#filters div.head {
 main div#filters div.head span {
 }
 
-main div#filters div.head button#filter_toggle {
+main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
+    border: 0;
+    background: 0;
     cursor: pointer;
 }
 
-main div#filters div.content {
+main div#filters div.content, main div#route_info div.content {
     border-top: 3px solid rgba(38, 75, 171, 1);
     padding-top: 0.3em;
 }
@@ -190,11 +231,11 @@ input[type=checkbox]:checked + label:before {
 }
 
 
-main div#filters.closed div.head {
+main div#filters.closed div.head, main div#route_info.closed div.head {
     padding: 0;
 }
 
-main div#filters.closed div.content {
+main div#filters.closed div.content, main div#route_info.closed div.content {
     display: none;
 }
 
@@ -316,6 +357,7 @@ footer .attribution > .popup {
     border: 3px solid #264bab;
     display: none;
     left: -80px;
+    padding: 15px;
 }
 
 footer .attribution:hover > .popup {
@@ -342,19 +384,59 @@ main #geolocator:not([disabled]):hover {
     transition: all 0.5s;
 }
 
-main div#navigation {
+main div.navigation {
     position: absolute;
     z-index: 1000;
     bottom: 10px;
     left: 10px;
+}
+
+main div.navigation > .main-panel {
+    display: none;
+    border: 3px solid rgba(38, 75, 171, 1);
+    width: 300px;
+    min-height: 100px;
+    background: #fff;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+main div.navigation > .main-panel.hasRoute > .route-setup {
+    display: none;
+}
+
+main div.navigation > .main-panel:not(.hasRoute) > .route-information {
+    display: none;
+}
+
+main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper > div {
+   flex: 1 1 100%;
+}
+
+main div.navigation > .main-panel > .route-setup > .input {
+    display: block;
+    width: 100%;
+    padding: 5px;
+}
+
+.select2-result-item > .panel > p {
+    margin: 0;
+}
+
+main div.navigation > .button-panel {
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-}
-
-main div#navigation button#navigation_button {
-
+    max-width: 135px;
+    text-align: center;
 }
 
 footer {
@@ -367,6 +449,67 @@ footer {
     text-align: center;
     font-size: 1.2em;
 }
+
+div.dialog {
+    position: absolute;
+    margin: 0 auto;
+    min-width: 400px;
+    width: 60vw;
+    max-height: 70vh;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    padding: 0.3em;
+    font-size: 1.1em;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+div.dialog div.head {
+    flex: 0 0 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.3em;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+div.dialog div.head span {
+
+}
+
+div.dialog div.head button.dialog_close_button {
+    border: 0;
+    background: 0;
+    cursor: pointer;
+}
+
+div.dialog div.content {
+    flex: 1 1 100%;
+    border-top: 3px solid rgba(38, 75, 171, 1);
+    border-bottom: 3px solid rgba(38, 75, 171, 1);
+    padding: 0.3em 0;
+    width: 100%;
+    overflow: auto;
+}
+
+div.dialog div.controls {
+    flex: 0 0 0;
+    align-self: end;
+    padding-top: 0.3em;
+}
+
+div.dialog div.controls button.dialog_close_button {
+    cursor: pointer;
+}
+
 
 @media (max-width: 600px) {
     header nav {
@@ -415,9 +558,7 @@ footer {
     main div#filters div.head {
     }
 
-    main div#filters div.head button#filter_toggle {
-        border: 0;
-        background: 0;
+    main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
         font-size: 1.5em;
     }
 
@@ -430,5 +571,11 @@ footer {
     }
 
     main div#weather-data div.head {
+    }
+}
+
+@media(max-width: 350px){
+    main div.navigation > .main-panel {
+        width: 250px;
     }
 }
