@@ -1,18 +1,30 @@
 const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
+const bicycleStandGroup = L.layerGroup();
+
 const bicycleIcon = L.icon({
-    iconUrl: '/images/cykelstation.png',
+    iconUrl: '/images/bicycleStation.png',
     iconSize: [40, 40],
 });
 const pumpIcon = L.icon({
-    iconUrl: '/images/pump.png',
-    iconSize: [40, 40],
+    iconUrl: '/images/orangePump.png',
+    iconSize: [30, 30],
 });
 const locationIcon = L.icon({
     iconUrl: '/images/locationRed.png',
     iconSize: [25, 40],
 });
+const bicycleStandIcon = L.icon({
+    iconUrl: '/images/parking.png',
+    iconSize: [26, 26],
+})
+const noBikeIcon = L.icon({
+    iconUrl: '/images/redBicycle.png',
+    iconSize: [32, 32],
+});
+
+
 let allMarkers = {};
 let userPosition = {
     marker: null,
@@ -75,6 +87,23 @@ function loadMarker() {
         `
     }
 
+    let bicycleStandTemplate = function (station) {
+        return `
+                <div data-stationId="${station.id}" class="station-popups bicycle stand">
+                    <div class="title"><b>${station.address}</b></div>
+                    <hr>
+                    <div class="content">
+                        <p>Cykelställ</p>
+                        <p>Antal platser: <b>${station.parkingSpaces}</b></p>
+                    </div>
+                    <div class="footer">
+                        <button>Start here </button>
+                        <button> End Here </button>
+                    </div>
+                <div>
+            `
+    }
+
     let buildMarkerGroup = function (apiPath, markerTemplate, layerGroup, markerIcon = null, fnDataCheck = null) {
         if (!window.leafletMap.hasLayer(layerGroup)) {
             // Do not add the group to the map if a route is active
@@ -123,6 +152,12 @@ function loadMarker() {
         pumpStationGroup.clearLayers().remove();
         allMarkers["/api/pumpStations"] = [];
         changedData = true;
+    }
+
+    if ($("#parking").prop("checked")) {
+        callApi("/api/bicycleStands", bicycleStandTemplate, bicycleStandGroup, bicycleStandIcon, 3)
+    } else {
+        bicycleStandGroup.clearLayers().remove();
     }
 
     if (changedData) {
