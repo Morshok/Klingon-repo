@@ -14,35 +14,14 @@ $("button#menu_toggle").click(function () {
     $("nav button#menu_toggle .fa").toggleClass("fa-bars fa-times");
 });
 
+$(window, "location-dropdown-button").click(function() {
+    $("#location-dropdown-menu").toggleClass("show");
+});
+
 window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
-    .addControl(L.control.zoom({
-        position: 'bottomright'
-    }));
-
-function toggleLocationDropdownMenu()
-{
-    document.getElementById("location-dropdown-menu").classList.toggle("show");
-}
-
-window.onclick = function(event)
-{
-    if(!event.target.matches('.location-dropdown-button'))
-    {
-        var dropdowns = document.getElementsByClassName("location-dropdown-content");
-        
-        var i;
-        for(i = 0; i < dropdowns.length; i++)
-        {
-            var openDropdown = dropdowns[i];
-            if(openDropdown.classList.contains("show"))
-            {
-                openDropdown.classList.remove("show");
-            }
-        }
-    }
-}
+    .addControl(L.control.zoom( { position: 'bottomright' } ));
 
 const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
