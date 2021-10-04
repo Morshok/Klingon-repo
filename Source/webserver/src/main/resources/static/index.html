@@ -59,13 +59,12 @@
                 <div class="head">
                     <span>Vädret:</span>
                     <div class="location-dropdown">
-                        <button type="button" class="location-dropdown-button">Välj plats</button>
-                        <div id="location-dropdown-menu" class="location-dropdown-content">
-                            <a id="0" onClick="changeWeatherDataIndex(this)">Angered</a><br>
-                            <a id="1" onClick="changeWeatherDataIndex(this)">Göteborg</a><br>
-                            <a id="2" onClick="changeWeatherDataIndex(this)">Mölndal</a><br>
-                            <a id="3" onClick="changeWeatherDataIndex(this)">Torslanda</a>
-                        </div>
+                        <select name="location" id="location-dropdown">
+                            <option value="0">Angered</option>
+                            <option value="1" selected="selected">Göteborg</option>
+                            <option value="2">Mölndal</option>
+                            <option value="3">Torslanda</option>
+                        </select>
                     </div>
                     <!-- Hide/show toggle -->
                     <button id="weather-data-toggle"><i class="fa fa-angle-down"></i></button>

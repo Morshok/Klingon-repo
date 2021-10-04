@@ -92,10 +92,6 @@ let userPosition = {
 let searchData = [];
 let gpsEvenListenerId;
 
-$(".location-dropdown-button").click(function() {
-    $("#location-dropdown-menu").toggleClass("show");
-});
-
 window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
@@ -213,9 +209,13 @@ function loadWeatherData(f_index)
 }
 $(document).ready(loadWeatherData(this.index));
 
+$("select#location-dropdown").change(function(event){
+    changeWeatherDataIndex($("select#location-dropdown").val());
+});
+
 function changeWeatherDataIndex(obj)
 {
-    this.index = obj.id;
+    this.index = obj;
     clearTimeout(repeater);
     loadWeatherData(index);
 }
