@@ -167,8 +167,13 @@ main div#route_info div.content ul li i.info_icon {
 main div#route_info {
     position: absolute;
     top: 10px;
-    right: 10px;
+    left: 10px;
     z-index: 999;
+    width: 200px;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    font-size: 1.1em;
+    padding: 0.3em;
 }
 
 main div#filters {
@@ -277,6 +282,8 @@ main div#weather-data.closed div.content {
 }
 
 main div#weather-data div.head button#weather-data-toggle {
+    background: 0;
+    border: 0;
     cursor: pointer;
 }
 
