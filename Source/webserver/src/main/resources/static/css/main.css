@@ -245,7 +245,10 @@ main div#weather-data {
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    margin-top: 10px;
+    position: absolute;
+    top: 10px;
+    z-index: 999;
+    left: 10px;
 }
 
 main div#weather-data div.head {
