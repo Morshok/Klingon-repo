@@ -1,0 +1,11 @@
+what do I want to learn or understand better?
+Learn more about Github Actions. Our user stories have become a lot better - they are now properly structured and sized.
+
+how can I help someone else, or the entire team, to learn something new?
+Same answer as before.
+
+what is my contribution towards the team’s use of Scrum?
+Like the previous answers, I participated in the sprint planning, the delegation of tasks and used the Scrum board to reflect the current state of the sprint.
+
+what is my contribution towards the team’s deliveries?
+I participated in the team reflection and completed my task for the current sprint. I also reviewed code.

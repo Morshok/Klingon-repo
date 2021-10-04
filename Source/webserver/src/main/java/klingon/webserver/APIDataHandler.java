@@ -35,8 +35,8 @@ import java.util.Scanner;
 public class APIDataHandler {
     //These constants are used to make an API call to the pump station service
     private static final String PUMP_STATION_APP_ID = "612f222b-e5ee-4547-ac83-b191ddc283df";
-    private static final String BICYCLE_STATION_APP_ID = "ad5c61b7-fc05-44b6-8762-30ba6ecda1c2";
     private static final String WEATHER_APP_ID = "c25006e4f1f04463e8cd05a4d3d6008e";
+    private static final String BICYCLE_STATION_AND_STAND_APP_ID = "ad5c61b7-fc05-44b6-8762-30ba6ecda1c2";
     private static final String FORMAT = "Json";
 
 
@@ -50,14 +50,14 @@ public class APIDataHandler {
     public ResponseEntity<Object> jsonBicycleStations() {
         Iterable<BicycleStation> allStations = WebserverApplication.getBicycleStationRepository().findAll();
         JSONArray jsonArray = new JSONArray();
-        for (BicycleStation bs : allStations) {
+        for (BicycleStation bicycleStation : allStations) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id", bs.getID());
-            jsonObject.put("latitude", bs.getLatitude());
-            jsonObject.put("longitude", bs.getLongitude());
-            jsonObject.put("address", bs.getAddress());
-            jsonObject.put("availableBikes", bs.getAvailableBikes());
-            jsonObject.put("lastUpdated", bs.getLastUpdatedString());
+            jsonObject.put("id", bicycleStation.getID());
+            jsonObject.put("latitude", bicycleStation.getLatitude());
+            jsonObject.put("longitude", bicycleStation.getLongitude());
+            jsonObject.put("address", bicycleStation.getAddress());
+            jsonObject.put("availableBikes", bicycleStation.getAvailableBikes());
+            jsonObject.put("lastUpdated", bicycleStation.getLastUpdatedString());
             jsonArray.put(jsonObject.toMap());
         }
         return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
@@ -111,7 +111,25 @@ public class APIDataHandler {
 
             jsonArray.put(jsonObject.toMap());
         }
+     * GET request that adds all bicycle station to http://localhost:8080/api/bicycleStands
+     * and gives a JSONArray of the bicycle stands from the repository
+     *
+     * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
+     */
 
+    @GetMapping(path = "/bicycleStands", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> jsonBicycleStands() {
+        Iterable<BicycleStand> allStations = WebserverApplication.getBicycleStandRepository().findAll();
+        JSONArray jsonArray = new JSONArray();
+        for (BicycleStand bicycleStand : allStations) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", bicycleStand.getId());
+            jsonObject.put("parkingSpaces", bicycleStand.getParkingSpace());
+            jsonObject.put("latitude", bicycleStand.getLatitude());
+            jsonObject.put("longitude", bicycleStand.getLongitude());
+            jsonObject.put("address", bicycleStand.getAddress());
+            jsonArray.put(jsonObject.toMap());
+        }
         return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
     }
 
@@ -121,7 +139,7 @@ public class APIDataHandler {
      *
      * @return Returns a list of all pump stations in the Gothenburg area.
      */
-    public static ArrayList<PumpStation> getAllPumpStations() {
+    public static ArrayList<PumpStation> getPumpStationData() {
         ArrayList<PumpStation> allPumpStations = new ArrayList<>();
 
         try {
@@ -177,7 +195,7 @@ public class APIDataHandler {
         ArrayList<BicycleStation> allBicycleStations = new ArrayList<>();
 
         try {
-            URL url = new URL("https://data.goteborg.se/SelfServiceBicycleService/v2.0/Stations/" + BICYCLE_STATION_APP_ID + "?&format=" + FORMAT);
+            URL url = new URL("https://data.goteborg.se/SelfServiceBicycleService/v2.0/Stations/" + BICYCLE_STATION_AND_STAND_APP_ID + "?&format=" + FORMAT);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -205,6 +223,9 @@ public class APIDataHandler {
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                     String name = jsonArray.getJSONObject(i).getString("Name");
 
+                    if (name.startsWith("BIKE")) {
+                        name = "Bike on the loose";
+                    }
                     BicycleStation bicycleStation = new BicycleStation(stationId, latitude, longitude, name,
                             availableBikes, timestamp);
 
@@ -216,7 +237,111 @@ public class APIDataHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return allBicycleStations;
+        return mergeCloseBicycleStations(allBicycleStations);
+    }
+
+    /**
+     * This method connects and requests data from data.goteborg.se
+     * and parses the data and add each element to a list.
+     * Filters out duplicated address and adds the amount of space to the same address
+     * returns the list of elements as BicycleStand
+     *
+     * @return a list of BicycleStand
+     */
+
+    public static ArrayList<BicycleStand> getBicycleStandData() {
+
+        ArrayList<BicycleStand> allBicycleStands = new ArrayList<>();
+
+        try {
+            URL url = new URL("http://data.goteborg.se/ParkingService/v2.1/BikeParkings/" + BICYCLE_STATION_AND_STAND_APP_ID + "?&format=" + FORMAT);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != 200) {
+                throw new RuntimeException("HttpResponseCode: " + responseCode);
+            } else {
+                StringBuilder inline = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+                while (scanner.hasNext()) {
+                    inline.append(scanner.nextLine());
+                }
+                scanner.close();
+
+                JSONArray jsonArray = new JSONArray(inline.toString());
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Long id = jsonArray.getJSONObject(i).getLong("Id");
+                    Double latitude = jsonArray.getJSONObject(i).getDouble("Lat");
+                    Double longitude = jsonArray.getJSONObject(i).getDouble("Long");
+                    Integer parkingSpace = jsonArray.getJSONObject(i).getInt("Spaces");
+                    String address = jsonArray.getJSONObject(i).getString("Address");
+
+                    BicycleStand bicycleStand = new BicycleStand(id, latitude, longitude, address, parkingSpace);
+
+                    if (bicycleStand.getParkingSpace() > 0) {
+                        allBicycleStands.add(bicycleStand);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return mergeCloseBicycleStand(allBicycleStands);
+    }
+
+    private static ArrayList<BicycleStation> mergeCloseBicycleStations(ArrayList<BicycleStation> allBicycleStation) {
+        ArrayList<BicycleStation> newList = new ArrayList<>();
+
+        for (BicycleStation bicycleStation : allBicycleStation) {
+            if (newList.isEmpty()) {
+                newList.add(bicycleStation);
+            } else {
+                boolean newAddress = true;
+                for (BicycleStation bicycleStation2 : newList) {
+                    double x = Math.pow(bicycleStation2.getLatitude() - bicycleStation.getLatitude(), 2);
+                    double y = Math.pow(bicycleStation2.getLongitude() - bicycleStation.getLongitude(), 2);
+                    double z = Math.sqrt(x + y);
+                    if (z < 0.0002 && (bicycleStation.getAddress().equals(bicycleStation2.getAddress()))) {
+                        bicycleStation2.setAvailableBikes(bicycleStation2.getAvailableBikes() + bicycleStation.getAvailableBikes());
+                        newAddress = false;
+                    }
+                }
+                if (newAddress) {
+                    newList.add(bicycleStation);
+                }
+            }
+        }
+        return newList;
+    }
+
+    private static ArrayList<BicycleStand> mergeCloseBicycleStand(ArrayList<BicycleStand> allBicycleStands) {
+        ArrayList<BicycleStand> newList = new ArrayList<>();
+
+        for (BicycleStand bicycleStand : allBicycleStands) {
+            if (newList.isEmpty()) {
+                newList.add(bicycleStand);
+            } else {
+                boolean newAddress = true;
+                for (BicycleStand bicycleStand2 : newList) {
+                    double x = Math.pow(bicycleStand2.getLatitude() - bicycleStand.getLatitude(), 2);
+                    double y = Math.pow(bicycleStand2.getLongitude() - bicycleStand.getLongitude(), 2);
+                    double z = Math.sqrt(x + y);
+                    if (z < 0.0003 || (bicycleStand.getAddress().equals(bicycleStand2.getAddress()))) {
+                        bicycleStand2.setParkingSpace(bicycleStand2.getParkingSpace() + bicycleStand.getParkingSpace());
+                        newAddress = false;
+                    }
+                }
+                if (newAddress) {
+                    newList.add(bicycleStand);
+                }
+            }
+        }
+        return newList;
     }
 
     /**
