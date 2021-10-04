@@ -27,12 +27,14 @@ public class WebserverApplication {
     private static BicycleStationRepository bicycleStationRepository;
     private static PumpStationRepository pumpStationRepository;
     private static BicycleStandRepository bicycleStandRepository;
+    private static WeatherDataRepository weatherDataRepository;
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
         bicycleStationRepository = context.getBean(BicycleStationRepository.class);
         pumpStationRepository = context.getBean(PumpStationRepository.class);
         bicycleStandRepository = context.getBean(BicycleStandRepository.class);
+	weatherDataRepository = context.getBean(WeatherDataRepository.class);
         context.start();
     }
 
@@ -54,21 +56,22 @@ public class WebserverApplication {
         return pumpStationRepository;
     }
 
-    /**
-	   * Method for returning the BicycleStand Repository
-	   *
-	   * @return	Returns the BicycleStand Repository
-	   */
+  /**
+    * Method for returning the BicycleStand Repository
+    *
+    * @return	Returns the BicycleStand Repository
+    */
     public static BicycleStandRepository getBicycleStandRepository() {
         return bicycleStandRepository;
     }
 
-    /**
-	   * Method for returning the WeatherData Repository
-	   *
-	   * @return	Returns the WeatherData Repository
-	   */
-	  public static WeatherDataRepository getWeatherDataRepository() { return weatherDataRepository; }
+  /**
+    * Method for returning the WeatherData Repository
+    *
+    * @return	Returns the WeatherData Repository
+    */
+    public static WeatherDataRepository getWeatherDataRepository() { return weatherDataRepository; }
+	
     // The spring cron expression should be formatted as follows:
     // seconds minutes hours day_of_month month day(s)_of_week.
 
