@@ -121,10 +121,7 @@ main div.info ul li a:active {
     background: #18306f;
 }
 
-main div#route_info {
-    right: auto !important;
-    left: 10px;
-    width: auto !important;
+main div#wrapper {
 }
 
 main div#route_info div.head span {
@@ -165,14 +162,17 @@ main div#route_info div.content ul li i.info_icon {
 
 main div#filters, main div#route_info {
     position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 999;
+}
+
+main div#filters {
     width: 200px;
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    top: 10px;
-    right: 10px;
-    z-index: 999;
 }
 
 main div#filters div.head, main div#route_info div.head {
@@ -184,7 +184,6 @@ main div#filters div.head, main div#route_info div.head {
 }
 
 main div#filters div.head span {
-
 }
 
 main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
@@ -195,7 +194,8 @@ main div#filters div.head button#filter_toggle, main div#route_info div.head but
 
 main div#filters div.content, main div#route_info div.content {
     border-top: 3px solid rgba(38, 75, 171, 1);
-    padding-top: 0.3em;}
+    padding-top: 0.3em;
+}
 
 input[type=checkbox] + label {
     display: block;
@@ -209,7 +209,6 @@ input[type=checkbox] {
 }
 
 input[type=checkbox] + label:before {
-
     content: "\2713";
     border: 3px solid rgba(38, 75, 171, 1);
     border-radius: 0.1em;
@@ -238,6 +237,90 @@ main div#filters.closed div.head, main div#route_info.closed div.head {
 
 main div#filters.closed div.content, main div#route_info.closed div.content {
     display: none;
+}
+
+main div#weather-data {
+    width: 200px;
+    background: white;
+    border: 3px solid rgba(38, 75, 171, 1);
+    font-size: 1.1em;
+    padding: 0.3em;
+    margin-top: 10px;
+}
+
+main div#weather-data div.head {
+    padding-bottom: 0.3em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+main div#weather-data div.head span {
+}
+
+main div#weather-data div.content {
+    border-top: 3px solid rgba(38, 75, 171, 1);
+    padding-top: 0.3em;
+}
+
+main div#weather-data.closed div.head {
+    padding: 0;
+}
+
+main div#weather-data.closed div.content {
+    display: none;
+}
+
+main div#weather-data div.head button#weather-data-toggle {
+    cursor: pointer;
+}
+
+.location-dropdown-button {
+    background-color: white;
+    color: black;
+    border: 3px solid rgba(38, 75, 171, 1);
+    padding: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.location-dropdown-button:hover, .location-dropdown-button:focus {
+    background-color: lightgray;
+    color: black;
+    border: 3px solid rgba(32, 64, 146, 1);
+}
+
+.location-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.location-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    font-size: 0px;
+    z-index: 1000;
+}
+
+.location-dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+    cursor: pointer;
+}
+
+.location-dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.show {
+    display: block;
 }
 
 main div#map {
@@ -477,6 +560,17 @@ div.dialog div.controls button.dialog_close_button {
 
     main div#filters div.head button#filter_toggle, main div#route_info div.head button#route_info_toggle {
         font-size: 1.5em;
+    }
+
+    main div#weather-data {
+        box-sizing: border-box;
+        width: 200px;
+        top: 10px;
+        right: 10px;
+        font-size: 1.1em;
+    }
+
+    main div#weather-data div.head {
     }
 }
 

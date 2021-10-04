@@ -19,6 +19,12 @@ const noBikeIcon = L.icon({
     iconSize: [32, 32],
 });
 
+$("button#weather-data-toggle").click(function()
+{
+    $("div#weather-data").toggleClass("closed");
+    $("button#weather-data-toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
+});
+
 const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
@@ -86,13 +92,22 @@ let userPosition = {
 let searchData = [];
 let gpsEvenListenerId;
 
+$(window, "location-dropdown-button").click(function() {
+    $("#location-dropdown-menu").toggleClass("show");
+});
+
 window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }))
-    .addControl(L.control.zoom({
-        position: 'bottomright'
-    }));
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
+    .addControl(L.control.zoom( { position: 'bottomright' } ));
+
+const seRelTime = new RelativeTime({locale: "sv"})
+const bicycleStationGroup = L.layerGroup();
+const pumpStationGroup = L.layerGroup();
+const bicycleIcon = L.icon({
+    iconUrl: '/images/cykelstation.png',
+    iconSize:     [32, 32],
+});
 
 function updateUserPosition(latitude, longitude) {
     userPosition.pos = {latitude: latitude, longitude: longitude};
@@ -173,6 +188,45 @@ function loadMarker() {
 
 loadMarker();
 
+var index = 1;
+var repeater;
+function loadWeatherData(f_index)
+{
+    if(f_index === undefined)
+    {
+        f_index = 1;
+    }
+    
+    $.ajax("/api/weatherData",
+    {
+        contentType: "application/json",
+        dataType: "json",
+        complete: function(response)                
+        {
+                if(response.status === 200)
+                {
+                    let data = response.responseJSON;
+
+                    $('#location').html('Plats: ' + data[f_index].location);
+                    $('#description').html('Beskrivning: ' + data[f_index].weatherDescription);
+                    $('#temperature').html('Temperatur: ' + data[f_index].temperature + '&deg;C');
+                    $('#windSpeed').html('Vindhastighet: ' + data[f_index].windSpeed + 'm/s&sup2;');
+                    $('#windDegree').html('Vindriktning: ' + data[f_index].windDegree + '&deg;');
+                    $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
+                }
+        }
+    })
+
+    repeater = setTimeout(loadWeatherData, 60000);
+}
+$(document).ready(loadWeatherData(this.index));
+
+function changeWeatherDataIndex(obj)
+{
+    this.index = obj.id;
+    clearTimeout(repeater);
+    loadWeatherData(index);
+}
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
 });

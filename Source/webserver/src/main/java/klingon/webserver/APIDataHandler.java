@@ -25,7 +25,7 @@ import java.util.Scanner;
  * and returns a list of parsed objects.
  *
  * @author Anthon Lenander, Phong Nguyen
- * @version 2021-09-21
+ * @version 2021-09-30
  * @see <a href="https://data.goteborg.se/BikeService/v1.2/PumpStations">data.goteborg.se/BikeService/v1.2/PumpStations</a>
  * @see <a href="https://data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations">data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations</a>
  */
@@ -35,6 +35,7 @@ import java.util.Scanner;
 public class APIDataHandler {
     //These constants are used to make an API call to the pump station service
     private static final String PUMP_STATION_APP_ID = "612f222b-e5ee-4547-ac83-b191ddc283df";
+    private static final String WEATHER_APP_ID = "c25006e4f1f04463e8cd05a4d3d6008e";
     private static final String BICYCLE_STATION_AND_STAND_APP_ID = "ad5c61b7-fc05-44b6-8762-30ba6ecda1c2";
     private static final String FORMAT = "Json";
 
@@ -85,6 +86,31 @@ public class APIDataHandler {
     }
 
     /**
+     * GET request that adds all weather data to http://localhost:8080/api/weatherData
+     * and gives a JSONArray of the weather data from the repository
+     *
+     * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
+     */
+    @GetMapping(path = "/weatherData", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> jsonWeatherData()
+    {
+        Iterable<WeatherData> weatherDataIterable = WebserverApplication.getWeatherDataRepository().findAll();
+        JSONArray jsonArray = new JSONArray();
+
+        for(WeatherData weatherData : weatherDataIterable)
+        {
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("id", weatherData.getId());
+            jsonObject.put("location", weatherData.getLocation());
+            jsonObject.put("weatherDescription", weatherData.getWeatherDescription());
+            jsonObject.put("temperature", weatherData.getTemperature());
+            jsonObject.put("windSpeed", weatherData.getWindSpeed());
+            jsonObject.put("windDegree", weatherData.getWindDegree());
+            jsonObject.put("cloudPercentage", weatherData.getCloudsPercentage());
+
+            jsonArray.put(jsonObject.toMap());
+        }
      * GET request that adds all bicycle station to http://localhost:8080/api/bicycleStands
      * and gives a JSONArray of the bicycle stands from the repository
      *
@@ -316,5 +342,65 @@ public class APIDataHandler {
             }
         }
         return newList;
+    }
+
+    /**
+     * Method for returning weather data
+     * from selected locations, preferably
+     * withing the Gothenburg area.
+     *
+     * @return Returns a list weather data for select locations in the Gothenburg area.
+     */
+    public static ArrayList<WeatherData> getWeatherData()
+    {
+        ArrayList<WeatherData> weatherDataList = new ArrayList<>();
+
+        // List of all locations we want to fetch weather data from.
+        // Should probably be made private final static at the top
+        // of this file though.
+        String[] locations = new String[] { "Angered", "Göteborg", "Mölndal", "Torslanda" };
+
+        for(int i = 0; i < locations.length; i++)
+        {
+            try {
+                URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + locations[i] + "&units=metric&lang=sv&appid=" + WEATHER_APP_ID);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode != 200) {
+                    throw new RuntimeException("HttpResponseCode: " + responseCode);
+                } else {
+
+                    StringBuilder inline = new StringBuilder();
+                    Scanner scanner = new Scanner(url.openStream());
+                    while (scanner.hasNext()) {
+                        inline.append(scanner.nextLine());
+                    }
+                    scanner.close();
+
+                    JSONObject jsonObject = new JSONObject("{ Object:[" + inline + "]}");
+                    JSONArray jsonArray = jsonObject.getJSONArray("Object");
+
+                    String location = locations[i];
+                    String weatherDescription = jsonArray.getJSONObject(0).getJSONArray("weather").getJSONObject(0).getString("description");
+                    double temperature = jsonArray.getJSONObject(0).getJSONObject("main").getDouble("temp");
+                    double windSpeed = jsonArray.getJSONObject(0).getJSONObject("wind").getDouble("speed");
+                    double windDegree = jsonArray.getJSONObject(0).getJSONObject("wind").getDouble("deg");
+                    double cloudsPercentage = jsonArray.getJSONObject(0).getJSONObject("clouds").getDouble("all");
+
+                    WeatherData weatherData = new WeatherData(Long.valueOf(i + 1), location, weatherDescription, temperature, windSpeed, windDegree, cloudsPercentage);
+
+                    weatherDataList.add(weatherData);
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return weatherDataList;
     }
 }

@@ -19,7 +19,7 @@ import java.util.List;
  * and handles different execution of the built in database
  *
  * @author Anthon Lenander, Phong Nguyen
- * @version 2021-09-21
+ * @version 2021-10-01
  */
 @Service
 @SpringBootApplication
@@ -54,10 +54,21 @@ public class WebserverApplication {
         return pumpStationRepository;
     }
 
+    /**
+	   * Method for returning the BicycleStand Repository
+	   *
+	   * @return	Returns the BicycleStand Repository
+	   */
     public static BicycleStandRepository getBicycleStandRepository() {
         return bicycleStandRepository;
     }
 
+    /**
+	   * Method for returning the WeatherData Repository
+	   *
+	   * @return	Returns the WeatherData Repository
+	   */
+	  public static WeatherDataRepository getWeatherDataRepository() { return weatherDataRepository; }
     // The spring cron expression should be formatted as follows:
     // seconds minutes hours day_of_month month day(s)_of_week.
 
@@ -70,6 +81,9 @@ public class WebserverApplication {
     protected void updatePumpStations() {
         populatePumpStations();
     }
+  
+    @Scheduled(cron = "0 */5 * * * *")
+	  protected void updateWeatherData() { populateWeatherData(); }
 
     private void populateBicycleStations() {
         List<BicycleStation> bicycleStations = APIDataHandler.getBicycleStationData();
@@ -85,22 +99,32 @@ public class WebserverApplication {
         List<BicycleStand> allBicycleStands = APIDataHandler.getBicycleStandData();
         bicycleStandRepository.saveAll(allBicycleStands);
     }
+  
+    private void populateWeatherData()
+	  {
+		  List<WeatherData> weatherDataList = APIDataHandler.getWeatherData();
+		  weatherDataRepository.saveAll(weatherDataList);
+	  }
 
     private void initDatabase() {
         bicycleStationRepository.deleteAll();
         pumpStationRepository.deleteAll();
         bicycleStandRepository.deleteAll();
+        weatherDataRepository.deleteAll();
 
         populateBicycleStations();
         populatePumpStations();
         populateBicycleStands();
+		  populateWeatherData();
     }
 
     @EventListener(ContextStartedEvent.class)
-    protected void onApplicationStartup() {
-        initDatabase();
+	  protected void onApplicationStartup()
+	  {
+		  initDatabase();
 
-        updateBicycleStations();
-        updatePumpStations();
-    }
+		  updateBicycleStations();
+		  updatePumpStations();
+		  updateWeatherData();
+	  }
 }

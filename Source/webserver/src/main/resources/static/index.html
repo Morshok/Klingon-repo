@@ -39,12 +39,47 @@
         </nav>
     </header>
     <main>
-        <div id="filters">
-            <div class="head">
-                <span>Filters</span>
-                <!-- Hide/show toggle -->
-                <button id="filter_toggle"><i class="fa fa-angle-down"></i></button>
+        <div id="wrapper">
+            <div id="filters">
+                <div class="head">
+                    <span>Filter:</span>
+                    <!-- Hide/show toggle -->
+                    <button id="filter_toggle"><i class="fa fa-angle-down"></i></button>
+                </div>
+                <div class="content">
+                    <form>
+                        <input type="checkbox" id="bicycles" name="checkbox-1" value="Bicycle Stations" checked>
+                        <label for="bicycles">Bicycle Stations</label>
+                        <input type="checkbox" id="pumps" name="checkbox-2" value="Pump Stations">
+                        <label for="pumps">Pump Stations</label>
+                    </form>
+                </div>
             </div>
+            <div id="weather-data">
+                <div class="head">
+                    <span>Vädret:</span>
+                    <div class="location-dropdown">
+                        <button type="button" onClick="toggleLocationDropdownMenu()" class="location-dropdown-button">Välj plats</button>
+                        <div id="location-dropdown-menu" class="location-dropdown-content">
+                            <a id="0" onClick="changeWeatherDataIndex(this)">Angered</a><br>
+                            <a id="1" onClick="changeWeatherDataIndex(this)">Göteborg</a><br>
+                            <a id="2" onClick="changeWeatherDataIndex(this)">Mölndal</a><br>
+                            <a id="3" onClick="changeWeatherDataIndex(this)">Torslanda</a>
+                        </div>
+                    </div>
+                    <!-- Hide/show toggle -->
+                    <button id="weather-data-toggle"><i class="fa fa-angle-down"></i></button>
+                </div>
+                <div class="content">
+                    <form>
+                        <div id="location"></div>
+                        <div id="description"></div>
+                        <div id="temperature"></div>
+                        <div id="windSpeed"></div>
+                        <div id="windDegree"></div>
+                        <div id="cloudsPercentage"></div>
+                    </form>
+                </div>
             <div class="content">
                 <form>
                     <input type="checkbox" id="bicycles" name="checkbox-1" value="Bicycle Stations" checked>
@@ -126,7 +161,6 @@
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/@gegeweb/leaflet-routing-machine-openroute@latest/dist/leaflet-routing-openroute.min.js"></script>
 <script src='https://unpkg.com/@yaireo/relative-time'></script>
-
 <script src="./js/main.js" type="text/javascript"></script>
 </body>
 </html>
