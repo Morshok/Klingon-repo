@@ -111,12 +111,15 @@ public class APIDataHandler {
 
             jsonArray.put(jsonObject.toMap());
         }
-     * GET request that adds all bicycle station to http://localhost:8080/api/bicycleStands
+        
+        return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
+    }
+    
+    /** GET request that adds all bicycle station to http://localhost:8080/api/bicycleStands
      * and gives a JSONArray of the bicycle stands from the repository
      *
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */
-
     @GetMapping(path = "/bicycleStands", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> jsonBicycleStands() {
         Iterable<BicycleStand> allStations = WebserverApplication.getBicycleStandRepository().findAll();
