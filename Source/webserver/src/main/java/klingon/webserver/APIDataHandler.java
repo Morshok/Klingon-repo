@@ -115,7 +115,8 @@ public class APIDataHandler {
         return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
     }
     
-    /** GET request that adds all bicycle station to http://localhost:8080/api/bicycleStands
+    /** 
+     * GET request that adds all bicycle station to http://localhost:8080/api/bicycleStands
      * and gives a JSONArray of the bicycle stands from the repository
      *
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
