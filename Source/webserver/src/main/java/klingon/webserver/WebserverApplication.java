@@ -34,7 +34,7 @@ public class WebserverApplication {
         bicycleStationRepository = context.getBean(BicycleStationRepository.class);
         pumpStationRepository = context.getBean(PumpStationRepository.class);
         bicycleStandRepository = context.getBean(BicycleStandRepository.class);
-	weatherDataRepository = context.getBean(WeatherDataRepository.class);
+	    weatherDataRepository = context.getBean(WeatherDataRepository.class);
         context.start();
     }
 

@@ -122,6 +122,10 @@ main div.info ul li a:active {
 }
 
 main div#wrapper {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 999;
 }
 
 main div#route_info div.head span {
@@ -160,7 +164,7 @@ main div#route_info div.content ul li i.info_icon {
     cursor: pointer;
 }
 
-main div#filters, main div#route_info {
+main div#route_info {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -245,10 +249,7 @@ main div#weather-data {
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    position: absolute;
-    top: 10px;
-    z-index: 999;
-    left: 10px;
+    margin-top: 10px;
 }
 
 main div#weather-data div.head {

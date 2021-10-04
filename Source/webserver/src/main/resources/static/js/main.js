@@ -92,7 +92,7 @@ let userPosition = {
 let searchData = [];
 let gpsEvenListenerId;
 
-$(window, "location-dropdown-button").click(function() {
+$(".location-dropdown-button").click(function() {
     $("#location-dropdown-menu").toggleClass("show");
 });
 
@@ -100,14 +100,6 @@ window.leafletMap = L.map('map', {zoomControl: false}).setView([57.6900727722877
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
     .addControl(L.control.zoom( { position: 'bottomright' } ));
-
-const seRelTime = new RelativeTime({locale: "sv"})
-const bicycleStationGroup = L.layerGroup();
-const pumpStationGroup = L.layerGroup();
-const bicycleIcon = L.icon({
-    iconUrl: '/images/cykelstation.png',
-    iconSize:     [32, 32],
-});
 
 function updateUserPosition(latitude, longitude) {
     userPosition.pos = {latitude: latitude, longitude: longitude};
