@@ -395,7 +395,7 @@ public class APIDataHandler {
                     double windDegree = jsonArray.getJSONObject(0).getJSONObject("wind").getDouble("deg");
                     double cloudsPercentage = jsonArray.getJSONObject(0).getJSONObject("clouds").getDouble("all");
 
-                    WeatherData weatherData = new WeatherData(Long.valueOf(i + 1), location, weatherDescription, temperature, windSpeed, windDegree, cloudsPercentage);
+                    WeatherData weatherData = new WeatherData(Long.valueOf(i), location, weatherDescription, temperature, windSpeed, windDegree, cloudsPercentage);
 
                     weatherDataList.add(weatherData);
 
