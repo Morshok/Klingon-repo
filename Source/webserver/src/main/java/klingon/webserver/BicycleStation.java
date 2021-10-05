@@ -21,6 +21,7 @@ public class BicycleStation {
     private String address;
     private Integer availableBikes;
     private Timestamp lastUpdated;
+    private String city;
 
 
     /**
@@ -43,13 +44,14 @@ public class BicycleStation {
      * @param lastUpdated    The timestamp last updated
      */
     public BicycleStation(Long id, Double latitude, Double longitude, String address, Integer availableBikes,
-                          Timestamp lastUpdated) {
+                          Timestamp lastUpdated, String city) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
         this.availableBikes = availableBikes;
         this.lastUpdated = lastUpdated;
+        this.city = city;
     }
 
     /**

@@ -22,6 +22,7 @@ public class PumpStation
     private String comment;
     private double latitude;
     private double longitude;
+    private String city;
 
     /**
      * A zero argument constructor, as per the definition of a bean
@@ -37,7 +38,7 @@ public class PumpStation
      * @param latitude  The latitude component of the geographical coordinate at which this PumpStation is located
      * @param longitude The longitude component of the geographical coordinate at which this PumpStation is located
      */
-    public PumpStation(Long id, String address, String comment, double latitude, double longitude)
+    public PumpStation(Long id, String address, String comment, double latitude, double longitude, String city)
     {
         super();
         this.id = id;
@@ -45,6 +46,7 @@ public class PumpStation
         this.comment = comment;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.city = city;
     }
 
     /**

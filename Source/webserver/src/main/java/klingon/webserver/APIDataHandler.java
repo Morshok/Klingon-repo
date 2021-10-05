@@ -111,11 +111,11 @@ public class APIDataHandler {
 
             jsonArray.put(jsonObject.toMap());
         }
-        
+
         return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
     }
-    
-    /** 
+
+    /**
      * GET request that adds all bicycle station to http://localhost:8080/api/bicycleStands
      * and gives a JSONArray of the bicycle stands from the repository
      *
@@ -175,8 +175,9 @@ public class APIDataHandler {
                     String comment = jsonArray.getJSONObject(i).getString("Comment");
                     double latitude = jsonArray.getJSONObject(i).getDouble("Lat");
                     double longitude = jsonArray.getJSONObject(i).getDouble("Lon");
+                    String city = "Göteborg";
 
-                    allPumpStations.add(new PumpStation(id, address, comment, latitude, longitude));
+                    allPumpStations.add(new PumpStation(id, address, comment, latitude, longitude, city));
                 }
             }
 
@@ -226,12 +227,13 @@ public class APIDataHandler {
                     Integer availableBikes = jsonArray.getJSONObject(i).getInt("AvailableBikes");
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                     String name = jsonArray.getJSONObject(i).getString("Name");
+                    String city = "Göteborg";
 
                     if (name.startsWith("BIKE")) {
                         name = "Bike on the loose";
                     }
                     BicycleStation bicycleStation = new BicycleStation(stationId, latitude, longitude, name,
-                            availableBikes, timestamp);
+                            availableBikes, timestamp, city);
 
                     allBicycleStations.add(bicycleStation);
                 }
@@ -282,8 +284,9 @@ public class APIDataHandler {
                     Double longitude = jsonArray.getJSONObject(i).getDouble("Long");
                     Integer parkingSpace = jsonArray.getJSONObject(i).getInt("Spaces");
                     String address = jsonArray.getJSONObject(i).getString("Address");
+                    String city = "Göteborg";
 
-                    BicycleStand bicycleStand = new BicycleStand(id, latitude, longitude, address, parkingSpace);
+                    BicycleStand bicycleStand = new BicycleStand(id, latitude, longitude, address, parkingSpace, city);
 
                     if (bicycleStand.getParkingSpace() > 0) {
                         allBicycleStands.add(bicycleStand);
@@ -293,7 +296,6 @@ public class APIDataHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         return mergeCloseBicycleStand(allBicycleStands);
     }
@@ -313,6 +315,7 @@ public class APIDataHandler {
                     if (z < 0.0002 && (bicycleStation.getAddress().equals(bicycleStation2.getAddress()))) {
                         bicycleStation2.setAvailableBikes(bicycleStation2.getAvailableBikes() + bicycleStation.getAvailableBikes());
                         newAddress = false;
+                        break;
                     }
                 }
                 if (newAddress) {
@@ -338,6 +341,7 @@ public class APIDataHandler {
                     if (z < 0.0003 || (bicycleStand.getAddress().equals(bicycleStand2.getAddress()))) {
                         bicycleStand2.setParkingSpace(bicycleStand2.getParkingSpace() + bicycleStand.getParkingSpace());
                         newAddress = false;
+                        break;
                     }
                 }
                 if (newAddress) {
@@ -355,17 +359,15 @@ public class APIDataHandler {
      *
      * @return Returns a list weather data for select locations in the Gothenburg area.
      */
-    public static ArrayList<WeatherData> getWeatherData()
-    {
+    public static ArrayList<WeatherData> getWeatherData() {
         ArrayList<WeatherData> weatherDataList = new ArrayList<>();
 
         // List of all locations we want to fetch weather data from.
         // Should probably be made private final static at the top
         // of this file though.
-        String[] locations = new String[] { "Angered", "Göteborg", "Mölndal", "Torslanda" };
+        String[] locations = new String[]{"Angered", "Göteborg", "Mölndal", "Torslanda"};
 
-        for(int i = 0; i < locations.length; i++)
-        {
+        for (int i = 0; i < locations.length; i++) {
             try {
                 URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + locations[i] + "&units=metric&lang=sv&appid=" + WEATHER_APP_ID);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -407,4 +409,16 @@ public class APIDataHandler {
         }
         return weatherDataList;
     }
+
+    public static String objectIdInterval(int from, int to){
+        StringBuilder result = new StringBuilder("[");
+        for(int i = 0 ; i <= to - from; i++){
+            result.append((from + i));
+            result.append(",");
+        }
+        result.append("]");
+
+        return result.toString();
+    }
+
 }

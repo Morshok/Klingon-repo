@@ -19,6 +19,7 @@ public class BicycleStand {
     private Double longitude;
     private String address;
     private Integer parkingSpace;
+    private String city;
 
     /**
      * Constructor for initializing the bicycle station instance
@@ -38,12 +39,13 @@ public class BicycleStand {
      * @param address      The address of the bicycle stand
      * @param parkingSpace The amount of parking space of the bicycle stand
      */
-    public BicycleStand(Long id, Double latitude, Double longitude, String address, Integer parkingSpace) {
+    public BicycleStand(Long id, Double latitude, Double longitude, String address, Integer parkingSpace, String city) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
         this.parkingSpace = parkingSpace;
+        this.city = city;
     }
 
     /**
