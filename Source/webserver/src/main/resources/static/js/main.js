@@ -160,7 +160,6 @@ function loadMarker() {
 
         //gets the city value from dropdown menu in filter
         const value = document.getElementById("cities-dropdown").value;
-
         if (value == 1) { //Only make markers for Gothenburg appear if the city Gothenburg is selected.
             if (item.check()) {
                 if (!window.leafletMap.hasLayer(item.layer)) {
@@ -174,6 +173,7 @@ function loadMarker() {
             }
         }
 
+
     });
 
     if (calledApi !== changedData && !calledApi) {
@@ -183,29 +183,60 @@ function loadMarker() {
 
 loadMarker();
 
-//a function that unchecks all the checkboxes
-function resetCheckboxes(classname) {
-    var groupArray = document.getElementsByClassName(classname);
+/** A function that unchecks all the checkboxes except for Bicycle Stations
+ *
+ * @param className - The class for checkboxes in index.html file
+ * @param currentCity - The value of the city i.e 2==Malmö and 3==Stockholm
+ */
+
+function resetCheckboxes(className, currentCity) {
+    const groupArray = document.getElementsByClassName(className);
     for (var i = 1; i < groupArray.length; i++) {
-        var cb = document.getElementById(groupArray[i].id);
-        cb.checked = false;
+        const checkbox = document.getElementById(groupArray[i].id);
+        checkbox.checked = false;
     }
+    //make sures that the checkbox for bicycle station is checked when a new city is chosen.
+    const bsCheckbox = document.getElementById('bicycles');
+    bsCheckbox.checked = true;
+
+    //if statements that adds the bicycle markers depending on the city
+    if (currentCity == 2) {
+        //window.leafletMap.addLayer(bicycleStationGroup)
+    } else if (currentCity == 3) {
+        //window.leafletMap.addLayer(bicycleStationGroup)
+    } else {
+        window.leafletMap.addLayer(bicycleStationGroup)
+    }
+    ;
 }
 
-// a function that changes the view to another city
+/** A function that removes the previous markers when a city is changed
+ *
+ * @param bicycleStationGroup - The bicycle station markers
+ * @param pumpStationGroup - The pump station markers
+ * @param bicycleStandGroup - The bicycle stand markers
+ */
+function removeCityMarkers(bicycleStationGroup, pumpStationGroup, bicycleStandGroup) {
+    window.leafletMap.removeLayer(bicycleStationGroup);
+    window.leafletMap.removeLayer(pumpStationGroup);
+    window.leafletMap.removeLayer(bicycleStandGroup);
+}
+
+/**  A function that changes the view to another city
+ */
 function changeCity() {
     const city = document.getElementById("cities-dropdown").value;
     document.getElementById("demo").innerHTML = "You selected: " + city;
-    if (city == 2) {
-        window.leafletMap.setView([55.59349148990642, 13.006630817073233], 14);  //Malmö coordinates
-        window.leafletMap.removeLayer(pumpStationGroup);
-        resetCheckboxes('checkbox-group');  //when a new city is choosen, the checkboxes should be unchecked
-    } else if (city == 3) {
-        window.leafletMap.setView([59.32967666285133, 18.068504289165652], 14);   //Stockholm coordinates
-        window.leafletMap.addLayer(pumpStationGroup);
-        resetCheckboxes('checkbox-group');
+    if (city == 2) {  //if the city Malmö is chosen
+        window.leafletMap.setView([55.59349148990642, 13.006630817073233], 14);
+        removeCityMarkers(bicycleStationGroup, pumpStationGroup, bicycleStandGroup); // Removes the previously set markers
+        resetCheckboxes('checkbox-group', 2);  //when a new city is choosen, the checkboxes should be unchecked
+    } else if (city == 3) { //if the city Stockholm is chosen
+        window.leafletMap.setView([59.32967666285133, 18.068504289165652], 14);
+        removeCityMarkers(bicycleStationGroup, pumpStationGroup, bicycleStandGroup);
+        resetCheckboxes('checkbox-group', 3);
     } else {
-        window.leafletMap.setView([57.706468214881355, 11.970101946662373], 14);//Gothenburg coordinates
+        window.leafletMap.setView([57.706468214881355, 11.970101946662373], 14); //sets the view to Gothenburg
         resetCheckboxes('checkbox-group');
     }
 }
