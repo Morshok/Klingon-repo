@@ -226,7 +226,6 @@ function removeCityMarkers(bicycleStationGroup, pumpStationGroup, bicycleStandGr
  */
 function changeCity() {
     const city = document.getElementById("cities-dropdown").value;
-    document.getElementById("demo").innerHTML = "You selected: " + city;
     if (city == 2) {  //if the city Malmö is chosen
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 14);
         removeCityMarkers(bicycleStationGroup, pumpStationGroup, bicycleStandGroup); // Removes the previously set markers
