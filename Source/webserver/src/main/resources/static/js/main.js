@@ -161,7 +161,7 @@ function loadMarker() {
         //gets the city value from dropdown menu in filter
         const value = document.getElementById("cities-dropdown").value;
 
-        if (value == 1) { //if the city Gothenburg is selected
+        if (value == 1) { //Only make markers for Gothenburg appear if the city Gothenburg is selected.
             if (item.check()) {
                 if (!window.leafletMap.hasLayer(item.layer)) {
                     calledApi = true;
