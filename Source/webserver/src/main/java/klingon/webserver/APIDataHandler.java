@@ -281,12 +281,13 @@ public class APIDataHandler {
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                     String name = jsonArray.getJSONObject(i).getString("Name");
                     String city = "Göteborg";
+                    String company = "Styr & ställ";
 
                     if (name.startsWith("BIKE")) {
                         name = "Bike on the loose";
                     }
                     BicycleStation bicycleStation = new BicycleStation(stationId, latitude, longitude, name,
-                            availableBikes, timestamp, city);
+                            availableBikes, timestamp, city, company);
 
                     allBicycleStations.add(bicycleStation);
                 }
@@ -296,6 +297,101 @@ public class APIDataHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        try {
+            URL url = new URL("http://api.citybik.es/v2/networks/malmobybike");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != 200) {
+                throw new RuntimeException("HttpResponseCode: " + responseCode);
+            } else {
+
+                StringBuilder inline = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+                while (scanner.hasNext()) {
+                    inline.append(scanner.nextLine());
+                }
+                scanner.close();
+
+                JSONObject jsonObject = new JSONObject(inline.toString());
+                JSONObject jsonObject1 = jsonObject.getJSONObject("network");
+                JSONArray jsonArray = jsonObject1.getJSONArray("stations");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Long id = (long) allBicycleStations.size();
+                    Double latitude = jsonArray.getJSONObject(i).getDouble("latitude");
+                    Double longitude = jsonArray.getJSONObject(i).getDouble("longitude");
+                    Integer availableBikes = jsonArray.getJSONObject(i).getInt("free_bikes");
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    JSONObject extra = jsonArray.getJSONObject(i).getJSONObject("extra");
+                    Object addressObject = extra.get("address") == JSONObject.NULL ? "N/A" : extra.get("address");
+                    String address = addressObject.toString();
+                    String city = "Malmö";
+                    String company = "Malmö by bike";
+
+                    BicycleStation bicycleStation = new BicycleStation(id, latitude, longitude, address,
+                            availableBikes, timestamp, city, company);
+
+                    allBicycleStations.add(bicycleStation);
+
+
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            URL url = new URL("http://api.citybik.es/v2/networks/lundahoj");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != 200) {
+                throw new RuntimeException("HttpResponseCode: " + responseCode);
+            } else {
+
+                StringBuilder inline = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+                while (scanner.hasNext()) {
+                    inline.append(scanner.nextLine());
+                }
+                scanner.close();
+
+                JSONObject jsonObject = new JSONObject(inline.toString());
+                JSONObject jsonObject1 = jsonObject.getJSONObject("network");
+                JSONArray jsonArray = jsonObject1.getJSONArray("stations");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Long id = (long) allBicycleStations.size();
+                    Double latitude = jsonArray.getJSONObject(i).getDouble("latitude");
+                    Double longitude = jsonArray.getJSONObject(i).getDouble("longitude");
+                    Integer availableBikes = jsonArray.getJSONObject(i).getInt("free_bikes");
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    String address = jsonArray.getJSONObject(i).getString("name");
+                    String city = "Lund";
+                    String company = "Lundahoj";
+
+                    BicycleStation bicycleStation = new BicycleStation(id, latitude, longitude, address,
+                            availableBikes, timestamp, city, company);
+
+                    allBicycleStations.add(bicycleStation);
+
+
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return mergeCloseBicycleStations(allBicycleStations);
     }
 
