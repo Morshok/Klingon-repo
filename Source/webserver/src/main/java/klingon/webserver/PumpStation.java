@@ -49,6 +49,17 @@ public class PumpStation
         this.city = city;
     }
 
+    public PumpStation(Long id, String address,  double latitude, double longitude, String city)
+    {
+        super();
+        this.id = id;
+        this.address = address;
+        this.comment = "";
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.city = city;
+    }
+
     /**
      * Method for getting the id from a PumpStation object
      *

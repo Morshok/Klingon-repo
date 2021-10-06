@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -179,6 +180,58 @@ public class APIDataHandler {
 
                     allPumpStations.add(new PumpStation(id, address, comment, latitude, longitude, city));
                 }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            URL url = new URL("https://ckan-malmo.dataplatform.se/dataset/c6051c71-4d12-4c93-9966-1ad599430d03/resource/" +
+                    "071f8435-38e7-4f66-8ebf-9d10ddaa4f0f/download/cykelpumpar.geojson");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode != 200) {
+                throw new RuntimeException("HttpResponseCode: " + responseCode);
+            } else {
+                StringBuilder inline = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+
+                while (scanner.hasNext()) {
+                    inline.append(scanner.nextLine());
+                }
+
+                scanner.close();
+
+
+                JSONObject jsonObject1 = new JSONObject(inline.toString());
+                JSONArray jsonArray = jsonObject1.getJSONArray("features");
+
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject properties = jsonArray.getJSONObject(i).getJSONObject("properties");
+                    JSONObject geometry = jsonArray.getJSONObject(i).getJSONObject("geometry");
+                    String type = geometry.getString("type");
+                    JSONArray coordinates = geometry.getJSONArray("coordinates");
+                    if(type.equals("MultiPoint")) {
+                        coordinates = coordinates.getJSONArray(0);
+                    }
+
+                    Long id = (long) allPumpStations.size();
+                    BigDecimal test1 = coordinates.getBigDecimal(0);
+                    BigDecimal test2 = coordinates.getBigDecimal(1);
+                    double longitude = test1.doubleValue();
+                    double latitude = test2.doubleValue();
+                    String address = properties.getString("adress");
+                    String city = "Malmö";
+
+                    allPumpStations.add(new PumpStation( id, address, latitude, longitude, city));
+                }
+
             }
 
         } catch (Exception e) {
@@ -397,7 +450,7 @@ public class APIDataHandler {
                     double windDegree = jsonArray.getJSONObject(0).getJSONObject("wind").getDouble("deg");
                     double cloudsPercentage = jsonArray.getJSONObject(0).getJSONObject("clouds").getDouble("all");
 
-                    WeatherData weatherData = new WeatherData(Long.valueOf(i), location, weatherDescription, temperature, windSpeed, windDegree, cloudsPercentage);
+                    WeatherData weatherData = new WeatherData((long) i, location, weatherDescription, temperature, windSpeed, windDegree, cloudsPercentage);
 
                     weatherDataList.add(weatherData);
 
@@ -409,16 +462,4 @@ public class APIDataHandler {
         }
         return weatherDataList;
     }
-
-    public static String objectIdInterval(int from, int to){
-        StringBuilder result = new StringBuilder("[");
-        for(int i = 0 ; i <= to - from; i++){
-            result.append((from + i));
-            result.append(",");
-        }
-        result.append("]");
-
-        return result.toString();
-    }
-
 }
