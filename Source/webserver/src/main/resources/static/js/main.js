@@ -19,8 +19,7 @@ const noBikeIcon = L.icon({
     iconSize: [32, 32],
 });
 
-$("button#weather-data-toggle").click(function()
-{
+$("button#weather-data-toggle").click(function () {
     $("div#weather-data").toggleClass("closed");
     $("button#weather-data-toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
@@ -46,7 +45,7 @@ const markerGroups = [
         },
         layer: bicycleStationGroup,
         icon: function (state) {
-            if (state.availableBikes < 5) {
+            if (state.availableBikes == 0) {
                 return noBikeIcon;
             }
             return bicycleIcon;
@@ -92,10 +91,11 @@ let userPosition = {
 let searchData = [];
 let gpsEvenListenerId;
 
-window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
+window.leafletMap = L.map('map', {zoomControl: false}).setView([57.706468214881355, 11.970101946662373], 14)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
-    .addControl(L.control.zoom( { position: 'bottomright' } ));
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }))
+    .addControl(L.control.zoom({position: 'bottomright'}));
 
 function updateUserPosition(latitude, longitude) {
     userPosition.pos = {latitude: latitude, longitude: longitude};
@@ -157,16 +157,23 @@ function loadMarker() {
 
     let calledApi = false, changedData = false;
     markerGroups.forEach(function (item) {
-        if (item.check()) {
-            if (!window.leafletMap.hasLayer(item.layer)) {
-                calledApi = true;
-                buildMarkerGroup(item);
+
+        //gets the city value from dropdown menu in filter
+        const value = document.getElementById("cities-dropdown").value;
+
+        if (value == 1) { //if the city Gothenburg is selected
+            if (item.check()) {
+                if (!window.leafletMap.hasLayer(item.layer)) {
+                    calledApi = true;
+                    buildMarkerGroup(item);
+                }
+            } else {
+                item.layer.clearLayers().remove();
+                allMarkers[item.apiPath] = [];
+                changedData = true
             }
-        } else {
-            item.layer.clearLayers().remove();
-            allMarkers[item.apiPath] = [];
-            changedData = true
         }
+
     });
 
     if (calledApi !== changedData && !calledApi) {
@@ -176,23 +183,46 @@ function loadMarker() {
 
 loadMarker();
 
+//a function that unchecks all the checkboxes
+function resetCheckboxes(classname) {
+    var groupArray = document.getElementsByClassName(classname);
+    for (var i = 1; i < groupArray.length; i++) {
+        var cb = document.getElementById(groupArray[i].id);
+        cb.checked = false;
+    }
+}
+// a function that changes the view to another city
+function changeCity() {
+    const city = document.getElementById("cities-dropdown").value;
+    document.getElementById("demo").innerHTML = "You selected: " + city;
+    if (city == 2) {
+        window.leafletMap.setView([55.59349148990642, 13.006630817073233], 14);  //Malmö coordinates
+        window.leafletMap.removeLayer(pumpStationGroup);
+        resetCheckboxes('checkbox-group');  //when a new city is choosen, the checkboxes should be unchecked
+    } else if (city == 3) {
+        window.leafletMap.setView([59.32967666285133, 18.068504289165652], 14);   //Stockholm coordinates
+        window.leafletMap.addLayer(pumpStationGroup);
+        resetCheckboxes('checkbox-group');
+    } else {
+        window.leafletMap.setView([57.706468214881355, 11.970101946662373], 14);//Gothenburg coordinates
+        resetCheckboxes('checkbox-group');
+    }
+}
+
 var index = 1;
 var repeater;
-function loadWeatherData(f_index)
-{
-    if(f_index === undefined)
-    {
+
+function loadWeatherData(f_index) {
+    if (f_index === undefined) {
         f_index = 1;
     }
-    
+
     $.ajax("/api/weatherData",
-    {
-        contentType: "application/json",
-        dataType: "json",
-        complete: function(response)                
         {
-                if(response.status === 200)
-                {
+            contentType: "application/json",
+            dataType: "json",
+            complete: function (response) {
+                if (response.status === 200) {
                     let data = response.responseJSON;
 
                     $('#location').html('Plats: ' + data[f_index].location);
@@ -202,23 +232,24 @@ function loadWeatherData(f_index)
                     $('#windDegree').html('Vindriktning: ' + data[f_index].windDegree + '&deg;');
                     $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
                 }
-        }
-    })
+            }
+        })
 
     repeater = setTimeout(loadWeatherData, 60000);
 }
+
 $(document).ready(loadWeatherData(this.index));
 
-$("select#location-dropdown").change(function(event){
+$("select#location-dropdown").change(function (event) {
     changeWeatherDataIndex($("select#location-dropdown").val());
 });
 
-function changeWeatherDataIndex(obj)
-{
+function changeWeatherDataIndex(obj) {
     this.index = obj;
     clearTimeout(repeater);
     loadWeatherData(index);
 }
+
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
 });
