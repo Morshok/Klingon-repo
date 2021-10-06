@@ -37,6 +37,8 @@ public class PumpStation
      * @param comment   A comment associated with this PumpStation, often times left empty
      * @param latitude  The latitude component of the geographical coordinate at which this PumpStation is located
      * @param longitude The longitude component of the geographical coordinate at which this PumpStation is located
+     * @param city      The city where the pump station is located
+     *
      */
     public PumpStation(Long id, String address, String comment, double latitude, double longitude, String city)
     {
@@ -94,6 +96,10 @@ public class PumpStation
      * @return Returns the longitude of this PumpStation
      */
     public double getLongitude() { return longitude; }
+
+    public String getCity() {
+        return city;
+    }
 
     /**
      * Method for getting PumpStation as a String

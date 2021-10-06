@@ -26,7 +26,7 @@ import java.util.Scanner;
  * and returns a list of parsed objects.
  *
  * @author Anthon Lenander, Phong Nguyen
- * @version 2021-09-30
+ * @version 2021-10-06
  * @see <a href="https://data.goteborg.se/BikeService/v1.2/PumpStations">data.goteborg.se/BikeService/v1.2/PumpStations</a>
  * @see <a href="https://data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations">data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations</a>
  */
@@ -34,10 +34,9 @@ import java.util.Scanner;
 @RestController
 @RequestMapping("/api")
 public class APIDataHandler {
-    //These constants are used to make an API call to the pump station service
-    private static final String PUMP_STATION_APP_ID = "612f222b-e5ee-4547-ac83-b191ddc283df";
+
     private static final String WEATHER_APP_ID = "c25006e4f1f04463e8cd05a4d3d6008e";
-    private static final String BICYCLE_STATION_AND_STAND_APP_ID = "ad5c61b7-fc05-44b6-8762-30ba6ecda1c2";
+    private static final String GOTHENBURG_APP_ID = "ad5c61b7-fc05-44b6-8762-30ba6ecda1c2";
     private static final String FORMAT = "Json";
 
 
@@ -59,6 +58,8 @@ public class APIDataHandler {
             jsonObject.put("address", bicycleStation.getAddress());
             jsonObject.put("availableBikes", bicycleStation.getAvailableBikes());
             jsonObject.put("lastUpdated", bicycleStation.getLastUpdatedString());
+            jsonObject.put("city", bicycleStation.getCity());
+            jsonObject.put("company", bicycleStation.getCompany());
             jsonArray.put(jsonObject.toMap());
         }
         return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
@@ -81,6 +82,7 @@ public class APIDataHandler {
             jsonObject.put("latitude", pumpStation.getLatitude());
             jsonObject.put("longitude", pumpStation.getLongitude());
             jsonObject.put("address", pumpStation.getAddress());
+            jsonObject.put("city", pumpStation.getCity());
             jsonArray.put(jsonObject.toMap());
         }
         return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
@@ -133,6 +135,7 @@ public class APIDataHandler {
             jsonObject.put("latitude", bicycleStand.getLatitude());
             jsonObject.put("longitude", bicycleStand.getLongitude());
             jsonObject.put("address", bicycleStand.getAddress());
+            jsonObject.put("city", bicycleStand.getCity());
             jsonArray.put(jsonObject.toMap());
         }
         return new ResponseEntity<>(jsonArray.toList(), HttpStatus.OK);
@@ -140,15 +143,16 @@ public class APIDataHandler {
 
     /**
      * Method for returning a list of all
-     * pump stations in the Gothenburg area.
+     * pump stations in Göteborg and Malmö.
      *
-     * @return Returns a list of all pump stations in the Gothenburg area.
+     * @return Returns a list of all pump stations.
      */
     public static ArrayList<PumpStation> getPumpStationData() {
         ArrayList<PumpStation> allPumpStations = new ArrayList<>();
 
         try {
-            URL url = new URL("https://data.goteborg.se/BikeService/v1.2/PumpStations/" + PUMP_STATION_APP_ID + "?&format=" + FORMAT);
+            URL url = new URL("https://data.goteborg.se/BikeService/v1.2/PumpStations/" + GOTHENBURG_APP_ID +
+                    "?&format=" + FORMAT);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
@@ -167,15 +171,14 @@ public class APIDataHandler {
 
                 scanner.close();
 
-                JSONObject jsonObject = new JSONObject("{Object: " + inline + "}");
-                JSONArray jsonArray = jsonObject.getJSONArray("Object");
+                JSONArray pumpStations = new JSONArray(inline.toString());
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    Long id = jsonArray.getJSONObject(i).getLong("ID");
-                    String address = jsonArray.getJSONObject(i).getString("Address");
-                    String comment = jsonArray.getJSONObject(i).getString("Comment");
-                    double latitude = jsonArray.getJSONObject(i).getDouble("Lat");
-                    double longitude = jsonArray.getJSONObject(i).getDouble("Lon");
+                for (int i = 0; i < pumpStations.length(); i++) {
+                    Long id = pumpStations.getJSONObject(i).getLong("ID");
+                    String address = pumpStations.getJSONObject(i).getString("Address");
+                    String comment = pumpStations.getJSONObject(i).getString("Comment");
+                    double latitude = pumpStations.getJSONObject(i).getDouble("Lat");
+                    double longitude = pumpStations.getJSONObject(i).getDouble("Lon");
                     String city = "Göteborg";
 
                     allPumpStations.add(new PumpStation(id, address, comment, latitude, longitude, city));
@@ -207,14 +210,12 @@ public class APIDataHandler {
 
                 scanner.close();
 
+                JSONObject jsonObject = new JSONObject(inline.toString());
+                JSONArray features = jsonObject.getJSONArray("features");
 
-                JSONObject jsonObject1 = new JSONObject(inline.toString());
-                JSONArray jsonArray = jsonObject1.getJSONArray("features");
-
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject properties = jsonArray.getJSONObject(i).getJSONObject("properties");
-                    JSONObject geometry = jsonArray.getJSONObject(i).getJSONObject("geometry");
+                for (int i = 0; i < features.length(); i++) {
+                    JSONObject properties = features.getJSONObject(i).getJSONObject("properties");
+                    JSONObject geometry = features.getJSONObject(i).getJSONObject("geometry");
                     String type = geometry.getString("type");
                     JSONArray coordinates = geometry.getJSONArray("coordinates");
                     if(type.equals("MultiPoint")) {
@@ -222,10 +223,10 @@ public class APIDataHandler {
                     }
 
                     Long id = (long) allPumpStations.size();
-                    BigDecimal test1 = coordinates.getBigDecimal(0);
-                    BigDecimal test2 = coordinates.getBigDecimal(1);
-                    double longitude = test1.doubleValue();
-                    double latitude = test2.doubleValue();
+                    BigDecimal longi = coordinates.getBigDecimal(0);
+                    BigDecimal lati = coordinates.getBigDecimal(1);
+                    double longitude = longi.doubleValue();
+                    double latitude = lati.doubleValue();
                     String address = properties.getString("adress");
                     String city = "Malmö";
 
@@ -238,11 +239,12 @@ public class APIDataHandler {
             e.printStackTrace();
         }
 
+
         return allPumpStations;
     }
 
     /**
-     * This method connects and requests data from data.goteborg.se
+     * This method connects and requests data from göteborgsstad, citybikes and malmöstad
      * and parses the data and add each element to a list, and
      * returns the list of elements as BicycleStation
      *
@@ -253,7 +255,8 @@ public class APIDataHandler {
         ArrayList<BicycleStation> allBicycleStations = new ArrayList<>();
 
         try {
-            URL url = new URL("https://data.goteborg.se/SelfServiceBicycleService/v2.0/Stations/" + BICYCLE_STATION_AND_STAND_APP_ID + "?&format=" + FORMAT);
+            URL url = new URL("https://data.goteborg.se/SelfServiceBicycleService/v2.0/Stations/" +
+                    GOTHENBURG_APP_ID + "?&format=" + FORMAT);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -271,15 +274,14 @@ public class APIDataHandler {
                 }
                 scanner.close();
 
-                JSONObject jsonObject = new JSONObject("{ Object:" + inline + "}");
-                JSONArray jsonArray = jsonObject.getJSONArray("Object");
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    Long stationId = jsonArray.getJSONObject(i).getLong("StationId");
-                    Double latitude = jsonArray.getJSONObject(i).getDouble("Lat");
-                    Double longitude = jsonArray.getJSONObject(i).getDouble("Long");
-                    Integer availableBikes = jsonArray.getJSONObject(i).getInt("AvailableBikes");
+                JSONArray bicycleStations = new JSONArray(inline.toString());
+                for (int i = 0; i < bicycleStations.length(); i++) {
+                    Long stationId = bicycleStations.getJSONObject(i).getLong("StationId");
+                    Double latitude = bicycleStations.getJSONObject(i).getDouble("Lat");
+                    Double longitude = bicycleStations.getJSONObject(i).getDouble("Long");
+                    Integer availableBikes = bicycleStations.getJSONObject(i).getInt("AvailableBikes");
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                    String name = jsonArray.getJSONObject(i).getString("Name");
+                    String name = bicycleStations.getJSONObject(i).getString("Name");
                     String city = "Göteborg";
                     String company = "Styr & ställ";
 
@@ -318,8 +320,8 @@ public class APIDataHandler {
                 scanner.close();
 
                 JSONObject jsonObject = new JSONObject(inline.toString());
-                JSONObject jsonObject1 = jsonObject.getJSONObject("network");
-                JSONArray jsonArray = jsonObject1.getJSONArray("stations");
+                JSONObject network = jsonObject.getJSONObject("network");
+                JSONArray jsonArray = network.getJSONArray("stations");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     Long id = (long) allBicycleStations.size();
                     Double latitude = jsonArray.getJSONObject(i).getDouble("latitude");
@@ -366,8 +368,8 @@ public class APIDataHandler {
                 scanner.close();
 
                 JSONObject jsonObject = new JSONObject(inline.toString());
-                JSONObject jsonObject1 = jsonObject.getJSONObject("network");
-                JSONArray jsonArray = jsonObject1.getJSONArray("stations");
+                JSONObject network = jsonObject.getJSONObject("network");
+                JSONArray jsonArray = network.getJSONArray("stations");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     Long id = (long) allBicycleStations.size();
                     Double latitude = jsonArray.getJSONObject(i).getDouble("latitude");
@@ -409,7 +411,7 @@ public class APIDataHandler {
         ArrayList<BicycleStand> allBicycleStands = new ArrayList<>();
 
         try {
-            URL url = new URL("http://data.goteborg.se/ParkingService/v2.1/BikeParkings/" + BICYCLE_STATION_AND_STAND_APP_ID + "?&format=" + FORMAT);
+            URL url = new URL("http://data.goteborg.se/ParkingService/v2.1/BikeParkings/" + GOTHENBURG_APP_ID + "?&format=" + FORMAT);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();

@@ -43,6 +43,8 @@ public class BicycleStation {
      * @param address        The address of the bicycle station
      * @param availableBikes The amount of available bikes at the bicycle station
      * @param lastUpdated    The timestamp last updated
+     * @param city           The city where the bicycle station is located
+     * @param company        The company which the station is owned by
      */
     public BicycleStation(Long id, Double latitude, Double longitude, String address, Integer availableBikes,
                           Timestamp lastUpdated, String city, String company) {
@@ -119,8 +121,34 @@ public class BicycleStation {
         return lastUpdated.toString();
     }
 
+    /**
+     *
+     * Method for setting the value of available bikes
+     *
+     * @param availableBikes the new value of available bikes
+     */
     public void setAvailableBikes(Integer availableBikes) {
         this.availableBikes = availableBikes;
+    }
+
+    /**
+     * Method for getting the city from a BicycleStation object
+     *
+     * @return Returns the city of this BicycleStation
+     */
+
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * Method for getting the company from a BicycleStation object
+     *
+     * @return Returns the company of this BicycleStation
+     */
+
+    public String getCompany() {
+        return company;
     }
 
     /**
