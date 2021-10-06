@@ -191,6 +191,7 @@ function resetCheckboxes(classname) {
         cb.checked = false;
     }
 }
+
 // a function that changes the view to another city
 function changeCity() {
     const city = document.getElementById("cities-dropdown").value;
