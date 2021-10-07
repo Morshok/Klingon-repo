@@ -192,6 +192,22 @@ function loadMarker() {
 
 loadMarker();
 
+/** A function that removes the previous markers when a city is changed
+ *
+ * @param bicycleStationGroup - The bicycle station markers
+ * @param pumpStationGroup - The pump station markers
+ * @param bicycleStandGroup - The bicycle stand markers
+ */
+function removeCityMarkers(bicycleStandGroup, pumpStationGroup) {
+    window.leafletMap.removeLayer(bicycleStandGroup);
+    window.leafletMap.removeLayer(pumpStationGroup);
+}
+
+/** A function that disables,removes and unchecks
+ * the markers depending on the city.
+ *
+ * @param currentCity - the city value i.e 2 is Malmö and 3 is Lund
+ */
 function checkboxHandler(currentCity) {
 
     //if statements that disables the markers and unchecks them depending on the city
@@ -199,11 +215,14 @@ function checkboxHandler(currentCity) {
         document.getElementById('pumps').disabled = false;
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
+        removeCityMarkers(bicycleStandGroup);
     } else if (currentCity == 3) {
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
         document.getElementById('pumps').disabled = true;
         document.getElementById('pumps').checked = false;
+        removeCityMarkers(bicycleStandGroup, pumpStationGroup);
+
     } else {
         document.getElementById('parking').disabled = false;
         document.getElementById('pumps').disabled = false;
@@ -211,40 +230,23 @@ function checkboxHandler(currentCity) {
     ;
 
 }
-/*
-/** A function that removes the previous markers when a city is changed
- *
- * @param bicycleStationGroup - The bicycle station markers
- * @param pumpStationGroup - The pump station markers
- * @param bicycleStandGroup - The bicycle stand markers
-
- function removeCityMarkers(bicycleStationGroup, pumpStationGroup, bicycleStandGroup) {
-    window.leafletMap.removeLayer(bicycleStationGroup);
-    window.leafletMap.removeLayer(pumpStationGroup);
-    window.leafletMap.removeLayer(bicycleStandGroup);
-}
-
- */
-
-
-
 
 function changeCity() {
     const city = document.getElementById("cities-dropdown").value;
     if (city == 2) {  //if the city Malmö is chosen
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
-        checkboxHandler( 2);  //when a new city is choosen, the checkboxes should be unchecked
-        //window.leafletMap.addLayer(bicycleStationGroup);
+        checkboxHandler(2);  //when a new city is choosen, the checkboxes should be unchecked
+
 
     } else if (city == 3) { //if the city Lund is chosen
         window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
-        checkboxHandler( 3);
-       // window.leafletMap.addLayer(bicycleStationGroup);
+        checkboxHandler(3);
+
 
     } else {
         window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
         checkboxHandler();
-        //window.leafletMap.addLayer(bicycleStationGroup)
+
 
     }
 }
