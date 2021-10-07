@@ -192,7 +192,7 @@ function loadMarker() {
 
 loadMarker();
 
-function resetCheckboxes(className, currentCity) {
+function checkboxHandler(currentCity) {
 
     //if statements that disables the markers and unchecks them depending on the city
     if (currentCity == 2) {
@@ -233,18 +233,18 @@ function changeCity() {
     const city = document.getElementById("cities-dropdown").value;
     if (city == 2) {  //if the city Malmö is chosen
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
-        resetCheckboxes('checkbox-group', 2);  //when a new city is choosen, the checkboxes should be unchecked
-        window.leafletMap.addLayer(bicycleStationGroup);
+        checkboxHandler( 2);  //when a new city is choosen, the checkboxes should be unchecked
+        //window.leafletMap.addLayer(bicycleStationGroup);
 
     } else if (city == 3) { //if the city Lund is chosen
         window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
-        resetCheckboxes('checkbox-group', 3);
-        window.leafletMap.addLayer(bicycleStationGroup);
+        checkboxHandler( 3);
+       // window.leafletMap.addLayer(bicycleStationGroup);
 
     } else {
         window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
-        resetCheckboxes('checkbox-group');
-        window.leafletMap.addLayer(bicycleStationGroup)
+        checkboxHandler();
+        //window.leafletMap.addLayer(bicycleStationGroup)
 
     }
 }
