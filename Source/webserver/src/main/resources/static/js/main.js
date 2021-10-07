@@ -19,8 +19,7 @@ const noBikeIcon = L.icon({
     iconSize: [32, 32],
 });
 
-$("button#weather-data-toggle").click(function()
-{
+$("button#weather-data-toggle").click(function () {
     $("div#weather-data").toggleClass("closed");
     $("button#weather-data-toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
@@ -29,6 +28,8 @@ const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
 const bicycleStandGroup = L.layerGroup();
+
+//marker template for Gothenburg
 const markerGroups = [
     {
         title: "Styr & Ställ",
@@ -38,15 +39,29 @@ const markerGroups = [
         apiPath: "/api/bicycleStations",
         template: function (bicycleStation, baseTemplate) {
             let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
-            return baseTemplate(bicycleStation.id, bicycleStation.address,
-                `<p>Styr & Ställ</p>
+            if (bicycleStation.city == 'Göteborg') {
+                return baseTemplate(bicycleStation.id, bicycleStation.address,
+                    `<p>Styr & Ställ</p>
                 <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
                 <p>Uppdaterades: ${timeDiff}</p>`
-            );
+                );
+            } else if (bicycleStation.city == 'Malmö') {
+                return baseTemplate(bicycleStation.id, bicycleStation.address,
+                    `<p>Malmö by bike</p>
+                <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
+                <p>Uppdaterades: ${timeDiff}</p>`
+                );
+            }else{
+                return baseTemplate(bicycleStation.id, bicycleStation.address,
+                    `<p>lundahoj</p>
+                <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
+                <p>Uppdaterades: ${timeDiff}</p>`
+                );
+            }
         },
         layer: bicycleStationGroup,
         icon: function (state) {
-            if (state.availableBikes < 5) {
+            if (state.availableBikes == 0) {
                 return noBikeIcon;
             }
             return bicycleIcon;
@@ -84,6 +99,47 @@ const markerGroups = [
     },
 ];
 
+const markerGroupsMalmo = [
+    {
+        title: "Malmö by Bike",
+        check: function () {
+            return $("#bicycles").prop("checked");
+        },
+        apiPath: "/api/bicycleStations",
+        template: function (bicycleStation, baseTemplate) {
+            let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
+            return baseTemplate(bicycleStation.id, bicycleStation.address,
+                `<p>Malmö by Bike</p>
+                <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
+                <p>Uppdaterades: ${timeDiff}</p>`
+            );
+        },
+        layer: bicycleStationGroup,
+        icon: function (state) {
+            if (state.availableBikes == 0) {
+                return noBikeIcon;
+            }
+            return bicycleIcon;
+        },
+    },
+    {
+        title: "Pumpstationer",
+        check: function () {
+            return $("#pumps").prop("checked");
+        },
+        apiPath: "/api/pumpStations",
+        template: function (pumpStation, baseTemplate) {
+            return baseTemplate(pumpStation.id, pumpStation.address,
+                `<p>Pumpstation</p>
+                 <p>${pumpStation.comment}</p>`
+            );
+        },
+        layer: pumpStationGroup,
+        icon: pumpIcon,
+    },
+];
+
+
 let allMarkers = {};
 let userPosition = {
     marker: null,
@@ -94,8 +150,9 @@ let gpsEvenListenerId;
 
 window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
-    .addControl(L.control.zoom( { position: 'bottomright' } ));
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }))
+    .addControl(L.control.zoom({position: 'bottomright'}));
 
 function updateUserPosition(latitude, longitude) {
     userPosition.pos = {latitude: latitude, longitude: longitude};
@@ -178,21 +235,18 @@ loadMarker();
 
 var index = 1;
 var repeater;
-function loadWeatherData(f_index)
-{
-    if(f_index === undefined)
-    {
+
+function loadWeatherData(f_index) {
+    if (f_index === undefined) {
         f_index = 1;
     }
-    
+
     $.ajax("/api/weatherData",
-    {
-        contentType: "application/json",
-        dataType: "json",
-        complete: function(response)                
         {
-                if(response.status === 200)
-                {
+            contentType: "application/json",
+            dataType: "json",
+            complete: function (response) {
+                if (response.status === 200) {
                     let data = response.responseJSON;
 
                     $('#location').html('Plats: ' + data[f_index].location);
@@ -202,23 +256,24 @@ function loadWeatherData(f_index)
                     $('#windDegree').html('Vindriktning: ' + data[f_index].windDegree + '&deg;');
                     $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
                 }
-        }
-    })
+            }
+        })
 
     repeater = setTimeout(loadWeatherData, 60000);
 }
+
 $(document).ready(loadWeatherData(this.index));
 
-$("select#location-dropdown").change(function(event){
+$("select#location-dropdown").change(function (event) {
     changeWeatherDataIndex($("select#location-dropdown").val());
 });
 
-function changeWeatherDataIndex(obj)
-{
+function changeWeatherDataIndex(obj) {
     this.index = obj;
     clearTimeout(repeater);
     loadWeatherData(index);
 }
+
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
 });
