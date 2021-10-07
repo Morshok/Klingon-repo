@@ -193,23 +193,17 @@ function loadMarker() {
 loadMarker();
 
 function resetCheckboxes(className, currentCity) {
-    //Only checks the bicycle stations as a default on the webpage
-    const groupArray = document.getElementsByClassName(className);
-    for (var i = 0; i < groupArray.length; i++) {
-        const checkbox = document.getElementById(groupArray[i].id);
-        checkbox.checked = false;
-    }
 
-    //make sures that the checkbox for bicycle station is checked when a new city is chosen.
-    const bicycleStationCheckbox = document.getElementById('bicycles');
-    bicycleStationCheckbox.checked = true;
-
-    //if statements that disables the markers depending on the city
+    //if statements that disables the markers and unchecks them depending on the city
     if (currentCity == 2) {
+        document.getElementById('pumps').disabled = false;
         document.getElementById('parking').disabled = true;
+        document.getElementById('parking').checked = false;
     } else if (currentCity == 3) {
         document.getElementById('parking').disabled = true;
+        document.getElementById('parking').checked = false;
         document.getElementById('pumps').disabled = true;
+        document.getElementById('pumps').checked = false;
     } else {
         document.getElementById('parking').disabled = false;
         document.getElementById('pumps').disabled = false;
