@@ -174,51 +174,73 @@ function loadMarker() {
     }
 }
 
-loadMarker();
-
-var index = 1;
-var repeater;
-function loadWeatherData(f_index)
+let weatherApiRepeater;
+let weatherObject = [];
+function loadWeatherData(early)
 {
-    if(f_index === undefined)
-    {
-        f_index = 1;
-    }
-    
+    clearTimeout(weatherApiRepeater);
     $.ajax("/api/weatherData",
     {
         contentType: "application/json",
         dataType: "json",
-        complete: function(response)                
+        success: function(data)
         {
-                if(response.status === 200)
-                {
-                    let data = response.responseJSON;
-
-                    $('#location').html('Plats: ' + data[f_index].location);
-                    $('#description').html('Beskrivning: ' + data[f_index].weatherDescription);
-                    $('#temperature').html('Temperatur: ' + data[f_index].temperature + '&deg;C');
-                    $('#windSpeed').html('Vindhastighet: ' + data[f_index].windSpeed + 'm/s&sup2;');
-                    $('#windDegree').html('Vindriktning: ' + data[f_index].windDegree + '&deg;');
-                    $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
-                }
+            weatherObject = data;
+            if($("#weather-data").hasClass("loading")) {
+                let selectElement = $("select#location-dropdown");
+                weatherObject.forEach(function (item) {
+                    let option = new Option(item.location, item.id, false, false);
+                    selectElement.append(option);
+                })
+                selectElement.trigger("change");
+            }
+        },
+        complete: function(){
+            if(weatherObject.length > 0) {
+                $("#weather-data").removeClass("loading");
+            }else if(!early){
+                // if the weather object fails then re-schedule for earlier retrieval once
+                clearTimeout(weatherApiRepeater);
+                weatherApiRepeater = setTimeout(function(){
+                    loadWeatherData(true)
+                }, 10 * 1000)
+            }
         }
     })
-
-    repeater = setTimeout(loadWeatherData, 60000);
+    weatherApiRepeater = setTimeout(loadWeatherData, 60 * 1000);
 }
-$(document).ready(loadWeatherData(this.index));
 
-$("select#location-dropdown").change(function(event){
-    changeWeatherDataIndex($("select#location-dropdown").val());
+$("select#location-dropdown").change(function(){
+    let index = $("select#location-dropdown").val();
+    console.log(weatherObject);
+    if(index && weatherObject.length > index && weatherObject[index])
+    {
+        let data = weatherObject[index];
+        $("#weather-data > .content").html(`
+            <p>Plats: ${data.location}</p>
+            <p>Beskrivning: ${data.weatherDescription}</p>
+            <p>Temperatur: ${data.temperature}&deg;C</p>
+            <p>Vindhastighet: ${data.windSpeed}m/s&sup2;</p>
+            <p>Vindriktning: ${data.windDegree}&deg;</p>
+            <p>Moln: ${data.cloudPercentage}%</p>
+        `);
+    }
 });
 
-function changeWeatherDataIndex(obj)
-{
-    this.index = obj;
-    clearTimeout(repeater);
-    loadWeatherData(index);
-}
+$(document).ready(function(){
+    loadWeatherData();
+    loadMarker();
+
+    let changed = false;
+    $(window).on("resize", function(evt){
+        if(window.innerWidth > 440){
+            $(".column-wrapper.left").append($("#level-panel"));
+        }else{
+            $(".column-wrapper.right").append($("#level-panel"));
+        }
+    }).trigger("resize");
+});
+
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
 });
@@ -525,7 +547,7 @@ function onRouteFound(event) {
 
     let routeInfoElement = routeInfoTemplate(routeInfo);
 
-    $("main").prepend(routeInfoElement);
+    $("main .column-wrapper.left").prepend(routeInfoElement);
 
     $("button#route_info_toggle").on("click", function () {
         $("div#route_info").toggleClass("closed");
