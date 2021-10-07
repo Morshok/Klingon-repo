@@ -1,7 +1,21 @@
 function nextLevel(level) {
-    var exponent = 1.5, baseExperience = 1000;
+    if(level === undefined)
+    {
+        level = 1;    
+    }
     
-    return Math.floor(baseExperience * (Math.pow(level, exponent)));
+    if(level <= 15)
+    {
+        return 2 * level + 7;
+    }
+    else if(level >= 15 && level <= 30)
+    {
+        return 5 * level - 38;
+    }
+    else
+    {
+        return 9 * level - 158;
+    }
 }
                       
 function onLevelUp(level, experience) {
