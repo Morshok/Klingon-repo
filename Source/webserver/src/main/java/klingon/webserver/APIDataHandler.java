@@ -284,9 +284,6 @@ public class APIDataHandler {
                     String city = "Göteborg";
                     String company = "Styr & ställ";
 
-                    if (name.startsWith("BIKE")) {
-                        name = "Bike on the loose";
-                    }
                     BicycleStation bicycleStation = new BicycleStation(stationId, latitude, longitude, name,
                             availableBikes, timestamp, city, company);
 
@@ -383,8 +380,9 @@ public class APIDataHandler {
             e.printStackTrace();
         }
 
-        StringBuilder objectIds = new StringBuilder("[");
 
+        //Gather all objectIds that is needed for query the Http request for the necessary information
+        StringBuilder objectIds = new StringBuilder("[");
         try {
             URL url = new URL("https://openstreetgs.stockholm.se/geoservice/api/" + STOCKHOLM_APP_ID
                     + "/wfs/?version=1.0.0&request=GetFeature&typeName=od_gis:CityBikes_Punkt&outputFormat=" + FORMAT);
@@ -537,7 +535,7 @@ public class APIDataHandler {
                     double x = Math.pow(bicycleStation2.getLatitude() - bicycleStation.getLatitude(), 2);
                     double y = Math.pow(bicycleStation2.getLongitude() - bicycleStation.getLongitude(), 2);
                     double z = Math.sqrt(x + y);
-                    if (z < 0.0002 && (bicycleStation.getAddress().equals(bicycleStation2.getAddress()))) {
+                    if (z < 0.0003 ) {
                         bicycleStation2.setAvailableBikes(bicycleStation2.getAvailableBikes() + bicycleStation.getAvailableBikes());
                         newAddress = false;
                         break;
