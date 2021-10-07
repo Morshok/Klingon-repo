@@ -51,9 +51,9 @@ const markerGroups = [
                 <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
                 <p>Uppdaterades: ${timeDiff}</p>`
                 );
-            }else{
+            } else {
                 return baseTemplate(bicycleStation.id, bicycleStation.address,
-                    `<p>lundahoj</p>
+                    `<p>Lundahoj</p>
                 <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
                 <p>Uppdaterades: ${timeDiff}</p>`
                 );
@@ -99,47 +99,6 @@ const markerGroups = [
     },
 ];
 
-const markerGroupsMalmo = [
-    {
-        title: "Malmö by Bike",
-        check: function () {
-            return $("#bicycles").prop("checked");
-        },
-        apiPath: "/api/bicycleStations",
-        template: function (bicycleStation, baseTemplate) {
-            let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
-            return baseTemplate(bicycleStation.id, bicycleStation.address,
-                `<p>Malmö by Bike</p>
-                <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
-                <p>Uppdaterades: ${timeDiff}</p>`
-            );
-        },
-        layer: bicycleStationGroup,
-        icon: function (state) {
-            if (state.availableBikes == 0) {
-                return noBikeIcon;
-            }
-            return bicycleIcon;
-        },
-    },
-    {
-        title: "Pumpstationer",
-        check: function () {
-            return $("#pumps").prop("checked");
-        },
-        apiPath: "/api/pumpStations",
-        template: function (pumpStation, baseTemplate) {
-            return baseTemplate(pumpStation.id, pumpStation.address,
-                `<p>Pumpstation</p>
-                 <p>${pumpStation.comment}</p>`
-            );
-        },
-        layer: pumpStationGroup,
-        icon: pumpIcon,
-    },
-];
-
-
 let allMarkers = {};
 let userPosition = {
     marker: null,
@@ -148,7 +107,7 @@ let userPosition = {
 let searchData = [];
 let gpsEvenListenerId;
 
-window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
+window.leafletMap = L.map('map', {zoomControl: false}).setView([57.706468214881355, 11.970101946662373], 13)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }))
@@ -232,6 +191,69 @@ function loadMarker() {
 }
 
 loadMarker();
+
+function resetCheckboxes(className, currentCity) {
+    //Only checks the bicycle stations as a default on the webpage
+    const groupArray = document.getElementsByClassName(className);
+    for (var i = 0; i < groupArray.length; i++) {
+        const checkbox = document.getElementById(groupArray[i].id);
+        checkbox.checked = false;
+    }
+
+    //make sures that the checkbox for bicycle station is checked when a new city is chosen.
+    const bicycleStationCheckbox = document.getElementById('bicycles');
+    bicycleStationCheckbox.checked = true;
+
+    //if statements that disables the markers depending on the city
+    if (currentCity == 2) {
+        document.getElementById('parking').disabled = true;
+    } else if (currentCity == 3) {
+        document.getElementById('parking').disabled = true;
+        document.getElementById('pumps').disabled = true;
+    } else {
+        document.getElementById('parking').disabled = false;
+        document.getElementById('pumps').disabled = false;
+    }
+    ;
+
+}
+/*
+/** A function that removes the previous markers when a city is changed
+ *
+ * @param bicycleStationGroup - The bicycle station markers
+ * @param pumpStationGroup - The pump station markers
+ * @param bicycleStandGroup - The bicycle stand markers
+
+ function removeCityMarkers(bicycleStationGroup, pumpStationGroup, bicycleStandGroup) {
+    window.leafletMap.removeLayer(bicycleStationGroup);
+    window.leafletMap.removeLayer(pumpStationGroup);
+    window.leafletMap.removeLayer(bicycleStandGroup);
+}
+
+ */
+
+
+
+
+function changeCity() {
+    const city = document.getElementById("cities-dropdown").value;
+    if (city == 2) {  //if the city Malmö is chosen
+        window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
+        resetCheckboxes('checkbox-group', 2);  //when a new city is choosen, the checkboxes should be unchecked
+        window.leafletMap.addLayer(bicycleStationGroup);
+
+    } else if (city == 3) { //if the city Lund is chosen
+        window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
+        resetCheckboxes('checkbox-group', 3);
+        window.leafletMap.addLayer(bicycleStationGroup);
+
+    } else {
+        window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
+        resetCheckboxes('checkbox-group');
+        window.leafletMap.addLayer(bicycleStationGroup)
+
+    }
+}
 
 var index = 1;
 var repeater;

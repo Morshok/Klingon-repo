@@ -47,13 +47,20 @@
                     <button id="filter_toggle"><i class="fa fa-angle-down"></i></button>
                 </div>
                 <div class="content">
+                    <div class="cities-dropdown">
+                        <select name="cities" id="cities-dropdown" onchange="changeCity()">
+                            <option value="1" selected="selected">Göteborg</option>
+                            <option value="2">Malmö</option>
+                            <option value="3">Lund</option>
+                        </select>
+                    </div>
                     <form>
-                        <input type="checkbox" id="bicycles" name="checkbox-1" value="Bicycle Stations" checked>
-                        <label for="bicycles">Bicycle Stations</label>
-                        <input type="checkbox" id="pumps" name="checkbox-2" value="Pump Stations">
-                        <label for="pumps">Pump Stations</label>
-                        <input type="checkbox" id="parking" name="checkbox-2" value="Parking Spaces">
-                        <label for="parking">Parking Spaces</label>
+                        <input type="checkbox" id="bicycles" class="checkbox-group" checked>
+                        <label for="bicycles">Cykel stationer</label>
+                        <input type="checkbox" id="pumps" class="checkbox-group">
+                        <label for="pumps">Pump stationer</label>
+                        <input type="checkbox" id="parking" class="checkbox-group">
+                        <label for="parking">Cykel parkeringar</label>
                     </form>
                 </div>
             </div>
