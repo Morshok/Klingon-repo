@@ -9,6 +9,7 @@ function setClientId()
         objectName: 'ga_client_id',
         expires: 1000*60*60*24*365*2
     };
+    
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -52,22 +53,54 @@ function setClientId()
     insertUser();
 }
 
-function getClientId()
-{
-    window.localforage.getItem('ga_client_id', function(err, value) {
-        if(err == null)
-        {
-            var obj = JSON.parse(value);
-            return obj.clientId;      
-        }
-    });
-}
-
 function insertUser()
 {
-    var clientId = getClientId();
-    var userData = [ { Id: clientId, level: 0, experience: 0 } ];
-    window.localforage.setItem('users', userData);
+    window.localforage.getItem('ga_client_id', function(err, value) {
+        try {
+            var obj = JSON.parse(value);
+            var clientId = obj.clientId;
+            window.localforage.getItem('users', function(err, value) {
+                try {
+                    var userData = value;
+                    var userAlreadyExists = false;
+                    
+                    if(userData != null)
+                    {
+                        for(var i = 0; i < value.length; i++)
+                        {
+                            if(clientId == value[i].Id)
+                            {
+                                userAlreadyExists = true;
+                                alert("User Already Exists");
+                                break;
+                            }
+                        }   
+                    }
+                    
+                    if(!userAlreadyExists)
+                    {
+                        var dataToInput;
+                        if(userData == null)
+                        {
+                            dataToInput = [{ Id: `${clientId}`, level: 0, experience: 0 }];   
+                            userData = dataToInput;
+                            window.localforage.setItem('users', userData);
+                        }
+                        else
+                        {
+                            dataToInput = { Id: `${clientId}`, level: 0, experience: 0 };
+                            userData.push(dataToInput);
+                            window.localforage.setItem('users', userData);
+                        }   
+                    }
+                } catch(err) {
+                    console.log(err);
+                }
+            });
+        } catch(err) {
+            console.log(err);
+        }
+    });
     
     window.localforage.getItem('users', function(err, value) {
         if(err == null)
@@ -78,17 +111,14 @@ function insertUser()
 }
 
 setClientId();
+getUserLevel();
+getUserExperience();
 
 //This is the same level curve
 //as in Minecraft, which seemed
 //rather smooth, values may need
 //to be tinkered with though
 function nextLevel(level) {
-    if(level === undefined)
-    {
-        level = 1;    
-    }
-    
     if(level <= 15)
     {
         return 2 * level + 7;
@@ -128,11 +158,63 @@ function onFinishedRoute(routeExperience) {
 }
 
 function getUserLevel() {
-    
+    window.localforage.getItem('ga_client_id', function(err, value) {
+        try {
+            var obj = JSON.parse(value);
+            var clientId = obj.clientId;
+            
+            window.localforage.getItem('users', function(err, value) {
+                try {
+                    var userData = value;
+                    
+                    var index;
+                    for(var i = 0; i < value.length; i++)
+                    {
+                        if(clientId == value[i].Id)
+                        {
+                            index = i;
+                        }
+                    }
+                    
+                    console.log("User Level: " + value[index].level);
+                } catch(err) {
+                    console.log(err);
+                }
+            })
+        } catch(err) {
+            console.log(err);
+        }
+    });
 }
 
 function getUserExperience() {
-    
+    window.localforage.getItem('ga_client_id', function(err, value) {
+        try {
+            var obj = JSON.parse(value);
+            var clientId = obj.clientId;
+            
+            window.localforage.getItem('users', function(err, value) {
+                try {
+                    var userData = value;
+                    
+                    var index;
+                    for(var i = 0; i < value.length; i++)
+                    {
+                        if(clientId == value[i].Id)
+                        {
+                            index = i;
+                        }
+                    }
+                    
+                    console.log("User Experience: " + value[index].experience);
+                } catch(err) {
+                    console.log(err);
+                }
+            })
+        } catch(err) {
+            console.log(err);
+        }
+    });
 }
 
 function setUserLevel(level) {
