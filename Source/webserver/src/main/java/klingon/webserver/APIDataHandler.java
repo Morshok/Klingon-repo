@@ -21,12 +21,12 @@ import java.util.Scanner;
  * for providing the application with data from an open
  * data source. It contains two static methods, both of
  * which establishes a connection with an open data source,
- * retrieves all necessary data from the Gothenburg area
+ * retrieves all necessary data from Göteborg, Malmö, Lund and Stockholm area
  * in the form of JSONObjects, parses the objects
  * and returns a list of parsed objects.
  *
  * @author Anthon Lenander, Phong Nguyen
- * @version 2021-10-06
+ * @version 2021-10-07
  * @see <a href="https://data.goteborg.se/BikeService/v1.2/PumpStations">data.goteborg.se/BikeService/v1.2/PumpStations</a>
  * @see <a href="https://data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations">data.goteborg.se/SelfServiceBicycleService/v2.0/help/operations/GetSelfServiceBicycleStations</a>
  */
@@ -37,6 +37,7 @@ public class APIDataHandler {
 
     private static final String WEATHER_APP_ID = "c25006e4f1f04463e8cd05a4d3d6008e";
     private static final String GOTHENBURG_APP_ID = "ad5c61b7-fc05-44b6-8762-30ba6ecda1c2";
+    private static final String STOCKHOLM_APP_ID = "5756a82b-618e-402d-8a20-e8d48a2440c7";
     private static final String FORMAT = "Json";
 
 
@@ -56,7 +57,11 @@ public class APIDataHandler {
             jsonObject.put("latitude", bicycleStation.getLatitude());
             jsonObject.put("longitude", bicycleStation.getLongitude());
             jsonObject.put("address", bicycleStation.getAddress());
-            jsonObject.put("availableBikes", bicycleStation.getAvailableBikes());
+            if (bicycleStation.getAvailableBikes() == null) {
+                jsonObject.put("availableBikes", "Ingen information");
+            } else {
+                jsonObject.put("availableBikes", bicycleStation.getAvailableBikes());
+            }
             jsonObject.put("lastUpdated", bicycleStation.getLastUpdatedString());
             jsonObject.put("city", bicycleStation.getCity());
             jsonObject.put("company", bicycleStation.getCompany());
@@ -95,13 +100,11 @@ public class APIDataHandler {
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */
     @GetMapping(path = "/weatherData", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> jsonWeatherData()
-    {
+    public ResponseEntity<Object> jsonWeatherData() {
         Iterable<WeatherData> weatherDataIterable = WebserverApplication.getWeatherDataRepository().findAll();
         JSONArray jsonArray = new JSONArray();
 
-        for(WeatherData weatherData : weatherDataIterable)
-        {
+        for (WeatherData weatherData : weatherDataIterable) {
             JSONObject jsonObject = new JSONObject();
 
             jsonObject.put("id", weatherData.getId());
@@ -218,7 +221,7 @@ public class APIDataHandler {
                     JSONObject geometry = features.getJSONObject(i).getJSONObject("geometry");
                     String type = geometry.getString("type");
                     JSONArray coordinates = geometry.getJSONArray("coordinates");
-                    if(type.equals("MultiPoint")) {
+                    if (type.equals("MultiPoint")) {
                         coordinates = coordinates.getJSONArray(0);
                     }
 
@@ -230,21 +233,17 @@ public class APIDataHandler {
                     String address = properties.getString("adress");
                     String city = "Malmö";
 
-                    allPumpStations.add(new PumpStation( id, address, latitude, longitude, city));
+                    allPumpStations.add(new PumpStation(id, address, latitude, longitude, city));
                 }
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return allPumpStations;
     }
 
     /**
-     * This method connects and requests data from göteborgsstad, citybikes and malmöstad
+     * This method connects and requests data from göteborgsstad, citybikes and stockholmstad
      * and parses the data and add each element to a list, and
      * returns the list of elements as BicycleStation
      *
@@ -293,9 +292,7 @@ public class APIDataHandler {
 
                     allBicycleStations.add(bicycleStation);
                 }
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -331,19 +328,15 @@ public class APIDataHandler {
                     JSONObject extra = jsonArray.getJSONObject(i).getJSONObject("extra");
                     Object addressObject = extra.get("address") == JSONObject.NULL ? "N/A" : extra.get("address");
                     String address = addressObject.toString();
-                    String city = "Malmö";
-                    String company = "Malmö by bike";
+                    String company = network.getString("name");
+                    String city = network.getJSONObject("location").getString("city");
 
                     BicycleStation bicycleStation = new BicycleStation(id, latitude, longitude, address,
                             availableBikes, timestamp, city, company);
 
                     allBicycleStations.add(bicycleStation);
-
-
                 }
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -377,19 +370,100 @@ public class APIDataHandler {
                     Integer availableBikes = jsonArray.getJSONObject(i).getInt("free_bikes");
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                     String address = jsonArray.getJSONObject(i).getString("name");
-                    String city = "Lund";
-                    String company = "Lundahoj";
+                    String company = network.getString("name");
+                    String city = network.getJSONObject("location").getString("city");
 
                     BicycleStation bicycleStation = new BicycleStation(id, latitude, longitude, address,
                             availableBikes, timestamp, city, company);
 
                     allBicycleStations.add(bicycleStation);
-
-
                 }
-
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        StringBuilder objectIds = new StringBuilder("[");
+
+        try {
+            URL url = new URL("https://openstreetgs.stockholm.se/geoservice/api/" + STOCKHOLM_APP_ID
+                    + "/wfs/?version=1.0.0&request=GetFeature&typeName=od_gis:CityBikes_Punkt&outputFormat=" + FORMAT);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != 200) {
+                throw new RuntimeException("HttpResponseCode: " + responseCode);
+            } else {
+
+                StringBuilder inline = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+                while (scanner.hasNext()) {
+                    inline.append(scanner.nextLine());
+                }
+                scanner.close();
+
+                JSONObject jsonObject = new JSONObject(inline.toString());
+                JSONArray jsonArray = jsonObject.getJSONArray("features");
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    JSONObject properties = jsonArray.getJSONObject(i).getJSONObject("properties");
+                    objectIds.append(properties.getInt("OBJECT_ID"));
+                    objectIds.append(",");
+                }
+                objectIds.append("]");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            URL url = new URL("https://openstreetws.stockholm.se/LvWS-3.0/Lv.svc/json/" +
+                    "GetFeatures?apikey=" + STOCKHOLM_APP_ID + "&objectIds=" +
+                    objectIds + "&includeWktForExtents=true");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != 200) {
+                throw new RuntimeException("HttpResponseCode: " + responseCode);
+            } else {
+
+                StringBuilder inline = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+                while (scanner.hasNext()) {
+                    inline.append(scanner.nextLine());
+                }
+                scanner.close();
+
+                JSONArray jsonArray = new JSONArray(inline.toString());
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Long id = jsonArray.getJSONObject(i).getLong("ObjectId");
+                    String company = jsonArray.getJSONObject(i).getString("FeatureTypeName");
+                    String city = "Stockholm";
+                    JSONArray attributeValues = jsonArray.getJSONObject(i).getJSONArray("AttributeValues");
+                    String address = attributeValues.getJSONObject(1).getString("Value");
+                    //No data found
+                    Integer availableBikes = null;
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                    JSONArray geometries = jsonArray.getJSONObject(i).getJSONArray("Geometries");
+                    String coordinates = geometries.getJSONObject(0).getString("WKT");
+                    String[] coordinatesArr = coordinates.replaceAll("[^0-9.]+", " ").trim().split(" ");
+                    Double longitude = Double.valueOf(coordinatesArr[0]);
+                    Double latitude = Double.valueOf(coordinatesArr[1]);
+
+                    BicycleStation bicycleStation = new BicycleStation(id, latitude, longitude, address,
+                            availableBikes, timestamp, city, company);
+
+                    allBicycleStations.add(bicycleStation);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
