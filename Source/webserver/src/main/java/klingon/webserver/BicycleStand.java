@@ -19,6 +19,7 @@ public class BicycleStand {
     private Double longitude;
     private String address;
     private Integer parkingSpace;
+    private String city;
 
     /**
      * Constructor for initializing the bicycle station instance
@@ -37,13 +38,15 @@ public class BicycleStand {
      * @param longitude    The longitude coordination of the bicycle stand
      * @param address      The address of the bicycle stand
      * @param parkingSpace The amount of parking space of the bicycle stand
+     * @param city         The city where the bicycle stand is located
      */
-    public BicycleStand(Long id, Double latitude, Double longitude, String address, Integer parkingSpace) {
+    public BicycleStand(Long id, Double latitude, Double longitude, String address, Integer parkingSpace, String city) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
         this.parkingSpace = parkingSpace;
+        this.city = city;
     }
 
     /**
@@ -92,8 +95,24 @@ public class BicycleStand {
         return parkingSpace;
     }
 
+
+    /**
+     * Method for setting the parking space on a BicycleStand object
+     *
+     * @param parkingSpace The new value of the parking space
+     */
     public void setParkingSpace(Integer parkingSpace) {
         this.parkingSpace = parkingSpace;
+    }
+
+    /**
+     * Method for getting the city from a BicycleStand object
+     *
+     * @return Returns the city of this BicycleStand
+     */
+
+    public String getCity() {
+        return city;
     }
 
     @Override
