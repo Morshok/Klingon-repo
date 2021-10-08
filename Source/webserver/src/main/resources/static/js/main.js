@@ -28,8 +28,11 @@ const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
 const bicycleStandGroup = L.layerGroup();
-
-//marker template for Gothenburg
+/*
+let Malmo = false;
+let Lund = false;
+let Gothenburg = true;
+*/
 const markerGroups = [
     {
         title: "Styr & Ställ",
@@ -39,25 +42,11 @@ const markerGroups = [
         apiPath: "/api/bicycleStations",
         template: function (bicycleStation, baseTemplate) {
             let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
-            if (bicycleStation.city == 'Göteborg') {
-                return baseTemplate(bicycleStation.id, bicycleStation.address,
-                    `<p>Styr & Ställ</p>
+            return baseTemplate(bicycleStation.id, bicycleStation.address,
+                `<p>${bicycleStation.company}</p>
                 <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
                 <p>Uppdaterades: ${timeDiff}</p>`
-                );
-            } else if (bicycleStation.city == 'Malmö') {
-                return baseTemplate(bicycleStation.id, bicycleStation.address,
-                    `<p>Malmö by bike</p>
-                <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
-                <p>Uppdaterades: ${timeDiff}</p>`
-                );
-            } else {
-                return baseTemplate(bicycleStation.id, bicycleStation.address,
-                    `<p>Lundahoj</p>
-                <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
-                <p>Uppdaterades: ${timeDiff}</p>`
-                );
-            }
+            );
         },
         layer: bicycleStationGroup,
         icon: function (state) {
@@ -70,6 +59,7 @@ const markerGroups = [
     {
         title: "Pumpstationer",
         check: function () {
+
             return $("#pumps").prop("checked");
         },
         apiPath: "/api/pumpStations",
@@ -164,6 +154,7 @@ function loadMarker() {
                         station.groupTitle = markerGroup.title;
                         if (!allMarkers[markerGroup.apiPath]) allMarkers[markerGroup.apiPath] = [];
                         allMarkers[markerGroup.apiPath].push({marker: marker, data: station});
+
                     });
                     updateSearchResults();
                 }
@@ -190,7 +181,15 @@ function loadMarker() {
     }
 }
 
+/*
+if (Lund == true) {
+    loadMarker('Lund');
+} else if (Gothenburg == true) {
+    loadMarker('Göteborg');
+} else (loadMarker('Malmö'));
+*/
 loadMarker();
+
 
 /** A function that removes the previous markers when a city is changed
  *
@@ -215,14 +214,13 @@ function checkboxHandler(currentCity) {
         document.getElementById('pumps').disabled = false;
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
-        removeCityMarkers(bicycleStandGroup);
+        removeCityMarkers(bicycleStandGroup); //removes the parking markers
     } else if (currentCity == 3) {
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
         document.getElementById('pumps').disabled = true;
         document.getElementById('pumps').checked = false;
-        removeCityMarkers(bicycleStandGroup, pumpStationGroup);
-
+        removeCityMarkers(bicycleStandGroup, pumpStationGroup); //removes the parking- and pump-markers
     } else {
         document.getElementById('parking').disabled = false;
         document.getElementById('pumps').disabled = false;
@@ -234,16 +232,27 @@ function checkboxHandler(currentCity) {
 function changeCity() {
     const city = document.getElementById("cities-dropdown").value;
     if (city == 2) {  //if the city Malmö is chosen
+        /*Malmo = true;
+        Gothenburg = false;
+        Lund = false;*/
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
         checkboxHandler(2);  //when a new city is choosen, the checkboxes should be unchecked
 
 
     } else if (city == 3) { //if the city Lund is chosen
+        /*Lund = true;
+        Gothenburg = false;
+        Malmo = false;
+        */
+
         window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
         checkboxHandler(3);
 
 
     } else {
+        /*Gothenburg = true;
+        Lund = false;
+        Malmo = false;*/
         window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
         checkboxHandler();
 
