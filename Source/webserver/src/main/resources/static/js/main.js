@@ -19,7 +19,8 @@ const noBikeIcon = L.icon({
     iconSize: [32, 32],
 });
 
-$("button#weather-data-toggle").click(function () {
+$("button#weather-data-toggle").click(function()
+{
     $("div#weather-data").toggleClass("closed");
     $("button#weather-data-toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
@@ -28,11 +29,6 @@ const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
 const bicycleStandGroup = L.layerGroup();
-/*
-let Malmo = false;
-let Lund = false;
-let Gothenburg = true;
-*/
 const markerGroups = [
     {
         title: "Styr & Ställ",
@@ -59,7 +55,6 @@ const markerGroups = [
     {
         title: "Pumpstationer",
         check: function () {
-
             return $("#pumps").prop("checked");
         },
         apiPath: "/api/pumpStations",
@@ -97,11 +92,10 @@ let userPosition = {
 let searchData = [];
 let gpsEvenListenerId;
 
-window.leafletMap = L.map('map', {zoomControl: false}).setView([57.706468214881355, 11.970101946662373], 13)
+window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }))
-    .addControl(L.control.zoom({position: 'bottomright'}));
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
+    .addControl(L.control.zoom( { position: 'bottomright' } ));
 
 function updateUserPosition(latitude, longitude) {
     userPosition.pos = {latitude: latitude, longitude: longitude};
@@ -154,7 +148,6 @@ function loadMarker() {
                         station.groupTitle = markerGroup.title;
                         if (!allMarkers[markerGroup.apiPath]) allMarkers[markerGroup.apiPath] = [];
                         allMarkers[markerGroup.apiPath].push({marker: marker, data: station});
-
                     });
                     updateSearchResults();
                 }
@@ -181,16 +174,6 @@ function loadMarker() {
     }
 }
 
-/*
-if (Lund == true) {
-    loadMarker('Lund');
-} else if (Gothenburg == true) {
-    loadMarker('Göteborg');
-} else (loadMarker('Malmö'));
-*/
-loadMarker();
-
-
 /** A function that removes the previous markers when a city is changed
  *
  * @param bicycleStationGroup - The bicycle station markers
@@ -208,7 +191,6 @@ function removeCityMarkers(bicycleStandGroup, pumpStationGroup) {
  * @param currentCity - the city value i.e 2 is Malmö and 3 is Lund
  */
 function checkboxHandler(currentCity) {
-
     //if statements that disables the markers and unchecks them depending on the city
     if (currentCity == 2) {
         document.getElementById('pumps').disabled = false;
@@ -224,9 +206,7 @@ function checkboxHandler(currentCity) {
     } else {
         document.getElementById('parking').disabled = false;
         document.getElementById('pumps').disabled = false;
-    }
-    ;
-
+    };
 }
 
 function changeCity() {
@@ -237,69 +217,88 @@ function changeCity() {
         Lund = false;*/
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
         checkboxHandler(2);  //when a new city is choosen, the checkboxes should be unchecked
-
-
     } else if (city == 3) { //if the city Lund is chosen
         /*Lund = true;
         Gothenburg = false;
         Malmo = false;
         */
-
         window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
         checkboxHandler(3);
-
-
     } else {
         /*Gothenburg = true;
         Lund = false;
         Malmo = false;*/
         window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
         checkboxHandler();
-
-
     }
 }
 
-var index = 1;
-var repeater;
-
-function loadWeatherData(f_index) {
-    if (f_index === undefined) {
-        f_index = 1;
-    }
-
+let weatherApiRepeater;
+let weatherObject = [];
+function loadWeatherData(early)
+{
+    clearTimeout(weatherApiRepeater);
     $.ajax("/api/weatherData",
+    {
+        contentType: "application/json",
+        dataType: "json",
+        success: function(data)
         {
-            contentType: "application/json",
-            dataType: "json",
-            complete: function (response) {
-                if (response.status === 200) {
-                    let data = response.responseJSON;
-
-                    $('#location').html('Plats: ' + data[f_index].location);
-                    $('#description').html('Beskrivning: ' + data[f_index].weatherDescription);
-                    $('#temperature').html('Temperatur: ' + data[f_index].temperature + '&deg;C');
-                    $('#windSpeed').html('Vindhastighet: ' + data[f_index].windSpeed + 'm/s&sup2;');
-                    $('#windDegree').html('Vindriktning: ' + data[f_index].windDegree + '&deg;');
-                    $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
-                }
+            weatherObject = data;
+            if($("#weather-data").hasClass("loading")) {
+                let selectElement = $("select#location-dropdown");
+                weatherObject.forEach(function (item) {
+                    let option = new Option(item.location, item.id, false, false);
+                    selectElement.append(option);
+                })
+                selectElement.trigger("change");
             }
-        })
-
-    repeater = setTimeout(loadWeatherData, 60000);
+        },
+        complete: function(){
+            if(weatherObject.length > 0) {
+                $("#weather-data").removeClass("loading");
+            }else if(!early){
+                // if the weather object fails then re-schedule for earlier retrieval once
+                clearTimeout(weatherApiRepeater);
+                weatherApiRepeater = setTimeout(function(){
+                    loadWeatherData(true)
+                }, 10 * 1000)
+            }
+        }
+    })
+    weatherApiRepeater = setTimeout(loadWeatherData, 60 * 1000);
 }
 
-$(document).ready(loadWeatherData(this.index));
-
-$("select#location-dropdown").change(function (event) {
-    changeWeatherDataIndex($("select#location-dropdown").val());
+$("select#location-dropdown").change(function(){
+    let index = $("select#location-dropdown").val();
+    console.log(weatherObject);
+    if(index && weatherObject.length > index && weatherObject[index])
+    {
+        let data = weatherObject[index];
+        $("#weather-data > .content").html(`
+            <p>Plats: ${data.location}</p>
+            <p>Beskrivning: ${data.weatherDescription}</p>
+            <p>Temperatur: ${data.temperature}&deg;C</p>
+            <p>Vindhastighet: ${data.windSpeed}m/s&sup2;</p>
+            <p>Vindriktning: ${data.windDegree}&deg;</p>
+            <p>Moln: ${data.cloudPercentage}%</p>
+        `);
+    }
 });
 
-function changeWeatherDataIndex(obj) {
-    this.index = obj;
-    clearTimeout(repeater);
-    loadWeatherData(index);
-}
+$(document).ready(function(){
+    loadWeatherData();
+    loadMarker();
+
+    let changed = false;
+    $(window).on("resize", function(evt){
+        if(window.innerWidth > 440){
+            $(".column-wrapper.left").append($("#level-panel"));
+        }else{
+            $(".column-wrapper.right").append($("#level-panel"));
+        }
+    }).trigger("resize");
+});
 
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
@@ -607,7 +606,7 @@ function onRouteFound(event) {
 
     let routeInfoElement = routeInfoTemplate(routeInfo);
 
-    $("main").prepend(routeInfoElement);
+    $("main .column-wrapper.left").prepend(routeInfoElement);
 
     $("button#route_info_toggle").on("click", function () {
         $("div#route_info").toggleClass("closed");

@@ -17,6 +17,7 @@ Do what is expected of you during a sprint, and:
 ### Code
 * Do not merge your own request.
 * Code must be reviewed by at least one other user before merging.
+* The code review list below is a suggestion and may change due to unavailability.
 
 ### Code Review List 
 - Anthon reviews Phong

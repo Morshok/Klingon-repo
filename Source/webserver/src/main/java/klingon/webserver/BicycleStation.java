@@ -24,7 +24,6 @@ public class BicycleStation {
     private String city;
     private String company;
 
-
     /**
      * Constructor for initializing the bicycle station instance
      * without any parameters
@@ -99,7 +98,7 @@ public class BicycleStation {
      *
      * @return Returns the amount of available bicycle of this BicycleStation
      */
-    public int getAvailableBikes() {
+    public Integer getAvailableBikes() {
         return availableBikes;
     }
 
@@ -122,7 +121,6 @@ public class BicycleStation {
     }
 
     /**
-     *
      * Method for setting the value of available bikes
      *
      * @param availableBikes the new value of available bikes
