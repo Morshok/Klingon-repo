@@ -43,16 +43,18 @@
             <div id="filters">
                 <div class="head">
                     <span>Filter:</span>
+                    <select name="cities" id="cities-dropdown" onchange="changeCity()">
+                        <option value="1" selected="selected">Göteborg</option>
+                        <option value="2">Malmö</option>
+                        <option value="3">Lund</option>
+                    </select>
                     <!-- Hide/show toggle -->
                     <button id="filter_toggle"><i class="fa fa-angle-down"></i></button>
+
                 </div>
                 <div class="content">
                     <div class="cities-dropdown">
-                        <select name="cities" id="cities-dropdown" onchange="changeCity()">
-                            <option value="1" selected="selected">Göteborg</option>
-                            <option value="2">Malmö</option>
-                            <option value="3">Lund</option>
-                        </select>
+
                     </div>
                     <form>
                         <input type="checkbox" id="bicycles" class="checkbox-group" checked>
