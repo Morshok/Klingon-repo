@@ -19,8 +19,7 @@ const noBikeIcon = L.icon({
     iconSize: [32, 32],
 });
 
-$("button#weather-data-toggle").click(function()
-{
+$("button#weather-data-toggle").click(function () {
     $("div#weather-data").toggleClass("closed");
     $("button#weather-data-toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
@@ -92,10 +91,11 @@ let userPosition = {
 let searchData = [];
 let gpsEvenListenerId;
 
-window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
+window.leafletMap = L.map('map', {zoomControl: false}).setView([57.706468214881355, 11.970101946662373], 13)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
-    .addControl(L.control.zoom( { position: 'bottomright' } ));
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }))
+    .addControl(L.control.zoom({position: 'bottomright'}));
 
 function updateUserPosition(latitude, longitude) {
     userPosition.pos = {latitude: latitude, longitude: longitude};
@@ -197,7 +197,7 @@ function checkboxHandler(currentCity) {
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
         removeCityMarkers(bicycleStandGroup); //removes the parking markers
-    } else if (currentCity == 3) {
+    } else if (currentCity == 3 || currentCity == 4) {
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
         document.getElementById('pumps').disabled = true;
@@ -212,22 +212,15 @@ function checkboxHandler(currentCity) {
 function changeCity() {
     const city = document.getElementById("cities-dropdown").value;
     if (city == 2) {  //if the city Malmö is chosen
-        /*Malmo = true;
-        Gothenburg = false;
-        Lund = false;*/
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
         checkboxHandler(2);  //when a new city is choosen, the checkboxes should be unchecked
     } else if (city == 3) { //if the city Lund is chosen
-        /*Lund = true;
-        Gothenburg = false;
-        Malmo = false;
-        */
         window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
         checkboxHandler(3);
+    } else if (city == 4) { //if the city Stockholm is chosen
+        window.leafletMap.setView([59.3295521252874, 18.06861306062469], 13);
+        checkboxHandler(4);
     } else {
-        /*Gothenburg = true;
-        Lund = false;
-        Malmo = false;*/
         window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
         checkboxHandler();
     }
@@ -235,45 +228,43 @@ function changeCity() {
 
 let weatherApiRepeater;
 let weatherObject = [];
-function loadWeatherData(early)
-{
+
+function loadWeatherData(early) {
     clearTimeout(weatherApiRepeater);
     $.ajax("/api/weatherData",
-    {
-        contentType: "application/json",
-        dataType: "json",
-        success: function(data)
         {
-            weatherObject = data;
-            if($("#weather-data").hasClass("loading")) {
-                let selectElement = $("select#location-dropdown");
-                weatherObject.forEach(function (item) {
-                    let option = new Option(item.location, item.id, false, false);
-                    selectElement.append(option);
-                })
-                selectElement.trigger("change");
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                weatherObject = data;
+                if ($("#weather-data").hasClass("loading")) {
+                    let selectElement = $("select#location-dropdown");
+                    weatherObject.forEach(function (item) {
+                        let option = new Option(item.location, item.id, false, false);
+                        selectElement.append(option);
+                    })
+                    selectElement.trigger("change");
+                }
+            },
+            complete: function () {
+                if (weatherObject.length > 0) {
+                    $("#weather-data").removeClass("loading");
+                } else if (!early) {
+                    // if the weather object fails then re-schedule for earlier retrieval once
+                    clearTimeout(weatherApiRepeater);
+                    weatherApiRepeater = setTimeout(function () {
+                        loadWeatherData(true)
+                    }, 10 * 1000)
+                }
             }
-        },
-        complete: function(){
-            if(weatherObject.length > 0) {
-                $("#weather-data").removeClass("loading");
-            }else if(!early){
-                // if the weather object fails then re-schedule for earlier retrieval once
-                clearTimeout(weatherApiRepeater);
-                weatherApiRepeater = setTimeout(function(){
-                    loadWeatherData(true)
-                }, 10 * 1000)
-            }
-        }
-    })
+        })
     weatherApiRepeater = setTimeout(loadWeatherData, 60 * 1000);
 }
 
-$("select#location-dropdown").change(function(){
+$("select#location-dropdown").change(function () {
     let index = $("select#location-dropdown").val();
     console.log(weatherObject);
-    if(index && weatherObject.length > index && weatherObject[index])
-    {
+    if (index && weatherObject.length > index && weatherObject[index]) {
         let data = weatherObject[index];
         $("#weather-data > .content").html(`
             <p>Plats: ${data.location}</p>
@@ -286,15 +277,15 @@ $("select#location-dropdown").change(function(){
     }
 });
 
-$(document).ready(function(){
+$(document).ready(function () {
     loadWeatherData();
     loadMarker();
 
     let changed = false;
-    $(window).on("resize", function(evt){
-        if(window.innerWidth > 440){
+    $(window).on("resize", function (evt) {
+        if (window.innerWidth > 440) {
             $(".column-wrapper.left").append($("#level-panel"));
-        }else{
+        } else {
             $(".column-wrapper.right").append($("#level-panel"));
         }
     }).trigger("resize");
