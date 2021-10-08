@@ -39,7 +39,25 @@
         </nav>
     </header>
     <main>
-        <div id="wrapper">
+        <div class="column-wrapper left">
+            <div id="level-panel">
+                <div class="upper">
+                    <div class="image">
+                        <img src>
+                    </div>
+                    <div class="rows">
+                        <div class="title">Earth Lover</div>
+                        <div class="user-progress">
+                            <div class="user-exp"></div>
+                            <div class="text">
+                                <div>0/500</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column-wrapper right">
             <div id="filters">
                 <div class="head">
                     <span>Filter:</span>
@@ -57,29 +75,18 @@
                     </form>
                 </div>
             </div>
-            <div id="weather-data">
+            <div id="weather-data" class="loading">
                 <div class="head">
                     <span>Vädret:</span>
+                    <img class="weather-loading" src="/images/loadingIcon.svg"/>
                     <div class="location-dropdown">
                         <select name="location" id="location-dropdown">
-                            <option value="0">Angered</option>
-                            <option value="1" selected="selected">Göteborg</option>
-                            <option value="2">Mölndal</option>
-                            <option value="3">Torslanda</option>
                         </select>
                     </div>
                     <!-- Hide/show toggle -->
                     <button id="weather-data-toggle"><i class="fa fa-angle-down"></i></button>
                 </div>
                 <div class="content">
-                    <form>
-                        <div id="location"></div>
-                        <div id="description"></div>
-                        <div id="temperature"></div>
-                        <div id="windSpeed"></div>
-                        <div id="windDegree"></div>
-                        <div id="cloudsPercentage"></div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -107,7 +114,8 @@
                         <div class="radio-wrapper">
                             <div>
                                 <label for="cyclingMode">Cykel</label>
-                                <input type="radio" id="cyclingMode" name="transportationMode" value="cycling-regular" checked="">
+                                <input type="radio" id="cyclingMode" name="transportationMode" value="cycling-regular"
+                                       checked="">
                             </div>
                             <div>
                                 <label for="walkingMode">Till fots</label>
@@ -121,7 +129,7 @@
                     </div>
                 </div>
                 <div class="route-information">
-                    <p><b>Startpunkt:</b> &nbsp; <span id="route-info-start"></span> </p>
+                    <p><b>Startpunkt:</b> &nbsp; <span id="route-info-start"></span></p>
                     <p><b>Slutpunkt:</b> &nbsp; <span id="route-info-end"></span></p>
                     <hr>
                     <div class="input">

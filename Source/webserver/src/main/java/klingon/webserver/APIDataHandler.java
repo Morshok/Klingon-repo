@@ -588,7 +588,9 @@ public class APIDataHandler {
         // List of all locations we want to fetch weather data from.
         // Should probably be made private final static at the top
         // of this file though.
-        String[] locations = new String[]{"Angered", "Göteborg", "Mölndal", "Torslanda"};
+
+        String[] locations = new String[] { "Angered", "Göteborg", "Mölndal", "Torslanda", "Lund", "Malmö", "Stockholm" };
+
 
         for (int i = 0; i < locations.length; i++) {
             try {
