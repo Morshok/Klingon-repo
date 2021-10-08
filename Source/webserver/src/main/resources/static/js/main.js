@@ -19,8 +19,7 @@ const noBikeIcon = L.icon({
     iconSize: [32, 32],
 });
 
-$("button#weather-data-toggle").click(function()
-{
+$("button#weather-data-toggle").click(function () {
     $("div#weather-data").toggleClass("closed");
     $("button#weather-data-toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
@@ -39,14 +38,14 @@ const markerGroups = [
         template: function (bicycleStation, baseTemplate) {
             let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
             return baseTemplate(bicycleStation.id, bicycleStation.address,
-                `<p>Styr & Ställ</p>
+                `<p>${bicycleStation.company}</p>
                 <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
                 <p>Uppdaterades: ${timeDiff}</p>`
             );
         },
         layer: bicycleStationGroup,
         icon: function (state) {
-            if (state.availableBikes < 5) {
+            if (state.availableBikes == 0) {
                 return noBikeIcon;
             }
             return bicycleIcon;
@@ -92,10 +91,11 @@ let userPosition = {
 let searchData = [];
 let gpsEvenListenerId;
 
-window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
+window.leafletMap = L.map('map', {zoomControl: false}).setView([57.706468214881355, 11.970101946662373], 13)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
-    .addControl(L.control.zoom( { position: 'bottomright' } ));
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }))
+    .addControl(L.control.zoom({position: 'bottomright'}));
 
 function updateUserPosition(latitude, longitude) {
     userPosition.pos = {latitude: latitude, longitude: longitude};
@@ -174,47 +174,97 @@ function loadMarker() {
     }
 }
 
+/** A function that removes the previous markers when a city is changed
+ *
+ * @param bicycleStationGroup - The bicycle station markers
+ * @param pumpStationGroup - The pump station markers
+ * @param bicycleStandGroup - The bicycle stand markers
+ */
+function removeCityMarkers(bicycleStandGroup, pumpStationGroup) {
+    window.leafletMap.removeLayer(bicycleStandGroup);
+    window.leafletMap.removeLayer(pumpStationGroup);
+}
+
+/** A function that disables,removes and unchecks
+ * the markers depending on the city.
+ *
+ * @param currentCity - the city value i.e 2 is Malmö and 3 is Lund
+ */
+function checkboxHandler(currentCity) {
+    //if statements that disables the markers and unchecks them depending on the city
+    if (currentCity == 2) {
+        document.getElementById('pumps').disabled = false;
+        document.getElementById('parking').disabled = true;
+        document.getElementById('parking').checked = false;
+        removeCityMarkers(bicycleStandGroup); //removes the parking markers
+    } else if (currentCity == 3 || currentCity == 4) {
+        document.getElementById('parking').disabled = true;
+        document.getElementById('parking').checked = false;
+        document.getElementById('pumps').disabled = true;
+        document.getElementById('pumps').checked = false;
+        removeCityMarkers(bicycleStandGroup, pumpStationGroup); //removes the parking- and pump-markers
+    } else {
+        document.getElementById('parking').disabled = false;
+        document.getElementById('pumps').disabled = false;
+    };
+}
+
+function changeCity() {
+    const city = document.getElementById("cities-dropdown").value;
+    if (city == 2) {  //if the city Malmö is chosen
+        window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
+        checkboxHandler(2);  //when a new city is choosen, the checkboxes should be unchecked
+    } else if (city == 3) { //if the city Lund is chosen
+        window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
+        checkboxHandler(3);
+    } else if (city == 4) { //if the city Stockholm is chosen
+        window.leafletMap.setView([59.3295521252874, 18.06861306062469], 13);
+        checkboxHandler(4);
+    } else {
+        window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
+        checkboxHandler();
+    }
+}
+
 let weatherApiRepeater;
 let weatherObject = [];
-function loadWeatherData(early)
-{
+
+function loadWeatherData(early) {
     clearTimeout(weatherApiRepeater);
     $.ajax("/api/weatherData",
-    {
-        contentType: "application/json",
-        dataType: "json",
-        success: function(data)
         {
-            weatherObject = data;
-            if($("#weather-data").hasClass("loading")) {
-                let selectElement = $("select#location-dropdown");
-                weatherObject.forEach(function (item) {
-                    let option = new Option(item.location, item.id, false, false);
-                    selectElement.append(option);
-                })
-                selectElement.trigger("change");
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                weatherObject = data;
+                if ($("#weather-data").hasClass("loading")) {
+                    let selectElement = $("select#location-dropdown");
+                    weatherObject.forEach(function (item) {
+                        let option = new Option(item.location, item.id, false, false);
+                        selectElement.append(option);
+                    })
+                    selectElement.trigger("change");
+                }
+            },
+            complete: function () {
+                if (weatherObject.length > 0) {
+                    $("#weather-data").removeClass("loading");
+                } else if (!early) {
+                    // if the weather object fails then re-schedule for earlier retrieval once
+                    clearTimeout(weatherApiRepeater);
+                    weatherApiRepeater = setTimeout(function () {
+                        loadWeatherData(true)
+                    }, 10 * 1000)
+                }
             }
-        },
-        complete: function(){
-            if(weatherObject.length > 0) {
-                $("#weather-data").removeClass("loading");
-            }else if(!early){
-                // if the weather object fails then re-schedule for earlier retrieval once
-                clearTimeout(weatherApiRepeater);
-                weatherApiRepeater = setTimeout(function(){
-                    loadWeatherData(true)
-                }, 10 * 1000)
-            }
-        }
-    })
+        })
     weatherApiRepeater = setTimeout(loadWeatherData, 60 * 1000);
 }
 
-$("select#location-dropdown").change(function(){
+$("select#location-dropdown").change(function () {
     let index = $("select#location-dropdown").val();
     console.log(weatherObject);
-    if(index && weatherObject.length > index && weatherObject[index])
-    {
+    if (index && weatherObject.length > index && weatherObject[index]) {
         let data = weatherObject[index];
         $("#weather-data > .content").html(`
             <p>Plats: ${data.location}</p>
@@ -227,15 +277,15 @@ $("select#location-dropdown").change(function(){
     }
 });
 
-$(document).ready(function(){
+$(document).ready(function () {
     loadWeatherData();
     loadMarker();
 
     let changed = false;
-    $(window).on("resize", function(evt){
-        if(window.innerWidth > 440){
+    $(window).on("resize", function (evt) {
+        if (window.innerWidth > 440) {
             $(".column-wrapper.left").append($("#level-panel"));
-        }else{
+        } else {
             $(".column-wrapper.right").append($("#level-panel"));
         }
     }).trigger("resize");
