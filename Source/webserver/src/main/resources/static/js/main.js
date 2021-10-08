@@ -180,8 +180,10 @@ function loadMarker() {
  * @param pumpStationGroup - The pump station markers
  * @param bicycleStandGroup - The bicycle stand markers
  */
-function removeCityMarkers(bicycleStandGroup, pumpStationGroup) {
+function removeCityMarkers(removeBicycleStand, removePumps) {
+    if(removeBicycleStand==true)
     window.leafletMap.removeLayer(bicycleStandGroup);
+    if(removePumps==true)
     window.leafletMap.removeLayer(pumpStationGroup);
 }
 
@@ -196,13 +198,13 @@ function checkboxHandler(currentCity) {
         document.getElementById('pumps').disabled = false;
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
-        removeCityMarkers(bicycleStandGroup); //removes the parking markers
+        removeCityMarkers(true, false); //removes the parking markers
     } else if (currentCity == 3 || currentCity == 4) {
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
         document.getElementById('pumps').disabled = true;
         document.getElementById('pumps').checked = false;
-        removeCityMarkers(bicycleStandGroup, pumpStationGroup); //removes the parking- and pump-markers
+        removeCityMarkers(true, true); //removes the parking- and pump-markers
     } else {
         document.getElementById('parking').disabled = false;
         document.getElementById('pumps').disabled = false;
