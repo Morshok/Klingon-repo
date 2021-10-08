@@ -22,6 +22,7 @@ public class PumpStation
     private String comment;
     private double latitude;
     private double longitude;
+    private String city;
 
     /**
      * A zero argument constructor, as per the definition of a bean
@@ -36,8 +37,10 @@ public class PumpStation
      * @param comment   A comment associated with this PumpStation, often times left empty
      * @param latitude  The latitude component of the geographical coordinate at which this PumpStation is located
      * @param longitude The longitude component of the geographical coordinate at which this PumpStation is located
+     * @param city      The city where the pump station is located
+     *
      */
-    public PumpStation(Long id, String address, String comment, double latitude, double longitude)
+    public PumpStation(Long id, String address, String comment, double latitude, double longitude, String city)
     {
         super();
         this.id = id;
@@ -45,6 +48,18 @@ public class PumpStation
         this.comment = comment;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.city = city;
+    }
+
+    public PumpStation(Long id, String address,  double latitude, double longitude, String city)
+    {
+        super();
+        this.id = id;
+        this.address = address;
+        this.comment = "";
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.city = city;
     }
 
     /**
@@ -81,6 +96,10 @@ public class PumpStation
      * @return Returns the longitude of this PumpStation
      */
     public double getLongitude() { return longitude; }
+
+    public String getCity() {
+        return city;
+    }
 
     /**
      * Method for getting PumpStation as a String
