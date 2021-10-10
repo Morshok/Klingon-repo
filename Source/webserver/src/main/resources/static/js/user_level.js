@@ -1,3 +1,8 @@
+const localForageCid = {
+    objectName: 'ga_client_id',
+    expires: 1000*60*60*24*365*2
+};
+
 function setClientId()
 {
     //converted for direct code implementation from Simo Ahava´s solution for GTM; see 
@@ -5,10 +10,6 @@ function setClientId()
     //for details, and https://gist.github.com/mbaersch/677cfad72592631eea4d385116c91a63 for source.
     
     var GA_TRACKING_ID = 'UA-209720808-1';
-    var localForageCid = {
-        objectName: 'ga_client_id',
-        expires: 1000*60*60*24*365*2
-    };
     
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -55,66 +56,50 @@ function setClientId()
 
 function insertUser()
 {
-    window.localforage.getItem('ga_client_id', function(err, value) {
-        try {
-            var obj = JSON.parse(value);
-            var clientId = obj.clientId;
-            window.localforage.getItem('users', function(err, value) {
-                try {
-                    var userData = value;
-                    var userAlreadyExists = false;
-                    
-                    if(userData != null)
+    window.localforage.getItem(localForageCid.objectName).then(function(value) {
+        var obj = JSON.parse(value);
+        var clientId = obj.clientId;
+        
+        window.localforage.getItem('users').then(function(value) {
+            var userData = value;
+            var userAlreadyExists = false;
+            
+            if(userData != null)
+            {
+                for(var i = 0; i < value.length; i++)
+                {
+                    if(clientId == value[i].Id)
                     {
-                        for(var i = 0; i < value.length; i++)
-                        {
-                            if(clientId == value[i].Id)
-                            {
-                                userAlreadyExists = true;
-                                alert("User Already Exists");
-                                break;
-                            }
-                        }   
+                        userAlreadyExists = true;
+                        alert("User Already Exists");
+                        break;
                     }
-                    
-                    if(!userAlreadyExists)
-                    {
-                        var dataToInput;
-                        if(userData == null)
-                        {
-                            dataToInput = [{ Id: `${clientId}`, level: 0, experience: 0 }];   
-                            userData = dataToInput;
-                            window.localforage.setItem('users', userData);
-                        }
-                        else
-                        {
-                            dataToInput = { Id: `${clientId}`, level: 0, experience: 0 };
-                            userData.push(dataToInput);
-                            window.localforage.setItem('users', userData);
-                        }   
-                    }
-                } catch(err) {
-                    console.log(err);
+                }   
+            }
+            
+            if(!userAlreadyExists)
+            {
+                var dataToInput;
+                if(userData == null)
+                {
+                    dataToInput = [{ Id: `${clientId}`, level: 0, experience: 0 }];   
+                    userData = dataToInput;
+                    await window.localforage.setItem('users', userData);
                 }
-            });
-        } catch(err) {
-            console.log(err);
-        }
-    });
-    
-    window.localforage.getItem('users', function(err, value) {
-        if(err == null)
-        {
-            console.log(value);
-        }
-    });
+                else
+                {
+                    dataToInput = { Id: `${clientId}`, level: 0, experience: 0 };
+                    userData.push(dataToInput);
+                    await window.localforage.setItem('users', userData);
+                }   
+                
+                window.localforage.setItem('users', userData).then(function(result) {
+                    console.log(result);
+                }).catch(err => console.log(err));
+            }
+        }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
 }
-
-setClientId();
-setUserLevel(20);
-getUserLevel();
-setUserExperience(80);
-getUserExperience();
 
 //This is the same level curve
 //as in Minecraft, which seemed
@@ -135,12 +120,12 @@ function nextLevel(level) {
     }
 }
                       
-function onLevelUp(level, experience) {
+async function onLevelUp(level, experience) {
     setUserLevel(level);
     setUserExperience(experience);
 }
 
-function onFinishedRoute(routeExperience) {
+async function onFinishedRoute(routeExperience) {
     if(routeExperience === undefined)
     {
         routeExperience = 0; 
@@ -162,126 +147,116 @@ function onFinishedRoute(routeExperience) {
     }
 }
 
-function getUserLevel() {
-    window.localforage.getItem('ga_client_id', function(err, value) {
-        try {
-            var obj = JSON.parse(value);
-            var clientId = obj.clientId;
+function getUserLevel()
+{
+    return window.localforage.getItem(localForageCid.objectName).then(function(value) {
+        var obj = JSON.parse(value);
+        var clientId = obj.clientId;
+        
+        var fetchedUserLevel = window.localforage.getItem('users').then(function(value) {
+            var userData = value;
             
-            window.localforage.getItem('users', function(err, value) {
-                try {
-                    var userData = value;
-                    
-                    var index;
-                    for(var i = 0; i < value.length; i++)
-                    {
-                        if(clientId == value[i].Id)
-                        {
-                            index = i;
-                        }
-                    }
-                    
-                    console.log("User Level: " + value[index].level);
-                    return value[index].level;
-                } catch(err) {
-                    console.log(err);
+            var index;
+            for(var i = 0; i < value.length; i++)
+            {
+                if(clientId == value[i].Id)
+                {
+                    index = i;
+                    break;
                 }
-            })
-        } catch(err) {
-            console.log(err);
-        }
-    });
+            }
+            
+            var userLevel = value[index].level;
+            return userLevel;
+        }).catch(err => console.log(err));
+        
+        return fetchedUserLevel;
+    }).then(function(result) {
+        return result;
+    }).catch(err => console.log(err));
 }
 
-function getUserExperience() {
-    window.localforage.getItem('ga_client_id', function(err, value) {
-        try {
-            var obj = JSON.parse(value);
-            var clientId = obj.clientId;
+function getUserExperience()
+{
+    return window.localforage.getItem(localForageCid.objectName).then(function(value) {
+        var obj = JSON.parse(value);
+        var clientId = obj.clientId;
+        
+        var fetchedUserLevel = window.localforage.getItem('users').then(function(value) {
+            var userData = value;
             
-            window.localforage.getItem('users', function(err, value) {
-                try {
-                    var userData = value;
-                    
-                    var index;
-                    for(var i = 0; i < value.length; i++)
-                    {
-                        if(clientId == value[i].Id)
-                        {
-                            index = i;
-                        }
-                    }
-                    
-                    console.log("User Experience: " + value[index].experience);
-                    return value[index].experience;
-                } catch(err) {
-                    console.log(err);
+            var index;
+            for(var i = 0; i < value.length; i++)
+            {
+                if(clientId == value[i].Id)
+                {
+                    index = i;
+                    break;
                 }
-            })
-        } catch(err) {
-            console.log(err);
-        }
-    });
+            }
+            
+            var userLevel = value[index].experience;
+            return userLevel;
+        }).catch(err => console.log(err));
+        
+        return fetchedUserLevel;
+    }).then(function(result) {
+        return result;
+    }).catch(err => console.log(err));
 }
 
-function setUserLevel(level) {
-    window.localforage.getItem('ga_client_id', function(err, value) {
-        try {
-            var obj = JSON.parse(value);
-            var clientId = obj.clientId;
+function setUserLevel(level)
+{
+    window.localforage.getItem(localForageCid.objectName).then(function(value) {
+        var obj = JSON.parse(value);
+        var clientId = obj.clientId;
+        
+        window.localforage.getItem('users').then(function(value) {
+            var userData = value;
             
-            window.localforage.getItem('users', function(err, value) {
-                try {
-                    var userData = value;
-                    
-                    var index;
-                    for(var i = 0; i < value.length; i++)
-                    {
-                        if(clientId == value[i].Id)
-                        {
-                            index = i;
-                        }
-                    }
-                    
-                    userData[index].level = level;
-                    window.localforage.setItem('users', userData);
-                } catch(err) {
-                    console.log(err);
+            var index;
+            for(var i = 0; i < value.length; i++)
+            {
+                if(clientId == value[i].Id)
+                {
+                    index = i;
                 }
-            })
-        } catch(err) {
-            console.log(err);
-        }
-    });
+            }
+                    
+            userData[index].level = level;
+            
+            window.localforage.setItem('users', userData).then(function(result) {
+                console.log(result);
+            }).catch(err => console.log(err));
+        }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
 }
 
-function setUserExperience(experience) {
-    window.localforage.getItem('ga_client_id', function(err, value) {
-        try {
-            var obj = JSON.parse(value);
-            var clientId = obj.clientId;
+function setUserExperience(experience)
+{
+    window.localforage.getItem(localForageCid.objectName).then(function(value) {
+        var obj = JSON.parse(value);
+        var clientId = obj.clientId;
+        
+        window.localforage.getItem('users').then(function(value) {
+            var userData = value;
             
-            window.localforage.getItem('users', function(err, value) {
-                try {
-                    var userData = value;
-                    
-                    var index;
-                    for(var i = 0; i < value.length; i++)
-                    {
-                        if(clientId == value[i].Id)
-                        {
-                            index = i;
-                        }
-                    }
-                    
-                    userData[index].experience = experience;
-                    window.localforage.setItem('users', userData);
-                } catch(err) {
-                    console.log(err);
+            var index;
+            for(var i = 0; i < value.length; i++)
+            {
+                if(clientId == value[i].Id)
+                {
+                    index = i;
                 }
-            })
-        } catch(err) {
-            console.log(err);
-        }
-    });
+            }
+                    
+            userData[index].experience = experience;
+            
+            window.localforage.setItem('users', userData).then(function(result) {
+                console.log(result);
+            }).catch(err => console.log(err));
+        }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
 }
+
+setClientId();
