@@ -179,12 +179,12 @@ function totalLevels(experience)
     return total;
 }
                       
-async function onLevelUp(level, experience) {
+function onLevelUp(level, experience) {
     setUserLevel(level);
     setUserExperience(experience);
 }
 
-async function onFinishedRoute(routeExperience) {
+function onFinishedRoute(routeExperience) {
     if(routeExperience === undefined)
     {
         routeExperience = 0; 
