@@ -656,4 +656,29 @@ function findId(id, array) {
     })
 }
 
+function getUserTitle(level)
+{
+    var userTitles = JSON.parse(user_titles);
+    
+    if(level < 100)
+    {
+        for(var i = 0; i < userTitles.length; i++)
+        {
+            var obj = userTitles[i];
+        
+            var index;
+            if(level >= obj.levelRange.lowerBound && level <= obj.levelRange.upperBound)
+            {
+                index = i;
+            }
+        }
+    
+        return userTitles[index].title;   
+    }
+    else
+    {
+        return userTitles[userTitles.length - 1].title;
+    }
+}
+
 /** Helper functions **/
