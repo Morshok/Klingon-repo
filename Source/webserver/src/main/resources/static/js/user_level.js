@@ -71,7 +71,6 @@ function insertUser()
                     if(clientId == value[i].Id)
                     {
                         userAlreadyExists = true;
-                        alert("User Already Exists");
                         break;
                     }
                 }   

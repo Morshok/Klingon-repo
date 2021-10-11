@@ -540,6 +540,12 @@ function onRouteFound(event) {
 
         showDialog(dialogContent);
     });
+    
+    if(routeInfo.distance <= 5)
+    {
+        var experience = Math.floor(routeInfo.savedEmission/10);
+        window.onFinishedRoute(experience);
+    }
 }
 
 function onRoutingStarted(event, start, end) {
