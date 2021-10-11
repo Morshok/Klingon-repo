@@ -84,13 +84,13 @@ function insertUser()
                 {
                     dataToInput = [{ Id: `${clientId}`, level: 0, experience: 0 }];   
                     userData = dataToInput;
-                    await window.localforage.setItem('users', userData);
+                    window.localforage.setItem('users', userData);
                 }
                 else
                 {
                     dataToInput = { Id: `${clientId}`, level: 0, experience: 0 };
                     userData.push(dataToInput);
-                    await window.localforage.setItem('users', userData);
+                    window.localforage.setItem('users', userData);
                 }   
                 
                 window.localforage.setItem('users', userData).then(function(result) {
@@ -105,7 +105,8 @@ function insertUser()
 //as in Minecraft, which seemed
 //rather smooth, values may need
 //to be tinkered with though
-function nextLevel(level) {
+function requiredExperience()
+{
     if(level <= 15)
     {
         return 2 * level + 7;
@@ -118,6 +119,64 @@ function nextLevel(level) {
     {
         return 9 * level - 158;
     }
+}
+
+function totalExperience(level)
+{
+    if(level < 0 && level === undefined)
+    {
+        console.log("Input either undefined or negative, setting to 0");
+        level = 0;
+    }
+    
+    var total = 0;
+    
+    if(level <= 16)
+    {
+        total = total + (Math.pow(level, 2) + 6 * level);
+    }
+    if(level >= 17 && level <= 31)
+    {
+        total = total + (2.5 * Math.pow(level, 2) - 40.5 * level + 360);
+    }
+    if(level >= 32)
+    {
+        total = total + (4.5 * Math.pow(level, 2) - 162.5 * level + 2220);
+    }
+    
+    total = Math.round(total);
+    
+    console.log("Total Experience: " + total);
+    return total;
+}
+
+function totalLevels(experience)
+{
+    if(experience < 0 && experience === undefined)
+    {
+        console.log("Input either undefined or negative, setting to 0");
+        experience = 0;
+    }
+    
+    var total = 0;
+    
+    if(experience <= 352)
+    {
+        total = total + (Math.sqrt(experience + 9) - 3);
+    }
+    if(experience >= 353 && experience <= 1507)
+    {
+        total = total + (8.1 + Math.sqrt(0.4 * (experience - 195.975)));
+    }
+    if(experience >= 1508) 
+    {
+        total = total + (18.056 + Math.sqrt(0.222 * (experience - 752.986)));
+    }
+    
+    total = Math.floor(total);
+    
+    console.log("Total Levels: " + total);
+    return total;
 }
                       
 async function onLevelUp(level, experience) {
@@ -133,15 +192,11 @@ async function onFinishedRoute(routeExperience) {
     
     var userLevel = getUserLevel();
     var userExperience = getUserExperience() + routeExperience;
-    var experienceToNextLevel = nextLevel(userLevel);
     
     if(userExperience >= experienceToNextLevel)
     {
         //Needs improvement, need to find total experience 
         //in the level interval.
-        userLevelIncrement = Math.floor(userExperience / experienceToNextLevel);
-        userLevel = userLevel + userLevelIncrement;
-        userExperience = userExperience % experienceToNextLevel;
         
         onLevelUp(userLevel, userExperience);
     }
