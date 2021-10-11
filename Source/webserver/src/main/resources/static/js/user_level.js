@@ -101,6 +101,19 @@ function insertUser()
     }).catch(err => console.log(err));
 }
 
+function printUser()
+{
+    window.localforage.getItem(localForageCid.objectName).then(function(value) {
+        var obj = JSON.parse(value);
+        var clientId = obj.clientId;
+        
+        window.localforage.getItem('users').then(function(value) {
+            var userData = value;
+            console.log(userData);
+        }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
+}
+
 //This is the same level curve
 //as in Minecraft, which seemed
 //rather smooth, values may need
@@ -145,8 +158,6 @@ function totalExperience(level)
     }
     
     total = Math.round(total);
-    
-    console.log("Total Experience: " + total);
     return total;
 }
 
@@ -174,8 +185,6 @@ function totalLevels(experience)
     }
     
     total = Math.floor(total);
-    
-    console.log("Total Levels: " + total);
     return total;
 }
                       
@@ -190,16 +199,39 @@ function onFinishedRoute(routeExperience) {
         routeExperience = 0; 
     }
     
-    var userLevel = getUserLevel();
-    var userExperience = getUserExperience() + routeExperience;
-    
-    if(userExperience >= experienceToNextLevel)
-    {
-        //Needs improvement, need to find total experience 
-        //in the level interval.
+    window.localforage.getItem(localForageCid.objectName).then(function(value) {
+        var obj = JSON.parse(value);
+        var clientId = obj.clientId;
         
-        onLevelUp(userLevel, userExperience);
-    }
+        window.localforage.getItem('users').then(function(value) {
+            var userData = value;
+            
+            var index;
+            for(var i = 0; i < value.length; i++)
+            {
+                if(clientId == value[i].Id)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            
+            var userLevel = value[index].level;
+            var userExperience = value[index].experience;
+            
+            var requiredExperienceToLevelUp = totalExperience(userLevel + 1);
+            userExperience = userExperience + routeExperience;
+            
+            if(userExperience >= requiredExperienceToLevelUp)
+            {
+                var levelAfterExperienceIncrease = totalLevels(userExperience);
+                var newExperienceProgress = totalExperience(levelAfterExperienceIncrease + 1) - totalExperience(levelAfterExperienceIncrease);
+                
+                setUserLevel(levelAfterExperienceIncrease);
+                setUserExperience(newExperienceProgress);
+            }
+        }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
 }
 
 function getUserLevel()
@@ -237,7 +269,7 @@ function getUserExperience()
         var obj = JSON.parse(value);
         var clientId = obj.clientId;
         
-        var fetchedUserLevel = window.localforage.getItem('users').then(function(value) {
+        var fetchedUserExperience = window.localforage.getItem('users').then(function(value) {
             var userData = value;
             
             var index;
@@ -250,11 +282,11 @@ function getUserExperience()
                 }
             }
             
-            var userLevel = value[index].experience;
-            return userLevel;
+            var userExperience = value[index].experience;
+            return userExperience;
         }).catch(err => console.log(err));
         
-        return fetchedUserLevel;
+        return fetchedUserExperience;
     }).then(function(result) {
         return result;
     }).catch(err => console.log(err));
