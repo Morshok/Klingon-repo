@@ -545,6 +545,7 @@ function onRouteFound(event) {
     {
         var experience = Math.floor(routeInfo.savedEmission/10);
         window.onFinishedRoute(experience);
+        removeRoute();
     }
 }
 
