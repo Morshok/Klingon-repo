@@ -124,7 +124,7 @@ main div.info ul li a:active {
 main div.column-wrapper {
     position: absolute;
     top: 10px;
-    z-index: 9999;
+    z-index: 999;
 }
 
 main div.column-wrapper.left {
@@ -184,12 +184,13 @@ main #level-panel {
     max-width: 250px;
     position: relative;
     color: #000;
+    display: none;
 }
 
 main #level-panel > .upper {
     display: flex;
     width: 100%;
-    align-items: center;
+    align-items: center;"
 }
 
 main #level-panel > .upper > .image {
