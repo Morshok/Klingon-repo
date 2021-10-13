@@ -1,10 +1,10 @@
 # Klingon-repo
 
 ## Software used:
-   Github, used both as a repository, and using the projects tab as a scrum board
-   IntelliJ
-   Eclipse
-   Brackets
+   Github, used both as a repository, and using the projects tab as a scrum board <br>
+   IntelliJ <br>
+   Eclipse <br>
+   Brackets <br>
    Notepad++?!
    
 ## Instruction for getting to individual reflections:
