@@ -1,0 +1,46 @@
+[
+  {
+    "levelRange": {"lowerBound": 0, "upperBound":  9},
+    "title": "Polluter"
+  },
+  {
+    "levelRange": {"lowerBound": 10, "upperBound":  19},
+    "title": "Recovering Polluter"
+  },
+  {
+    "levelRange": {"lowerBound": 20, "upperBound":  29},
+    "title": "Occasional Pedestrian"
+  },
+  {
+    "levelRange": {"lowerBound": 30, "upperBound":  39},
+    "title": "Regular Pedestrian"
+  },
+  {
+    "levelRange": {"lowerBound": 40, "upperBound":  49},
+    "title": "Södermalm Hipster"
+  },
+  {
+    "levelRange": {"lowerBound": 50, "upperBound":  59},
+    "title": "Bilbo Baggins"
+  },
+  {
+    "levelRange": {"lowerBound": 60, "upperBound":  69},
+    "title": "Ecosystematically Correct"
+  },
+  {
+    "levelRange": {"lowerBound": 70, "upperBound":  79},
+    "title": "Anti-Polluter"
+  },
+  {
+    "levelRange": {"lowerBound": 80, "upperBound":  89},
+    "title": "Environmental Activist"
+  },
+  {
+    "levelRange": {"lowerBound": 90, "upperBound":  99},
+    "title": "Redeemer of Human Misconduct"
+  },
+  {
+    "levelRange": {"lowerBound": 100},
+    "title": "Saviour of the Earth"
+  }
+] 
