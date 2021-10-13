@@ -614,6 +614,13 @@ function onRouteFound(event) {
 
         showDialog(dialogContent);
     });
+    
+    if(routeInfo.distance <= 5)
+    {
+        var experience = Math.floor(routeInfo.savedEmission/10);
+        window.onFinishedRoute(experience);
+        removeRoute();
+    }
 }
 
 function onRoutingStarted(event, start, end) {
@@ -764,5 +771,4 @@ function setUserTitle(level)
 $(document).ready(function() {
     setUserTitle(87);
 });
-
 /** Helper functions **/
