@@ -121,11 +121,18 @@ main div.info ul li a:active {
     background: #18306f;
 }
 
-main div#wrapper {
+main div.column-wrapper {
     position: absolute;
     top: 10px;
+    z-index: 9999;
+}
+
+main div.column-wrapper.left {
+    left: 10px;
+}
+
+main div.column-wrapper.right {
     right: 10px;
-    z-index: 999;
 }
 
 main div#route_info div.head span {
@@ -165,15 +172,82 @@ main div#route_info div.content ul li i.info_icon {
 }
 
 main div#route_info {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 999;
     width: 200px;
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
+}
+
+main #level-panel {
+    padding: 5px 10px;
+    max-width: 250px;
+    position: relative;
+    color: #000;
+}
+
+main #level-panel > .upper {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+main #level-panel > .upper > .image {
+    flex: 0 0 50px;
+}
+
+main #level-panel > .upper > .image > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+main #level-panel > .upper > .rows {
+    flex: 1 1 100%;
+    padding: 5px;
+    font-size: large;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    align-items: flex-start;
+}
+
+main #level-panel > .upper > .rows > .title {
+    border: 3px solid #264bab;
+    background: #fff;
+    padding: 3px;
+    border-radius: 5px;
+    white-space: pre;
+}
+
+main #level-panel > .upper > .rows > .user-progress {
+    min-width: 125px;
+    height: 18px;
+    background: #fff;
+    border-radius: 5px;
+    margin-top: 5px;
+    border: 3px solid #264bab;
+    background: #f6fbff;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+main #level-panel > .upper > .rows > .user-progress > .user-exp {
+    height: 100%;
+    max-width: 100%;
+    width: 0;
+    background: #81fc5d;
+    position: absolute;
+    z-index: 0;
+}
+
+main #level-panel > .upper > .rows > .user-progress > .text {
+    position: absolute;
+    margin: 0 auto;
+    width: 100%;
+    font-size: 0.95em;
+    color: rgb(38 75 171);
 }
 
 main div#filters {
@@ -265,12 +339,37 @@ main div#weather-data div.head {
     align-items: center;
 }
 
-main div#weather-data div.head span {
+main div#weather-data div.head > .weather-loading {
+    display: none;
+    width: 24px;
+    height: 24px;
 }
+
+/** Weather panel loading **/
+main div#weather-data.loading div.head > .weather-loading {
+    display: block;
+}
+
+main div#weather-data.loading div.head > .location-dropdown {
+    display: none;
+}
+
+main div#weather-data.loading div.head > #weather-data-toggle {
+    display: none;
+}
+
+main div#weather-data.loading div.content {
+    display: none;
+}
+/** Weather panel loading **/
 
 main div#weather-data div.content {
     border-top: 3px solid rgba(38, 75, 171, 1);
     padding-top: 0.3em;
+}
+
+main div#weather-data div.content > p {
+    margin: 0;
 }
 
 main div#weather-data.closed div.head {
