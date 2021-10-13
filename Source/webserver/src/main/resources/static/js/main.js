@@ -723,4 +723,46 @@ function findId(id, array) {
     })
 }
 
+function setUserTitle(level)
+{
+    fetch("./json/user_titles.json")
+        .then(response => response.json())
+        .then(data => {
+        
+            var title = "";
+            if(level >= 0 && level < 100)
+            {
+                var index;
+                for(var i = 0; data.length; i++)
+                {
+                    var obj = data[i];
+                
+                    if(level >= obj.levelRange.lowerBound && level <= obj.levelRange.upperBound)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+            
+                console.log(data[index].title);
+                title = data[index].title;
+            }
+            else if(level >= 100)
+            {
+                console.log(data[data.length - 1].title);
+                title = data[data.length - 1].title;
+            }
+            else 
+            {
+                title = "Failed to load";     
+            }
+        
+            $(".title").text(title); 
+    });
+}
+
+$(document).ready(function() {
+    setUserTitle(87);
+});
+
 /** Helper functions **/
