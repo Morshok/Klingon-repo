@@ -62,10 +62,10 @@
                 <div class="head">
                     <span>Filter:</span>
                     <select name="cities" id="cities-dropdown" onchange="changeCity()">
-                        <option value="1" selected="selected">Göteborg</option>
-                        <option value="2">Malmö</option>
-                        <option value="3">Lund</option>
-                        <option value="4">Stockholm</option>
+                        <option value="Göteborg"  selected="selected">Göteborg</option>
+                        <option value="Malmö">Malmö</option>
+                        <option value="Lund" >Lund</option>
+                        <option value="Stockholm" >Stockholm</option>
                     </select>
                     <!-- Hide/show toggle -->
                     <button id="filter_toggle"><i class="fa fa-angle-down"></i></button>
@@ -78,6 +78,7 @@
                     <form>
                         <input type="checkbox" id="bicycles" class="checkbox-group" checked>
                         <label for="bicycles">Cykel stationer</label>
+                        <div id="housingrequest" class="hidden"></div>
                         <input type="checkbox" id="pumps" class="checkbox-group">
                         <label for="pumps">Pump stationer</label>
                         <input type="checkbox" id="parking" class="checkbox-group">

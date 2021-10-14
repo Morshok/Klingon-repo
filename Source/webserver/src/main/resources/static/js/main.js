@@ -28,6 +28,7 @@ const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
 const bicycleStandGroup = L.layerGroup();
+
 const markerGroups = [
     {
         title: "Styr & Ställ",
@@ -50,7 +51,7 @@ const markerGroups = [
             }
             return bicycleIcon;
         },
-    },
+    }, 
     {
         title: "Pumpstationer",
         check: function () {
@@ -82,6 +83,8 @@ const markerGroups = [
         icon: bicycleStandIcon,
     },
 ];
+
+
 
 let allMarkers = {};
 let userPosition = {
@@ -132,6 +135,7 @@ function loadMarker() {
         $.ajax(markerGroup.apiPath, {
             contentType: "application/json",
             dataType: "json",
+            data: {city: $("#cities-dropdown").val() },
             complete: function (response) {
                 if (response.status === 200) {
                     let data = response.responseJSON;
@@ -154,7 +158,6 @@ function loadMarker() {
             },
         })
     }
-
     let calledApi = false, changedData = false;
     markerGroups.forEach(function (item) {
         if (item.check()) {
@@ -169,23 +172,92 @@ function loadMarker() {
         }
     });
 
+
     if (calledApi !== changedData && !calledApi) {
         updateSearchResults()
     }
 }
 
+/**function loadMarkerMalmo() {
+    let baseTemplate = function (id, title, content) {
+        return `
+            <div data-station-id="${id}" class="station-popups">
+                <div class="title"><b>${title}</b></div>
+                <hr>
+                <div class="content">
+                    ${content}
+                </div>
+                <div class="footer">
+                    <button class="navigation-routing-point" data-type="startPoint">Börja här</button>
+                    <button class="navigation-routing-point" data-type="endPoint">Sluta här</button>
+                </div>
+            <div>
+        `
+    }
+
+    let buildMarkerGroup = function (markerGroup) {
+        // Do not add the group to the map if a route is active
+        if (!gpsEvenListenerId)
+            markerGroup.layer.addTo(window.leafletMap);
+
+        $.ajax(markerGroup.apiPath, {
+            contentType: "application/json",
+            dataType: "json",
+            complete: function (response) {
+                if (response.status === 200) {
+                    let data = response.responseJSON;
+                    data.forEach(function (station) {
+                        let icon = typeof markerGroup.icon === "function" ?
+                            markerGroup.icon(station) : markerGroup.icon;
+
+                        let marker = L.marker([station.latitude, station.longitude], icon ? {icon: icon} : {})
+                            .bindPopup(function () {
+                                return markerGroup.template(station, baseTemplate)
+                            })
+                            .addTo(markerGroup.layer);
+
+                        station.groupTitle = markerGroup.title;
+                        if (!allMarkers[markerGroup.apiPath]) allMarkers[markerGroup.apiPath] = [];
+                        allMarkers[markerGroup.apiPath].push({marker: marker, data: station});
+                    });
+                    updateSearchResults();
+                }
+            },
+        })
+    }
+    let calledApi = false, changedData = false;
+    markerGroupsMalmo.forEach(function (item) {
+        if (item.check()) {
+            if (!window.leafletMap.hasLayer(item.layer)) {
+                calledApi = true;
+                buildMarkerGroup(item);
+            }
+        } else {
+            item.layer.clearLayers().remove();
+            allMarkers[item.apiPath] = [];
+            changedData = true
+        }
+    });
+
+
+    if (calledApi !== changedData && !calledApi) {
+        updateSearchResults()
+    }
+}*/
 /** A function that removes the previous markers when a city is changed
  *
  * @param bicycleStationGroup - The bicycle station markers
  * @param pumpStationGroup - The pump station markers
  * @param bicycleStandGroup - The bicycle stand markers
- */
-function removeCityMarkers(removeBicycleStand, removePumps) {
+
+function removeCityMarkers(removeBicycleStand, removePumps,removeBicycleStation) {
     if(removeBicycleStand==true)
-    window.leafletMap.removeLayer(bicycleStandGroup);
+        window.leafletMap.removeLayer(bicycleStandGroup);
     if(removePumps==true)
-    window.leafletMap.removeLayer(pumpStationGroup);
-}
+        window.leafletMap.removeLayer(pumpStationGroup);
+    if(removeBicycleStation==true)
+        window.leafletMap.removeLayer(bicycleStationGroup);
+}*/
 
 /** A function that disables,removes and unchecks
  * the markers depending on the city.
@@ -194,39 +266,58 @@ function removeCityMarkers(removeBicycleStand, removePumps) {
  */
 function checkboxHandler(currentCity) {
     //if statements that disables the markers and unchecks them depending on the city
-    if (currentCity == 2) {
+    if (currentCity == 'Malmö') {
         document.getElementById('pumps').disabled = false;
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
-        removeCityMarkers(true, false); //removes the parking markers
-    } else if (currentCity == 3 || currentCity == 4) {
+
+
+    } else if (currentCity == 'Lund' || currentCity == 'Stockholm') {
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
         document.getElementById('pumps').disabled = true;
         document.getElementById('pumps').checked = false;
-        removeCityMarkers(true, true); //removes the parking- and pump-markers
+
+
+
     } else {
         document.getElementById('parking').disabled = false;
         document.getElementById('pumps').disabled = false;
-    };
+
+    }
+    //clears previous markers
+    markerGroups.forEach(function (group) {
+        group.layer.clearLayers().remove();
+    });
+    //sets out the new markers on the map
+    loadMarker();
 }
 
+/**
+ * a function that changes the city view and implements the checkbox functions
+ */
 function changeCity() {
     const city = document.getElementById("cities-dropdown").value;
-    if (city == 2) {  //if the city Malmö is chosen
+    if (city == 'Malmö') {
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
-        checkboxHandler(2);  //when a new city is choosen, the checkboxes should be unchecked
-    } else if (city == 3) { //if the city Lund is chosen
+        checkboxHandler('Malmö');  //when a new city is choosen, the checkboxes should be unchecked
+        //alert("För Malmö visas endast cykel- och pumpstationer");
+    } else if (city == 'Lund') {
         window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
-        checkboxHandler(3);
-    } else if (city == 4) { //if the city Stockholm is chosen
+        checkboxHandler('Lund');
+        //alert("För Lund visas endast cykelstationer");
+    } else if (city == 'Stockholm') {
         window.leafletMap.setView([59.3295521252874, 18.06861306062469], 13);
-        checkboxHandler(4);
+        checkboxHandler('Stockholm');
+        //alert("För Stockholm visas endast cykelstationer");
     } else {
         window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
-        checkboxHandler();
+        checkboxHandler('Göteborg');
+
     }
+    loadMarker();
 }
+
 
 let weatherApiRepeater;
 let weatherObject = [];
@@ -280,9 +371,11 @@ $("select#location-dropdown").change(function () {
 });
 
 $(document).ready(function () {
+    const city = document.getElementById("cities-dropdown").value;
+
     loadWeatherData();
     loadMarker();
-
+    // loadMarkerMalmo();
     let changed = false;
     $(window).on("resize", function (evt) {
         if (window.innerWidth > 440) {
@@ -295,7 +388,9 @@ $(document).ready(function () {
 
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
+    // loadMarkerMalmo();
 });
+
 
 $("button#filter_toggle").click(function () {
     $("div#filters").toggleClass("closed");
