@@ -307,12 +307,41 @@ input[type=checkbox] + label:before {
     transition: 0.2s;
 }
 
+
+
 input[type=checkbox]:checked + label:before {
 
     background: rgba(38, 75, 171, 1);
     border: 3px solid rgba(38, 75, 171, 1);
     color: white;
 }
+input[type=checkbox]:disabled + label:before{
+    border-color: gray;
+}
+
+input[type=checkbox]:disabled + label[for=pumps]{
+    color: gray;
+
+}
+input[type=checkbox]:disabled + label[for=pumps]:after{
+    color: gray;
+    white-space: nowrap;
+    content: "(inte tillgänglig)";
+    font-size: 13px;
+}
+
+input[type=checkbox]:disabled + label[for=parking]{
+    color: gray;
+
+
+}
+input[type=checkbox]:disabled + label[for=parking]:after{
+    color: gray;
+    white-space: nowrap;
+    content: " (inte tillgänglig)";
+    font-size: 13px;
+}
+
 
 
 main div#filters.closed div.head, main div#route_info.closed div.head {
@@ -665,6 +694,7 @@ div.dialog div.controls button.dialog_close_button {
         right: 10px;
         font-size: 1.1em;
     }
+
 
     main div#filters div.head {
     }

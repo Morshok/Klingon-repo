@@ -15,7 +15,7 @@ const bicycleStandIcon = L.icon({
     iconSize: [26, 26],
 })
 const noBikeIcon = L.icon({
-    iconUrl: '/images/redBicycle.png',
+    iconUrl: '/images/bicycleStationGray.png',
     iconSize: [32, 32],
 });
 
@@ -178,87 +178,6 @@ function loadMarker() {
     }
 }
 
-/**function loadMarkerMalmo() {
-    let baseTemplate = function (id, title, content) {
-        return `
-            <div data-station-id="${id}" class="station-popups">
-                <div class="title"><b>${title}</b></div>
-                <hr>
-                <div class="content">
-                    ${content}
-                </div>
-                <div class="footer">
-                    <button class="navigation-routing-point" data-type="startPoint">Börja här</button>
-                    <button class="navigation-routing-point" data-type="endPoint">Sluta här</button>
-                </div>
-            <div>
-        `
-    }
-
-    let buildMarkerGroup = function (markerGroup) {
-        // Do not add the group to the map if a route is active
-        if (!gpsEvenListenerId)
-            markerGroup.layer.addTo(window.leafletMap);
-
-        $.ajax(markerGroup.apiPath, {
-            contentType: "application/json",
-            dataType: "json",
-            complete: function (response) {
-                if (response.status === 200) {
-                    let data = response.responseJSON;
-                    data.forEach(function (station) {
-                        let icon = typeof markerGroup.icon === "function" ?
-                            markerGroup.icon(station) : markerGroup.icon;
-
-                        let marker = L.marker([station.latitude, station.longitude], icon ? {icon: icon} : {})
-                            .bindPopup(function () {
-                                return markerGroup.template(station, baseTemplate)
-                            })
-                            .addTo(markerGroup.layer);
-
-                        station.groupTitle = markerGroup.title;
-                        if (!allMarkers[markerGroup.apiPath]) allMarkers[markerGroup.apiPath] = [];
-                        allMarkers[markerGroup.apiPath].push({marker: marker, data: station});
-                    });
-                    updateSearchResults();
-                }
-            },
-        })
-    }
-    let calledApi = false, changedData = false;
-    markerGroupsMalmo.forEach(function (item) {
-        if (item.check()) {
-            if (!window.leafletMap.hasLayer(item.layer)) {
-                calledApi = true;
-                buildMarkerGroup(item);
-            }
-        } else {
-            item.layer.clearLayers().remove();
-            allMarkers[item.apiPath] = [];
-            changedData = true
-        }
-    });
-
-
-    if (calledApi !== changedData && !calledApi) {
-        updateSearchResults()
-    }
-}*/
-/** A function that removes the previous markers when a city is changed
- *
- * @param bicycleStationGroup - The bicycle station markers
- * @param pumpStationGroup - The pump station markers
- * @param bicycleStandGroup - The bicycle stand markers
-
-function removeCityMarkers(removeBicycleStand, removePumps,removeBicycleStation) {
-    if(removeBicycleStand==true)
-        window.leafletMap.removeLayer(bicycleStandGroup);
-    if(removePumps==true)
-        window.leafletMap.removeLayer(pumpStationGroup);
-    if(removeBicycleStation==true)
-        window.leafletMap.removeLayer(bicycleStationGroup);
-}*/
-
 /** A function that disables,removes and unchecks
  * the markers depending on the city.
  *
@@ -270,6 +189,7 @@ function checkboxHandler(currentCity) {
         document.getElementById('pumps').disabled = false;
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
+        document.getElementById('parking').style.color = "red";
 
 
     } else if (currentCity == 'Lund' || currentCity == 'Stockholm') {
@@ -301,21 +221,16 @@ function changeCity() {
     if (city == 'Malmö') {
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
         checkboxHandler('Malmö');  //when a new city is choosen, the checkboxes should be unchecked
-        //alert("För Malmö visas endast cykel- och pumpstationer");
     } else if (city == 'Lund') {
         window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
-        checkboxHandler('Lund');
-        //alert("För Lund visas endast cykelstationer");
+       checkboxHandler('Lund');
     } else if (city == 'Stockholm') {
         window.leafletMap.setView([59.3295521252874, 18.06861306062469], 13);
         checkboxHandler('Stockholm');
-        //alert("För Stockholm visas endast cykelstationer");
     } else {
         window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
         checkboxHandler('Göteborg');
-
     }
-    loadMarker();
 }
 
 
@@ -371,11 +286,8 @@ $("select#location-dropdown").change(function () {
 });
 
 $(document).ready(function () {
-    const city = document.getElementById("cities-dropdown").value;
-
     loadWeatherData();
     loadMarker();
-    // loadMarkerMalmo();
     let changed = false;
     $(window).on("resize", function (evt) {
         if (window.innerWidth > 440) {
@@ -388,7 +300,7 @@ $(document).ready(function () {
 
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
-    // loadMarkerMalmo();
+
 });
 
 
