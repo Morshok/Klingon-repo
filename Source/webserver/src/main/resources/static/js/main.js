@@ -269,6 +269,7 @@ $("select#location-dropdown").change(function () {
     if (index && weatherObject.length > index && weatherObject[index]) {
         let data = weatherObject[index];
         $("#weather-data > .content").html(`
+            <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
             <p>Plats: ${data.location}</p>
             <p>Beskrivning: ${data.weatherDescription}</p>
             <p>Temperatur: ${data.temperature}&deg;C</p>
