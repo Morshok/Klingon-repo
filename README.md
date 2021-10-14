@@ -7,7 +7,7 @@
    Brackets <br>
    Notepad++?!
    
-   *Lägg till andra program ni har använt er av i listan här*
+   *Lägg till andra program ni har använt er av i listan här //Anthon*
    
 ## Instruction for getting to individual reflections:
    To get to our individual reflections, navigate to <br>
