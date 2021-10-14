@@ -503,6 +503,23 @@ function startRoute(gpsLocation, startValue, endValue) {
     addRoute(startPoint, endPoint, $mode);
 }
 
+L.Routing.OpenRouteService.prototype.old_routeDone = L.Routing.OpenRouteService.prototype._routeDone;
+L.Routing.OpenRouteService.prototype._routeDone = function(datas, inputWaypoints, callback, context){
+    let routes = this.options.format === 'geojson' ? datas.features : datas.routes;
+    let routeTime = [];
+
+    routes.forEach(function(route, indx){
+        routeTime[indx] = route.summary.duration;
+    });
+
+    L.Routing.OpenRouteService.prototype.old_routeDone.call(this, datas, inputWaypoints, function(unused, alts){
+        alts.forEach(function(routeAlt, indx){
+            routeAlt.summary.totalTime = routeTime[indx];
+        });
+        callback.call(context, null, alts);
+    }, context);
+}
+
 const router = L.routing.openrouteservice("", {
     "timeout": 30 * 1000,
     "format": "json",
