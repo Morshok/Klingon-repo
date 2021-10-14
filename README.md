@@ -8,9 +8,10 @@
    Notepad++?!
    
 ## Instruction for getting to individual reflections:
-   To get to our individual reflections, navigate to Organization/Individual Reflections.
-   When navigated over there, our individual reflections are put in directories 
-   dedicated to each team member.
+   To get to our individual reflections, navigate to 
+   Organization/ReflectionsIndividual Reflections.
+   When navigated over there, our individual reflections 
+   are put in directories dedicated to each team member.
 
 ## External resources used:
    Links to data include: <br>
