@@ -618,8 +618,10 @@ function onRouteFound(event) {
     if(routeInfo.distance <= 5)
     {
         var experience = Math.floor(routeInfo.savedEmission/10);
-        window.onFinishedRoute(experience);
-        removeRoute();
+        window.onFinishedRoute(experience).then(function() {
+            window.updateUserData();
+            removeRoute();
+        });
     }
 }
 
@@ -751,12 +753,10 @@ function setUserTitle(level)
                     }
                 }
 
-                console.log(data[index].title);
                 title = data[index].title;
             }
             else if(level >= 100)
             {
-                console.log(data[data.length - 1].title);
                 title = data[data.length - 1].title;
             }
             else 
@@ -771,13 +771,15 @@ function setUserTitle(level)
 function updateUserData()
 {
     window.getUserLevel().then(function(userLevel) {
-        setUserTitle(99);  
+        setUserTitle(userLevel);  
         
         window.getUserExperience().then(function(userExperience) {
             var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
             var currentExperience = userExperience;
             
             $(".text").text(currentExperience + "/" + requiredExperienceToNextLevel + "xp");
+            $(".user-level").text("Lv. " + userLevel);
+            updateProgressBarWidth();
         });
     });
 }
@@ -789,7 +791,7 @@ function updateProgressBarWidth()
             var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
             var currentExperience = userExperience;
             
-            var progressBarWidth = $("#level-panel").width();
+            var progressBarWidth = $(".user-progress").width();
             $(".user-exp").width((currentExperience/requiredExperienceToNextLevel) * progressBarWidth);
         }); 
     });
@@ -797,7 +799,6 @@ function updateProgressBarWidth()
 
 $(document).ready(function() {
     updateUserData();
-    updateProgressBarWidth();
 });
 
 $(window).resize(function() {
