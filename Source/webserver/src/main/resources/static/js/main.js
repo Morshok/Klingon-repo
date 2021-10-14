@@ -768,7 +768,39 @@ function setUserTitle(level)
     });
 }
 
+function updateUserData()
+{
+    window.getUserLevel().then(function(userLevel) {
+        setUserTitle(99);  
+        
+        window.getUserExperience().then(function(userExperience) {
+            var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
+            var currentExperience = userExperience;
+            
+            $(".text").text(currentExperience + "/" + requiredExperienceToNextLevel + "xp");
+        });
+    });
+}
+
+function updateProgressBarWidth()
+{
+    window.getUserLevel().then(function(userLevel) {
+        window.getUserExperience().then(function(userExperience) {
+            var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
+            var currentExperience = userExperience;
+            
+            var progressBarWidth = $("#level-panel").width();
+            $(".user-exp").width((currentExperience/requiredExperienceToNextLevel) * progressBarWidth);
+        }); 
+    });
+}
+
 $(document).ready(function() {
-    setUserTitle(87);
+    updateUserData();
+    updateProgressBarWidth();
+});
+
+$(window).resize(function() {
+    updateProgressBarWidth();
 });
 /** Helper functions **/

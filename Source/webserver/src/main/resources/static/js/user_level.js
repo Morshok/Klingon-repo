@@ -117,7 +117,7 @@ function printUser()
 //as in Minecraft, which seemed
 //rather smooth, values may need
 //to be tinkered with though
-function requiredExperience()
+function requiredExperienceToNextLevel(level)
 {
     if(level <= 15)
     {
