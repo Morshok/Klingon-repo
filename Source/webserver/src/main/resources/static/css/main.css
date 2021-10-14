@@ -135,10 +135,6 @@ main div.column-wrapper.right {
     right: 10px;
 }
 
-main img#mobileFilter, main img#mobileRouteInfo, main img#mobileWeather {
-    display: none;
-}
-
 main div#route_info div.head span {
     margin-right: 1em;
 }
@@ -181,7 +177,6 @@ main div#route_info {
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    box-sizing: border-box;
 }
 
 main #level-panel {
@@ -195,7 +190,8 @@ main #level-panel {
 main #level-panel > .upper {
     display: flex;
     width: 100%;
-    align-items: center;"
+    align-items: center;
+"
 }
 
 main #level-panel > .upper > .image {
@@ -257,13 +253,11 @@ main #level-panel > .upper > .rows > .user-progress > .text {
 }
 
 main div#filters {
-    box-sizing: border-box;
     width: 200px;
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    margin-bottom: 10px
 }
 
 main div#filters div.head, main div#route_info div.head {
@@ -315,10 +309,35 @@ input[type=checkbox] + label:before {
 }
 
 input[type=checkbox]:checked + label:before {
-
     background: rgba(38, 75, 171, 1);
     border: 3px solid rgba(38, 75, 171, 1);
     color: white;
+}
+
+input[type=checkbox]:disabled + label:before {
+    border-color: #969696;
+}
+
+input[type=checkbox]:disabled + label[for=pumps] {
+    color: #969696;
+}
+
+input[type=checkbox]:disabled + label[for=pumps]:after {
+    color: #969696;
+    white-space: nowrap;
+    content: "(ej tillgänglig)";
+    font-size: 13px;
+}
+
+input[type=checkbox]:disabled + label[for=parking] {
+    color: #969696;
+}
+
+input[type=checkbox]:disabled + label[for=parking]:after {
+    color: #969696;
+    white-space: nowrap;
+    content: " (ej tillgänglig)";
+    font-size: 13px;
 }
 
 
@@ -336,8 +355,7 @@ main div#weather-data {
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    margin-bottom: 10px;
-    box-sizing: border-box;
+    margin-top: 10px;
 }
 
 main div#weather-data div.head {
@@ -370,6 +388,7 @@ main div#weather-data.loading div.head > #weather-data-toggle {
 main div#weather-data.loading div.content {
     display: none;
 }
+
 /** Weather panel loading **/
 
 main div#weather-data div.content {
@@ -420,7 +439,7 @@ main div#weather-data div.head button#weather-data-toggle {
     position: absolute;
     background-color: #f1f1f1;
     min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     font-size: 0px;
     z-index: 1000;
 }
@@ -536,7 +555,7 @@ main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper {
 }
 
 main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper > div {
-   flex: 1 1 100%;
+    flex: 1 1 100%;
 }
 
 main div.navigation > .main-panel > .route-setup > .input {
@@ -583,7 +602,7 @@ div.dialog {
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     padding: 0.3em;
-    font-size: 0.8em;
+    font-size: 1.1em;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -628,12 +647,6 @@ div.dialog div.controls {
 div.dialog div.controls button.dialog_close_button {
     cursor: pointer;
 }
-
-main img#walkingIcon{
-    position: relative;
-    top: 5px;
-}
-
 
 
 @media (max-width: 600px) {
@@ -680,6 +693,7 @@ main img#walkingIcon{
         font-size: 1.1em;
     }
 
+
     main div#filters div.head {
     }
 
@@ -699,37 +713,7 @@ main img#walkingIcon{
     }
 }
 
-@media(max-width: 450px){
-
-    main div#filters, main div#route_info, main div#weather-data{
-        display: none;
-    }
-
-    main div#filters.hidden, main div#route_info.hidden, div#weather-data.hidden, main img#mobileRouteInfo.hidden {
-        display: none;
-    }
-
-    main div#filters.hidden, main div#route_info.hidden, div#weather-data.hidden, main img#mobileRouteInfo.hidden{
-        display: block;
-    }
-
-    main img#mobileFilter, main img#mobileWeather, main img#mobileRouteInfo {
-        display: block;
-        margin-top: 10px;
-        background-color: #03b721;
-        width: 45px;
-        height: 45px;
-        border-radius: 100%;
-        transition: .5s ease;
-        backface-visibility: hidden;
-    }
-
-    main img#mobileWeather.change, main img#mobileFilter.change, main img#mobileRouteInfo.change{
-        background-color: #e71b1b;
-    }
-}
-
-@media(max-width: 350px){
+@media (max-width: 350px) {
     main div.navigation > .main-panel {
         width: 250px;
     }

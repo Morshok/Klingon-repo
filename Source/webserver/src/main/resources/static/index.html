@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -68,10 +69,10 @@
                 <div class="head">
                     <span>Filter:</span>
                     <select name="cities" id="cities-dropdown" onchange="changeCity()">
-                        <option value="1" selected="selected">Göteborg</option>
-                        <option value="2">Malmö</option>
-                        <option value="3">Lund</option>
-                        <option value="4">Stockholm</option>
+                        <option value="Göteborg"  selected="selected">Göteborg</option>
+                        <option value="Malmö">Malmö</option>
+                        <option value="Lund" >Lund</option>
+                        <option value="Stockholm" >Stockholm</option>
                     </select>
                     <!-- Hide/show toggle -->
                     <button id="filter_toggle"><i class="fa fa-angle-down"></i></button>
@@ -83,11 +84,12 @@
                     </div>
                     <form>
                         <input type="checkbox" id="bicycles" class="checkbox-group" checked>
-                        <label for="bicycles">Cykel stationer</label>
+                        <label for="bicycles">Cykel stationer </label>
                         <input type="checkbox" id="pumps" class="checkbox-group">
-                        <label for="pumps">Pump stationer</label>
+                        <label for="pumps">Pump stationer </label>
                         <input type="checkbox" id="parking" class="checkbox-group">
-                        <label for="parking">Cykel parkeringar</label>
+                        <label for="parking">Cykel parkeringar </label>
+
                     </form>
                 </div>
             </div>
@@ -100,7 +102,7 @@
                         </select>
                     </div>
                     <!-- Hide/show toggle -->
-                    <button id="weather-data-toggle"><i class="fa fa-angle-down"></i></button>
+                    <button id="weather-data-toggle"><i class="fa fa-angle-up"></i></button>
                 </div>
                 <div class="content">
                 </div>

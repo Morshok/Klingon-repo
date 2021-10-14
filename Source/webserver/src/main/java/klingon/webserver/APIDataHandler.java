@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -48,8 +49,8 @@ public class APIDataHandler {
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */
     @GetMapping(path = "/bicycleStations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> jsonBicycleStations() {
-        Iterable<BicycleStation> allStations = WebserverApplication.getBicycleStationRepository().findAll();
+    public ResponseEntity<Object> jsonBicycleStations(@RequestParam ()String city) {
+        Iterable<BicycleStation> allStations = WebserverApplication.getBicycleStationRepository().findByCity(city);
         JSONArray jsonArray = new JSONArray();
         for (BicycleStation bicycleStation : allStations) {
             JSONObject jsonObject = new JSONObject();
@@ -77,8 +78,8 @@ public class APIDataHandler {
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */
     @GetMapping(path = "/pumpStations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> jsonPumpStations() {
-        Iterable<PumpStation> allStations = WebserverApplication.getPumpStationRepository().findAll();
+    public ResponseEntity<Object> jsonPumpStations(@RequestParam ()String city) {
+        Iterable<PumpStation> allStations = WebserverApplication.getPumpStationRepository().findByCity(city);
         JSONArray jsonArray = new JSONArray();
         for (PumpStation pumpStation : allStations) {
             JSONObject jsonObject = new JSONObject();
