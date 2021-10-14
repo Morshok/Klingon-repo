@@ -110,6 +110,17 @@ function updateUserPosition(latitude, longitude) {
         userPosition.marker.setLatLng([latitude, longitude]);
 }
 
+function checkZoom(){
+    window.leafletMap.on('zoomend', function(){
+        if(window.leafletMap.getZoom() < 14){
+            window.leafletMap.removeLayer(bicycleStandGroup);
+        }else{
+            window.leafletMap.addLayer(bicycleStandGroup);
+        }
+    });
+}
+checkZoom();
+
 function loadMarker() {
     let baseTemplate = function (id, title, content) {
         return `
@@ -155,6 +166,7 @@ function loadMarker() {
                     });
                     updateSearchResults();
                 }
+
             },
         })
     }
@@ -165,6 +177,7 @@ function loadMarker() {
                 calledApi = true;
                 buildMarkerGroup(item);
             }
+
         } else {
             item.layer.clearLayers().remove();
             allMarkers[item.apiPath] = [];
@@ -175,6 +188,9 @@ function loadMarker() {
 
     if (calledApi !== changedData && !calledApi) {
         updateSearchResults()
+    }
+    if(window.leafletMap.getZoom() < 14){
+        window.leafletMap.removeLayer(bicycleStandGroup);
     }
 }
 
@@ -565,6 +581,7 @@ function removeRoute() {
     if (!window.leafletMap.hasLayer(pumpStationGroup))
         window.leafletMap.addLayer(pumpStationGroup)
 
+    $("main img#mobileRouteInfo").remove();
     $("main div#route_info").remove();
     $("main .navigation > .main-panel").removeClass("hasRoute");
 }
@@ -586,9 +603,9 @@ function onRouteFound(event) {
         return `
             <div id="route_info">
                 <div class="head">
-                    <span>Route information</span>
+                    <span>Rutt information</span>
                     <button id="route_info_toggle">
-                        <i class="fa fa-angle-down"></i>
+                       <i class="fa fa-angle-down"></i>
                     </button>
                 </div>
                 <div class="content">
@@ -601,12 +618,20 @@ function onRouteFound(event) {
                     </ul>
                 </div>
             </div>
+        </div>
         `
     }
 
+    let routeButton = `
+        <img src="./images/routeInfoButton.png" id="mobileRouteInfo"alt="route info"
+            onclick="toggleDropDowns('route_info', 'mobileRouteInfo')">
+        `;
+
     let routeInfoElement = routeInfoTemplate(routeInfo);
 
-    $("main .column-wrapper.left").prepend(routeInfoElement);
+    $("div#mobile-buttons").append(routeButton);
+    $("main .column-wrapper.left").append(routeInfoElement);
+
 
     $("button#route_info_toggle").on("click", function () {
         $("div#route_info").toggleClass("closed");
@@ -645,11 +670,12 @@ function onRoutingStarted(event, start, end) {
             }
         );
     }
-
     $("main .navigation > .main-panel").addClass("hasRoute");
     $("main .navigation > .main-panel #route-info-start").text(start.text)
     $("main .navigation > .main-panel #route-info-end").text(end.text)
 }
+
+
 
 /** Helper functions **/
 function showDialog(dialogContent) {
@@ -728,6 +754,11 @@ function findId(id, array) {
     return array.find(function (el) {
         return parseInt(id) === el.id
     })
+}
+
+function toggleDropDowns(div, button){
+    $("img#" + button).toggleClass("change");
+    $("div#" + div).toggleClass("hidden");
 }
 
 /** Helper functions **/
