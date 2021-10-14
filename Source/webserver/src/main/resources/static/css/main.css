@@ -634,6 +634,8 @@ main img#walkingIcon{
     top: 5px;
 }
 
+
+
 @media (max-width: 600px) {
     header nav {
 
@@ -722,27 +724,9 @@ main img#walkingIcon{
         backface-visibility: hidden;
     }
 
-    main div#containerFilter, main div#containerWeather{
-        position: absolute;
-        right: 0px;
-    }
-
-    main img#mobileWeather.change, main img#mobileFilter.change{
-        background-color: #e71b1b;
-        position: relative;
-        left: 155px;
-    }
-
-    main div#containerRouteInfo{
-        position: absolute
-        left: 0;
-    }
-
-    main img#mobileRouteInfo.change{
+    main img#mobileWeather.change, main img#mobileFilter.change, main img#mobileRouteInfo.change{
         background-color: #e71b1b;
     }
-
-
 }
 
 @media(max-width: 350px){
