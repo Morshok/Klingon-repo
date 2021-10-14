@@ -107,6 +107,17 @@ function updateUserPosition(latitude, longitude) {
         userPosition.marker.setLatLng([latitude, longitude]);
 }
 
+function checkZoom(){
+    window.leafletMap.on('zoomend', function(){
+        if(window.leafletMap.getZoom() < 14){
+            window.leafletMap.removeLayer(bicycleStandGroup);
+        }else{
+            window.leafletMap.addLayer(bicycleStandGroup);
+        }
+    });
+}
+checkZoom();
+
 function loadMarker() {
     let baseTemplate = function (id, title, content) {
         return `
@@ -151,6 +162,7 @@ function loadMarker() {
                     });
                     updateSearchResults();
                 }
+
             },
         })
     }
@@ -162,6 +174,7 @@ function loadMarker() {
                 calledApi = true;
                 buildMarkerGroup(item);
             }
+
         } else {
             item.layer.clearLayers().remove();
             allMarkers[item.apiPath] = [];
@@ -171,6 +184,9 @@ function loadMarker() {
 
     if (calledApi !== changedData && !calledApi) {
         updateSearchResults()
+    }
+    if(window.leafletMap.getZoom() < 14){
+        window.leafletMap.removeLayer(bicycleStandGroup);
     }
 }
 
@@ -558,6 +574,7 @@ function removeRoute() {
     if (!window.leafletMap.hasLayer(pumpStationGroup))
         window.leafletMap.addLayer(pumpStationGroup)
 
+    $("main img#mobileRouteInfo").remove();
     $("main div#route_info").remove();
     $("main .navigation > .main-panel").removeClass("hasRoute");
 }
@@ -577,21 +594,24 @@ function onRouteFound(event) {
 
     let routeInfoTemplate = function (routeInfo) {
         return `
-            <div id="route_info">
-                <div class="head">
-                    <span>Route information</span>
-                    <button id="route_info_toggle">
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                </div>
-                <div class="content">
-                    <ul>
-                        <li><span title="Avstånd"><i class="fa fa-route"></i>${routeInfo.distance}</span></li>
-                        <li><span title="Tid"><i class="fa fa-stopwatch"></i>${routeInfo.time}</span></li>
-                        <li><span title="Höjd ökning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>${routeInfo.ascend}</span></li>
-                        <li><span title="Höjd sänkning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6h-6z"/></svg>${routeInfo.descend}</span></li>
-                        <li><span title="Sparad CO2 mängd"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><rect fill="none" height="24" width="24"/><path d="M14,9h-3c-0.55,0-1,0.45-1,1v4c0,0.55,0.45,1,1,1h3c0.55,0,1-0.45,1-1v-4C15,9.45,14.55,9,14,9z M13.5,13.5h-2v-3h2V13.5z M8,13v1c0,0.55-0.45,1-1,1H4c-0.55,0-1-0.45-1-1v-4c0-0.55,0.45-1,1-1h3c0.55,0,1,0.45,1,1v1H6.5v-0.5h-2v3h2V13H8z M20.5,15.5h-2 v1h3V18H17v-2.5c0-0.55,0.45-1,1-1h2v-1h-3V12h3.5c0.55,0,1,0.45,1,1v1.5C21.5,15.05,21.05,15.5,20.5,15.5z"/></svg>${routeInfo.savedEmission}</span><i id="co2_info_toggle" class="info_icon fas fa-info-circle"></i></li>
-                    </ul>
+            <div id="containerRouteInfo">
+                <img src="./images/routeInfoButton.png" alt="Route info" id="mobileRouteInfo" onclick="toggleDropDowns('route_info', 'mobileRouteInfo')">
+                <div id="route_info">
+                    <div class="head">
+                        <span>Rutt information</span>
+                        <button id="route_info_toggle">
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+                    </div>
+                    <div class="content">
+                        <ul>
+                            <li><span title="Avstånd"><i class="fa fa-route"></i>${routeInfo.distance}</span></li>
+                            <li><span title="Tid"><i class="fa fa-stopwatch"></i>${routeInfo.time}</span></li>
+                            <li><span title="Höjd ökning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>${routeInfo.ascend}</span></li>
+                            <li><span title="Höjd sänkning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6h-6z"/></svg>${routeInfo.descend}</span></li>
+                            <li><span title="Sparad CO2 mängd"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><rect fill="none" height="24" width="24"/><path d="M14,9h-3c-0.55,0-1,0.45-1,1v4c0,0.55,0.45,1,1,1h3c0.55,0,1-0.45,1-1v-4C15,9.45,14.55,9,14,9z M13.5,13.5h-2v-3h2V13.5z M8,13v1c0,0.55-0.45,1-1,1H4c-0.55,0-1-0.45-1-1v-4c0-0.55,0.45-1,1-1h3c0.55,0,1,0.45,1,1v1H6.5v-0.5h-2v3h2V13H8z M20.5,15.5h-2 v1h3V18H17v-2.5c0-0.55,0.45-1,1-1h2v-1h-3V12h3.5c0.55,0,1,0.45,1,1v1.5C21.5,15.05,21.05,15.5,20.5,15.5z"/></svg>${routeInfo.savedEmission}</span><i id="co2_info_toggle" class="info_icon fas fa-info-circle"></i></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         `
@@ -638,11 +658,12 @@ function onRoutingStarted(event, start, end) {
             }
         );
     }
-
     $("main .navigation > .main-panel").addClass("hasRoute");
     $("main .navigation > .main-panel #route-info-start").text(start.text)
     $("main .navigation > .main-panel #route-info-end").text(end.text)
 }
+
+
 
 /** Helper functions **/
 function showDialog(dialogContent) {
@@ -721,6 +742,11 @@ function findId(id, array) {
     return array.find(function (el) {
         return parseInt(id) === el.id
     })
+}
+
+function toggleDropDowns(div, button){
+    $("img#" + button).toggleClass("change");
+    $("div#" + div).toggleClass("hidden");
 }
 
 /** Helper functions **/
