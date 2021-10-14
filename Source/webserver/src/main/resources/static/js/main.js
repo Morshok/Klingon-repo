@@ -560,6 +560,9 @@ function removeRoute() {
 
     $("main div#route_info").remove();
     $("main .navigation > .main-panel").removeClass("hasRoute");
+    
+    hasGivenUserExperience = false;
+    window.clearInterval(checkRouteFinishedRepeater);
 }
 
 function onErrorHandler(event) {
@@ -615,17 +618,11 @@ function onRouteFound(event) {
         showDialog(dialogContent);
     });
     
-    if(routeInfo.distance <= 5)
-    {
-        var experience = Math.floor(routeInfo.savedEmission/10);
-        window.onFinishedRoute(experience).then(function() {
-            window.updateUserData();
-            removeRoute();
-        });
-    }
+    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished(end), 1000);
 }
 
 function onRoutingStarted(event, start, end) {
+    console.log(event);
     markerGroups.forEach(function (group) {
         window.leafletMap.removeLayer(group.layer);
     });
@@ -651,6 +648,47 @@ function onRoutingStarted(event, start, end) {
     $("main .navigation > .main-panel").addClass("hasRoute");
     $("main .navigation > .main-panel #route-info-start").text(start.text)
     $("main .navigation > .main-panel #route-info-end").text(end.text)
+}
+
+var checkRouteFinishedRepeater;
+const distanceThreshold = 25;
+var hasGivenUserExperience = false;
+function checkRouteFinished(endPoint)
+{
+    if(!hasGivenUserExperience)
+    {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            var userLatitude = pos.coords.latitude;
+            var userLongitude = pos.coords.longitude;
+            var endPointLatitude = endPoint.latitude;
+            var endPointLongitude = endPoint.longitude;
+        
+            //Code from https://www.movable-type.co.uk/scripts/latlong.html
+            const R = 6371e3; // metres
+            const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            const distanceFromEndPoint = R * c; // in metres
+        
+            if(distanceFromEndPoint <= distanceThreshold)
+            {
+                var savedEmission = calculateEmissions(event.routes[0].summary.totalDistance);
+                var experience = Math.floor(savedEmission/10);
+                window.onFinishedRoute(experience).then(function() {
+                    window.updateUserData();
+                });
+            
+                hasGivenUserExperience = true;
+            }
+        });   
+    }
 }
 
 /** Helper functions **/
