@@ -190,7 +190,8 @@ main #level-panel {
 main #level-panel > .upper {
     display: flex;
     width: 100%;
-    align-items: center;"
+    align-items: center;
+"
 }
 
 main #level-panel > .upper > .image {
@@ -307,41 +308,37 @@ input[type=checkbox] + label:before {
     transition: 0.2s;
 }
 
-
-
 input[type=checkbox]:checked + label:before {
-
     background: rgba(38, 75, 171, 1);
     border: 3px solid rgba(38, 75, 171, 1);
     color: white;
 }
-input[type=checkbox]:disabled + label:before{
-    border-color: gray;
+
+input[type=checkbox]:disabled + label:before {
+    border-color: #969696;
 }
 
-input[type=checkbox]:disabled + label[for=pumps]{
-    color: gray;
-
+input[type=checkbox]:disabled + label[for=pumps] {
+    color: #969696;
 }
-input[type=checkbox]:disabled + label[for=pumps]:after{
-    color: gray;
+
+input[type=checkbox]:disabled + label[for=pumps]:after {
+    color: #969696;
     white-space: nowrap;
-    content: "(inte tillgänglig)";
+    content: "(ej tillgänglig)";
     font-size: 13px;
 }
 
-input[type=checkbox]:disabled + label[for=parking]{
-    color: gray;
-
-
+input[type=checkbox]:disabled + label[for=parking] {
+    color: #969696;
 }
-input[type=checkbox]:disabled + label[for=parking]:after{
-    color: gray;
+
+input[type=checkbox]:disabled + label[for=parking]:after {
+    color: #969696;
     white-space: nowrap;
-    content: " (inte tillgänglig)";
+    content: " (ej tillgänglig)";
     font-size: 13px;
 }
-
 
 
 main div#filters.closed div.head, main div#route_info.closed div.head {
@@ -391,6 +388,7 @@ main div#weather-data.loading div.head > #weather-data-toggle {
 main div#weather-data.loading div.content {
     display: none;
 }
+
 /** Weather panel loading **/
 
 main div#weather-data div.content {
@@ -441,7 +439,7 @@ main div#weather-data div.head button#weather-data-toggle {
     position: absolute;
     background-color: #f1f1f1;
     min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     font-size: 0px;
     z-index: 1000;
 }
@@ -557,7 +555,7 @@ main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper {
 }
 
 main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper > div {
-   flex: 1 1 100%;
+    flex: 1 1 100%;
 }
 
 main div.navigation > .main-panel > .route-setup > .input {
@@ -715,7 +713,7 @@ div.dialog div.controls button.dialog_close_button {
     }
 }
 
-@media(max-width: 350px){
+@media (max-width: 350px) {
     main div.navigation > .main-panel {
         width: 250px;
     }
