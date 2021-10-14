@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-209720808-1"></script>
@@ -67,16 +68,22 @@
                     </div>
                 </div>
             </div>
+            <div id="mobile-buttons">
+                <img src="./images/filterButton.png" id="mobileFilter" alt="filter"
+                     onclick="toggleDropDowns('filters', 'mobileFilter')">
+                <img src="./images/weatherButton.png" id="mobileWeather" alt="weather"
+                     onclick="toggleDropDowns('weather-data', 'mobileWeather')">
+            </div>
         </div>
         <div class="column-wrapper right">
             <div id="filters">
                 <div class="head">
                     <span>Filter:</span>
                     <select name="cities" id="cities-dropdown" onchange="changeCity()">
-                        <option value="1" selected="selected">Göteborg</option>
-                        <option value="2">Malmö</option>
-                        <option value="3">Lund</option>
-                        <option value="4">Stockholm</option>
+                        <option value="Göteborg"  selected="selected">Göteborg</option>
+                        <option value="Malmö">Malmö</option>
+                        <option value="Lund" >Lund</option>
+                        <option value="Stockholm" >Stockholm</option>
                     </select>
                     <!-- Hide/show toggle -->
                     <button id="filter_toggle"><i class="fa fa-angle-down"></i></button>
@@ -88,11 +95,12 @@
                     </div>
                     <form>
                         <input type="checkbox" id="bicycles" class="checkbox-group" checked>
-                        <label for="bicycles">Cykel stationer</label>
+                        <label for="bicycles">Cykel stationer </label>
                         <input type="checkbox" id="pumps" class="checkbox-group">
-                        <label for="pumps">Pump stationer</label>
+                        <label for="pumps">Pump stationer </label>
                         <input type="checkbox" id="parking" class="checkbox-group">
-                        <label for="parking">Cykel parkeringar</label>
+                        <label for="parking">Cykel parkeringar </label>
+
                     </form>
                 </div>
             </div>
@@ -105,7 +113,7 @@
                         </select>
                     </div>
                     <!-- Hide/show toggle -->
-                    <button id="weather-data-toggle"><i class="fa fa-angle-down"></i></button>
+                    <button id="weather-data-toggle"><i class="fa fa-angle-up"></i></button>
                 </div>
                 <div class="content">
                 </div>
@@ -134,11 +142,13 @@
                         <label><b>Färdsätt</b></label>
                         <div class="radio-wrapper">
                             <div>
+                                <i class="fa fa-bicycle" aria-hidden="true"></i>
                                 <label for="cyclingMode">Cykel</label>
                                 <input type="radio" id="cyclingMode" name="transportationMode" value="cycling-regular"
                                        checked="">
                             </div>
                             <div>
+                                <img src="./images/walkIcon.png" alt="walking mode" id="walkingIcon">
                                 <label for="walkingMode">Till fots</label>
                                 <input type="radio" id="walkingMode" name="transportationMode" value="foot-walking">
                             </div>
@@ -167,8 +177,11 @@
         &copy; 2021. Klingon och dess medlemmar.
         <div class="attribution">Attribution
             <div class="popup">
-                <div>Icons made by <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat
-                    Icons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+                <div>Icons made by
+                    <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat Icons</a>
+                    <a href="https://www.freepik.com" title="Freepik">Freepik</a>
+                    from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+                </div>
             </div>
         </div>
     </footer>

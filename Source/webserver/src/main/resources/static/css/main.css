@@ -135,6 +135,10 @@ main div.column-wrapper.right {
     right: 10px;
 }
 
+main img#mobileFilter, main img#mobileRouteInfo, main img#mobileWeather {
+    display: none;
+}
+
 main div#route_info div.head span {
     margin-right: 1em;
 }
@@ -177,6 +181,7 @@ main div#route_info {
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
+    box-sizing: border-box;
 }
 
 main #level-panel {
@@ -273,11 +278,13 @@ main #level-panel > .upper > .rows > .user-progress > .text {
 }
 
 main div#filters {
+    box-sizing: border-box;
     width: 200px;
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
+    margin-bottom: 10px
 }
 
 main div#filters div.head, main div#route_info div.head {
@@ -350,7 +357,8 @@ main div#weather-data {
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    margin-top: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
 main div#weather-data div.head {
@@ -596,7 +604,7 @@ div.dialog {
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     padding: 0.3em;
-    font-size: 1.1em;
+    font-size: 0.8em;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -641,6 +649,12 @@ div.dialog div.controls {
 div.dialog div.controls button.dialog_close_button {
     cursor: pointer;
 }
+
+main img#walkingIcon{
+    position: relative;
+    top: 5px;
+}
+
 
 
 @media (max-width: 600px) {
@@ -703,6 +717,36 @@ div.dialog div.controls button.dialog_close_button {
     }
 
     main div#weather-data div.head {
+    }
+}
+
+@media(max-width: 450px){
+
+    main div#filters, main div#route_info, main div#weather-data{
+        display: none;
+    }
+
+    main div#filters.hidden, main div#route_info.hidden, div#weather-data.hidden, main img#mobileRouteInfo.hidden {
+        display: none;
+    }
+
+    main div#filters.hidden, main div#route_info.hidden, div#weather-data.hidden, main img#mobileRouteInfo.hidden{
+        display: block;
+    }
+
+    main img#mobileFilter, main img#mobileWeather, main img#mobileRouteInfo {
+        display: block;
+        margin-top: 10px;
+        background-color: #03b721;
+        width: 45px;
+        height: 45px;
+        border-radius: 100%;
+        transition: .5s ease;
+        backface-visibility: hidden;
+    }
+
+    main img#mobileWeather.change, main img#mobileFilter.change, main img#mobileRouteInfo.change{
+        background-color: #e71b1b;
     }
 }
 

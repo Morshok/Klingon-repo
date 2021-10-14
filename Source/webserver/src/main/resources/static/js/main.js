@@ -15,7 +15,7 @@ const bicycleStandIcon = L.icon({
     iconSize: [26, 26],
 })
 const noBikeIcon = L.icon({
-    iconUrl: '/images/redBicycle.png',
+    iconUrl: '/images/bicycleStationGray.png',
     iconSize: [32, 32],
 });
 
@@ -28,6 +28,7 @@ const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
 const bicycleStandGroup = L.layerGroup();
+
 const markerGroups = [
     {
         title: "Styr & Ställ",
@@ -50,7 +51,7 @@ const markerGroups = [
             }
             return bicycleIcon;
         },
-    },
+    }, 
     {
         title: "Pumpstationer",
         check: function () {
@@ -83,6 +84,8 @@ const markerGroups = [
     },
 ];
 
+
+
 let allMarkers = {};
 let userPosition = {
     marker: null,
@@ -106,6 +109,17 @@ function updateUserPosition(latitude, longitude) {
     else
         userPosition.marker.setLatLng([latitude, longitude]);
 }
+
+function checkZoom(){
+    window.leafletMap.on('zoomend', function(){
+        if(window.leafletMap.getZoom() < 14){
+            window.leafletMap.removeLayer(bicycleStandGroup);
+        }else{
+            window.leafletMap.addLayer(bicycleStandGroup);
+        }
+    });
+}
+checkZoom();
 
 function loadMarker() {
     let baseTemplate = function (id, title, content) {
@@ -132,6 +146,7 @@ function loadMarker() {
         $.ajax(markerGroup.apiPath, {
             contentType: "application/json",
             dataType: "json",
+            data: {city: $("#cities-dropdown").val() },
             complete: function (response) {
                 if (response.status === 200) {
                     let data = response.responseJSON;
@@ -151,10 +166,10 @@ function loadMarker() {
                     });
                     updateSearchResults();
                 }
+
             },
         })
     }
-
     let calledApi = false, changedData = false;
     markerGroups.forEach(function (item) {
         if (item.check()) {
@@ -162,6 +177,7 @@ function loadMarker() {
                 calledApi = true;
                 buildMarkerGroup(item);
             }
+
         } else {
             item.layer.clearLayers().remove();
             allMarkers[item.apiPath] = [];
@@ -169,22 +185,13 @@ function loadMarker() {
         }
     });
 
+
     if (calledApi !== changedData && !calledApi) {
         updateSearchResults()
     }
-}
-
-/** A function that removes the previous markers when a city is changed
- *
- * @param bicycleStationGroup - The bicycle station markers
- * @param pumpStationGroup - The pump station markers
- * @param bicycleStandGroup - The bicycle stand markers
- */
-function removeCityMarkers(removeBicycleStand, removePumps) {
-    if(removeBicycleStand==true)
-    window.leafletMap.removeLayer(bicycleStandGroup);
-    if(removePumps==true)
-    window.leafletMap.removeLayer(pumpStationGroup);
+    if(window.leafletMap.getZoom() < 14){
+        window.leafletMap.removeLayer(bicycleStandGroup);
+    }
 }
 
 /** A function that disables,removes and unchecks
@@ -194,39 +201,54 @@ function removeCityMarkers(removeBicycleStand, removePumps) {
  */
 function checkboxHandler(currentCity) {
     //if statements that disables the markers and unchecks them depending on the city
-    if (currentCity == 2) {
+    if (currentCity == 'Malmö') {
         document.getElementById('pumps').disabled = false;
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
-        removeCityMarkers(true, false); //removes the parking markers
-    } else if (currentCity == 3 || currentCity == 4) {
+        document.getElementById('parking').style.color = "red";
+
+
+    } else if (currentCity == 'Lund' || currentCity == 'Stockholm') {
         document.getElementById('parking').disabled = true;
         document.getElementById('parking').checked = false;
         document.getElementById('pumps').disabled = true;
         document.getElementById('pumps').checked = false;
-        removeCityMarkers(true, true); //removes the parking- and pump-markers
+
+
+
     } else {
         document.getElementById('parking').disabled = false;
         document.getElementById('pumps').disabled = false;
-    };
+
+    }
+    //clears previous markers
+    markerGroups.forEach(function (group) {
+        group.layer.clearLayers().remove();
+    });
+    //sets out the new markers on the map
+    loadMarker();
 }
 
+/**
+ * a function that changes the city view and implements the checkbox functions
+ */
 function changeCity() {
     const city = document.getElementById("cities-dropdown").value;
-    if (city == 2) {  //if the city Malmö is chosen
+    if (city == 'Malmö') {
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
-        checkboxHandler(2);  //when a new city is choosen, the checkboxes should be unchecked
-    } else if (city == 3) { //if the city Lund is chosen
+        checkboxHandler('Malmö');  //when a new city is choosen, the checkboxes should be unchecked
+    } else if (city == 'Lund') {
         window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
-        checkboxHandler(3);
-    } else if (city == 4) { //if the city Stockholm is chosen
+       checkboxHandler('Lund');
+    } else if (city == 'Stockholm') {
         window.leafletMap.setView([59.3295521252874, 18.06861306062469], 13);
-        checkboxHandler(4);
+        checkboxHandler('Stockholm');
     } else {
         window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
-        checkboxHandler();
+        checkboxHandler('Göteborg');
     }
 }
+
 
 let weatherApiRepeater;
 let weatherObject = [];
@@ -282,7 +304,6 @@ $("select#location-dropdown").change(function () {
 $(document).ready(function () {
     loadWeatherData();
     loadMarker();
-
     let changed = false;
     $(window).on("resize", function (evt) {
         if (window.innerWidth > 440) {
@@ -295,7 +316,9 @@ $(document).ready(function () {
 
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
+
 });
+
 
 $("button#filter_toggle").click(function () {
     $("div#filters").toggleClass("closed");
@@ -558,6 +581,7 @@ function removeRoute() {
     if (!window.leafletMap.hasLayer(pumpStationGroup))
         window.leafletMap.addLayer(pumpStationGroup)
 
+    $("main img#mobileRouteInfo").remove();
     $("main div#route_info").remove();
     $("main .navigation > .main-panel").removeClass("hasRoute");
     
@@ -582,9 +606,9 @@ function onRouteFound(event) {
         return `
             <div id="route_info">
                 <div class="head">
-                    <span>Route information</span>
+                    <span>Rutt information</span>
                     <button id="route_info_toggle">
-                        <i class="fa fa-angle-down"></i>
+                       <i class="fa fa-angle-down"></i>
                     </button>
                 </div>
                 <div class="content">
@@ -597,12 +621,20 @@ function onRouteFound(event) {
                     </ul>
                 </div>
             </div>
+        </div>
         `
     }
 
+    let routeButton = `
+        <img src="./images/routeInfoButton.png" id="mobileRouteInfo"alt="route info"
+            onclick="toggleDropDowns('route_info', 'mobileRouteInfo')">
+        `;
+
     let routeInfoElement = routeInfoTemplate(routeInfo);
 
-    $("main .column-wrapper.left").prepend(routeInfoElement);
+    $("div#mobile-buttons").append(routeButton);
+    $("main .column-wrapper.left").append(routeInfoElement);
+
 
     $("button#route_info_toggle").on("click", function () {
         $("div#route_info").toggleClass("closed");
@@ -644,7 +676,6 @@ function onRoutingStarted(event, start, end) {
             }
         );
     }
-
     $("main .navigation > .main-panel").addClass("hasRoute");
     $("main .navigation > .main-panel #route-info-start").text(start.text)
     $("main .navigation > .main-panel #route-info-end").text(end.text)
@@ -842,4 +873,9 @@ $(document).ready(function() {
 $(window).resize(function() {
     updateProgressBarWidth();
 });
+
+function toggleDropDowns(div, button){
+    $("img#" + button).toggleClass("change");
+    $("div#" + div).toggleClass("hidden");
+}
 /** Helper functions **/

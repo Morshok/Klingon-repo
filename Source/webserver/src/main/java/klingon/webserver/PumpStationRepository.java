@@ -1,7 +1,10 @@
 package klingon.webserver;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
 
 /**
  * The PumpStationRepository interface is currently
@@ -15,4 +18,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PumpStationRepository extends CrudRepository<PumpStation, Long>
 {
+    @Query("SELECT station FROM PumpStation station WHERE station.city = ?1")
+    Collection<PumpStation> findByCity(String city);
 }
