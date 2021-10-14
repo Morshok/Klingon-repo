@@ -7,10 +7,12 @@
    Brackets <br>
    Notepad++?!
    
+   *Lägg till andra program ni har använt er av i listan här*
+   
 ## Instruction for getting to individual reflections:
-   To get to our individual reflections, navigate to 
-   Organization/ReflectionsIndividual Reflections.
-   When navigated over there, our individual reflections 
+   To get to our individual reflections, navigate to <br>
+   Organization/Reflections/Individual Reflections. <br>
+   When navigated over there, our individual reflections <br>
    are put in directories dedicated to each team member.
 
 ## External resources used:
