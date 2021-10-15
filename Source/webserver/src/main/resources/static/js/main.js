@@ -545,6 +545,7 @@ const router = L.routing.openrouteservice("", {
 });
 
 window.routeControl = null;
+waypoints = [];
 
 function addRoute(start, end, transportationMode) {
     router.options.profile = transportationMode;
@@ -554,7 +555,12 @@ function addRoute(start, end, transportationMode) {
         waypoints: [
             L.latLng(start.latitude, start.longitude),
             L.latLng(end.latitude, end.longitude)
-        ]
+        ],
+        draggableWaypoints: false,
+        addWaypoints: false,
+        lineOptions: {
+            styles: [{color: 'black', opacity: 0.15, weight: 9}, {color: 'white', opacity: 0.8, weight: 6}, {color: 'blue', opacity: 1, weight: 2}]
+        }
     }).on('routingerror', function (e) {
         onErrorHandler(e);
     }).on('routesfound', function (e) {
