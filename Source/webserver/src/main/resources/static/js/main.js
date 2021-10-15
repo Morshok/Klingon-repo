@@ -7,8 +7,14 @@ const pumpIcon = L.icon({
     iconSize: [30, 30],
 });
 const locationIcon = L.icon({
-    iconUrl: '/images/locationRed.png',
-    iconSize: [25, 40],
+    iconUrl: '/images/locationDirection.png',
+    iconSize: [48, 48],
+    iconAnchor: [24, 24],
+});
+const locationIconStanding = L.icon({
+    iconUrl: '/images/locationStanding.png',
+    iconSize: [48, 48],
+    iconAnchor: [24, 24],
 });
 const bicycleStandIcon = L.icon({
     iconUrl: '/images/parking.png',
@@ -291,6 +297,7 @@ $("select#location-dropdown").change(function () {
     if (index && weatherObject.length > index && weatherObject[index]) {
         let data = weatherObject[index];
         $("#weather-data > .content").html(`
+            <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
             <p>Plats: ${data.location}</p>
             <p>Beskrivning: ${data.weatherDescription}</p>
             <p>Temperatur: ${data.temperature}&deg;C</p>
@@ -368,6 +375,20 @@ function getGeoLocation(successFn, failFn, ...args) {
     }, {
         timeout: 1000,
         maximumAge: 0,
+        enableHighAccuracy: true,
+    });
+
+    let positionWatch = navigator.geolocation.watchPosition(function(position){
+        let userRotation = position.coords.heading;
+
+        if(userRotation === null || isNaN(userRotation)){
+            userPosition.marker = userPosition.marker.setIcon(locationIconStanding);
+            userPosition.marker = userPosition.marker.setRotationAngle(0);
+        }else{
+            userPosition.marker = userPosition.marker.setIcon(locationIcon);
+            userPosition.marker = userPosition.marker.setRotationAngle(Math.floor(userRotation));
+        }
+    }, function(e){}, {
         enableHighAccuracy: true,
     });
 }
@@ -525,10 +546,27 @@ function startRoute(gpsLocation, startValue, endValue) {
     addRoute(startPoint, endPoint, $mode);
 }
 
-const router = L.routing.openrouteservice("", {
+L.Routing.OpenRouteService.prototype.old_routeDone = L.Routing.OpenRouteService.prototype._routeDone;
+L.Routing.OpenRouteService.prototype._routeDone = function(datas, inputWaypoints, callback, context){
+    let routes = this.options.format === 'geojson' ? datas.features : datas.routes;
+    let routeTime = [];
+
+    routes.forEach(function(route, indx){
+        routeTime[indx] = route.summary.duration;
+    });
+
+    L.Routing.OpenRouteService.prototype.old_routeDone.call(this, datas, inputWaypoints, function(unused, alts){
+        alts.forEach(function(routeAlt, indx){
+            routeAlt.summary.totalTime = routeTime[indx];
+        });
+        callback.call(context, null, alts);
+    }, context);
+}
+
+const router = L.routing.openrouteservice("5b3ce3597851110001cf6248d29230ce91e840789e9e3b73cf909b78", {
     "timeout": 30 * 1000,
     "format": "json",
-    "host": "./api/routing",
+    "host": "https://api.openrouteservice.org",
     "service": "directions",
     "api_version": "v2",
     "profile": "cycling-regular",
@@ -545,6 +583,7 @@ const router = L.routing.openrouteservice("", {
 });
 
 window.routeControl = null;
+waypoints = [];
 
 function addRoute(start, end, transportationMode) {
     router.options.profile = transportationMode;
@@ -554,7 +593,12 @@ function addRoute(start, end, transportationMode) {
         waypoints: [
             L.latLng(start.latitude, start.longitude),
             L.latLng(end.latitude, end.longitude)
-        ]
+        ],
+        draggableWaypoints: false,
+        addWaypoints: false,
+        lineOptions: {
+            styles: [{color: 'black', opacity: 0.15, weight: 9}, {color: 'white', opacity: 0.8, weight: 6}, {color: 'blue', opacity: 1, weight: 2}]
+        }
     }).on('routingerror', function (e) {
         onErrorHandler(e);
     }).on('routesfound', function (e) {
@@ -582,73 +626,44 @@ function removeRoute() {
         window.leafletMap.addLayer(pumpStationGroup)
 
     $("main img#mobileRouteInfo").remove();
-    $("main div#route_info").remove();
+    $("main div#route_info").hide();
     $("main .navigation > .main-panel").removeClass("hasRoute");
+    
+    hasGivenUserExperience = false;
+    window.clearInterval(checkRouteFinishedRepeater);
 }
 
 function onErrorHandler(event) {
-    console.log(event);
+    let dialogContent = {
+        "title": "Ett fel har uppstått.",
+        "text": "Var snäll och prova igen.<br><br>Felmeddelande: " + event.error.message
+    }
+
+    showDialog(dialogContent);
+    removeRoute();
 }
 
 function onRouteFound(event) {
-    let routeInfo = {
-        "distance": formatDistanceFromMeters(event.routes[0].summary.totalDistance),
-        "time": formatTimeFromSeconds(event.routes[0].summary.totalTime),
-        "ascend": (event.routes[0].summary.totalAscend === undefined) ? "0 m" : event.routes[0].summary.totalAscend + " m",
-        "descend": (event.routes[0].summary.totalDescend === undefined) ? "0 m" : event.routes[0].summary.totalDescend + " m",
-        "savedEmission": calculateEmissions(event.routes[0].summary.totalDistance)
-    }
-
-    let routeInfoTemplate = function (routeInfo) {
-        return `
-            <div id="route_info">
-                <div class="head">
-                    <span>Rutt information</span>
-                    <button id="route_info_toggle">
-                       <i class="fa fa-angle-down"></i>
-                    </button>
-                </div>
-                <div class="content">
-                    <ul>
-                        <li><span title="Avstånd"><i class="fa fa-route"></i>${routeInfo.distance}</span></li>
-                        <li><span title="Tid"><i class="fa fa-stopwatch"></i>${routeInfo.time}</span></li>
-                        <li><span title="Höjd ökning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>${routeInfo.ascend}</span></li>
-                        <li><span title="Höjd sänkning"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6h-6z"/></svg>${routeInfo.descend}</span></li>
-                        <li><span title="Sparad CO2 mängd"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><rect fill="none" height="24" width="24"/><path d="M14,9h-3c-0.55,0-1,0.45-1,1v4c0,0.55,0.45,1,1,1h3c0.55,0,1-0.45,1-1v-4C15,9.45,14.55,9,14,9z M13.5,13.5h-2v-3h2V13.5z M8,13v1c0,0.55-0.45,1-1,1H4c-0.55,0-1-0.45-1-1v-4c0-0.55,0.45-1,1-1h3c0.55,0,1,0.45,1,1v1H6.5v-0.5h-2v3h2V13H8z M20.5,15.5h-2 v1h3V18H17v-2.5c0-0.55,0.45-1,1-1h2v-1h-3V12h3.5c0.55,0,1,0.45,1,1v1.5C21.5,15.05,21.05,15.5,20.5,15.5z"/></svg>${routeInfo.savedEmission}</span><i id="co2_info_toggle" class="info_icon fas fa-info-circle"></i></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        `
-    }
+    $("#route_distance").text(formatDistanceFromMeters(event.routes[0].summary.totalDistance));
+    $("#route_time").text(formatTimeFromSeconds(event.routes[0].summary.totalTime));
+    $("#route_ascend").text((event.routes[0].summary.totalAscend === undefined) ? "0 m" : event.routes[0].summary.totalAscend + " m");
+    $("#route_descend").text((event.routes[0].summary.totalDescend === undefined) ? "0 m" : event.routes[0].summary.totalDescend + " m");
+    $("#route_emission").text(calculateEmissions(event.routes[0].summary.totalDistance));
 
     let routeButton = `
         <img src="./images/routeInfoButton.png" id="mobileRouteInfo"alt="route info"
             onclick="toggleDropDowns('route_info', 'mobileRouteInfo')">
         `;
 
-    let routeInfoElement = routeInfoTemplate(routeInfo);
-
     $("div#mobile-buttons").append(routeButton);
-    $("main .column-wrapper.left").append(routeInfoElement);
 
-
-    $("button#route_info_toggle").on("click", function () {
-        $("div#route_info").toggleClass("closed");
-        $("button#route_info_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
-    });
-
-    $("i#co2_info_toggle").on("click", function () {
-        let dialogContent = {
-            "title": "Beräkning av CO<sub>2</sub>",
-            "text": "Sparade CO<sub>2</sub> utsläppen beräknas som distansen i km gånger 120g CO<sub>2</sub>/km. Beräkning tar inte hänsyn till cyklistens CO<sub>2</sub> utsläpp. 120g CO<sub>2</sub>/km siffran är baserade på data från Trafikverket för genomsnittlig CO<sub>2</sub>/km utsläpp för bilar drivna av fossila bränslen under 2019. 2020 datan användes inte på grund av drastisk ändrad användning av bilar under pandemin.<br><br>Se länk till datan på Om sidan."
-        }
-
-        showDialog(dialogContent);
-    });
+    $("main div#route_info").show();
+    
+    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished(end), 1000);
 }
 
 function onRoutingStarted(event, start, end) {
+    console.log(event);
     markerGroups.forEach(function (group) {
         window.leafletMap.removeLayer(group.layer);
     });
@@ -675,7 +690,61 @@ function onRoutingStarted(event, start, end) {
     $("main .navigation > .main-panel #route-info-end").text(end.text)
 }
 
+$("button#route_info_toggle").on("click", function () {
+    $("div#route_info").toggleClass("closed");
+    $("button#route_info_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
+});
 
+$("i#co2_info_toggle").on("click", function () {
+    let dialogContent = {
+        "title": "Beräkning av CO<sub>2</sub>",
+        "text": "Sparade CO<sub>2</sub> utsläppen beräknas som distansen i km gånger 120g CO<sub>2</sub>/km. Beräkning tar inte hänsyn till cyklistens CO<sub>2</sub> utsläpp. 120g CO<sub>2</sub>/km siffran är baserade på data från Trafikverket för genomsnittlig CO<sub>2</sub>/km utsläpp för bilar drivna av fossila bränslen under 2019. 2020 datan användes inte på grund av drastisk ändrad användning av bilar under pandemin.<br><br>Se länk till datan på Om sidan."
+    }
+
+    showDialog(dialogContent);
+});
+
+
+var checkRouteFinishedRepeater;
+const distanceThreshold = 25;
+var hasGivenUserExperience = false;
+function checkRouteFinished(endPoint)
+{
+    if(!hasGivenUserExperience)
+    {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            var userLatitude = pos.coords.latitude;
+            var userLongitude = pos.coords.longitude;
+            var endPointLatitude = endPoint.latitude;
+            var endPointLongitude = endPoint.longitude;
+        
+            //Code from https://www.movable-type.co.uk/scripts/latlong.html
+            const R = 6371e3; // metres
+            const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            const distanceFromEndPoint = R * c; // in metres
+        
+            if(distanceFromEndPoint <= distanceThreshold)
+            {
+                var savedEmission = calculateEmissions(event.routes[0].summary.totalDistance);
+                var experience = Math.floor(savedEmission/10);
+                window.onFinishedRoute(experience).then(function() {
+                    window.updateUserData();
+                });
+            
+                hasGivenUserExperience = true;
+            }
+        });   
+    }
+}
 
 /** Helper functions **/
 function showDialog(dialogContent) {
@@ -756,9 +825,81 @@ function findId(id, array) {
     })
 }
 
+function setUserTitle(level)
+{
+    fetch("./json/user_titles.json")
+        .then(response => response.json())
+        .then(data => {
+
+            var title = "";
+            if(level >= 0 && level < 100)
+            {
+                var index;
+                for(var i = 0; data.length; i++)
+                {
+                    var obj = data[i];
+
+                    if(level >= obj.levelRange.lowerBound && level <= obj.levelRange.upperBound)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                title = data[index].title;
+            }
+            else if(level >= 100)
+            {
+                title = data[data.length - 1].title;
+            }
+            else 
+            {
+                title = "Failed to load";     
+            }
+
+            $(".title").text(title); 
+    });
+}
+
+function updateUserData()
+{
+    window.getUserLevel().then(function(userLevel) {
+        setUserTitle(userLevel);  
+        
+        window.getUserExperience().then(function(userExperience) {
+            var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
+            var currentExperience = userExperience;
+            
+            $(".text").text(currentExperience + "/" + requiredExperienceToNextLevel + "xp");
+            $(".user-level").text("Lv. " + userLevel);
+            updateProgressBarWidth();
+        });
+    });
+}
+
+function updateProgressBarWidth()
+{
+    window.getUserLevel().then(function(userLevel) {
+        window.getUserExperience().then(function(userExperience) {
+            var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
+            var currentExperience = userExperience;
+            
+            var progressBarWidth = $(".user-progress").width();
+            $(".user-exp").width((currentExperience/requiredExperienceToNextLevel) * progressBarWidth);
+        }); 
+    });
+}
+
+$(document).ready(function() {
+    updateUserData();
+});
+
+$(window).resize(function() {
+    updateProgressBarWidth();
+});
+
 function toggleDropDowns(div, button){
     $("img#" + button).toggleClass("change");
     $("div#" + div).toggleClass("hidden");
 }
-
 /** Helper functions **/

@@ -124,7 +124,7 @@ main div.info ul li a:active {
 main div.column-wrapper {
     position: absolute;
     top: 10px;
-    z-index: 999;
+    z-index: 9999;
 }
 
 main div.column-wrapper.left {
@@ -155,7 +155,12 @@ main div#route_info div.content ul li {
     justify-content: space-between;
 }
 
+main div#route_info div.content ul li > span {
+    flex: 1 1 auto;
+}
+
 main div#route_info div.content ul li i {
+    flex: 0 0 auto;
     min-width: 25px;
     text-align: center;
     margin-right: 0.1em;
@@ -182,6 +187,7 @@ main div#route_info {
     font-size: 1.1em;
     padding: 0.3em;
     box-sizing: border-box;
+    display: none;
 }
 
 main #level-panel {
@@ -189,23 +195,35 @@ main #level-panel {
     max-width: 250px;
     position: relative;
     color: #000;
-    display: none;
 }
 
 main #level-panel > .upper {
     display: flex;
     width: 100%;
     align-items: center;
-"
 }
 
 main #level-panel > .upper > .image {
     flex: 0 0 50px;
+    position: relative;
+    text-align: center;
+    font-size: large;
+    font-size: 0.90em;
+    color: #264bab;
+}
+
+main #level-panel > .upper > .image > p{
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 main #level-panel > .upper > .image > img {
-    width: 50px;
-    height: 50px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
 }
 
@@ -222,15 +240,20 @@ main #level-panel > .upper > .rows {
 main #level-panel > .upper > .rows > .title {
     border: 3px solid #264bab;
     background: #fff;
-    padding: 3px;
     border-radius: 5px;
+    padding 3px;
     white-space: pre;
+    min-width: 125px;
+    width: 100%;
+    font-size: 0.90em;
+    text-align: center;
+    overflow-x: hidden;
+    flex-shrink: 2;
 }
 
 main #level-panel > .upper > .rows > .user-progress {
     min-width: 125px;
     height: 18px;
-    background: #fff;
     border-radius: 5px;
     margin-top: 5px;
     border: 3px solid #264bab;
@@ -238,6 +261,7 @@ main #level-panel > .upper > .rows > .user-progress {
     position: relative;
     text-align: center;
     width: 100%;
+    flex-shrink: 2;
 }
 
 main #level-panel > .upper > .rows > .user-progress > .user-exp {
@@ -247,6 +271,7 @@ main #level-panel > .upper > .rows > .user-progress > .user-exp {
     background: #81fc5d;
     position: absolute;
     z-index: 0;
+    flex-shrink: 2;
 }
 
 main #level-panel > .upper > .rows > .user-progress > .text {
@@ -316,35 +341,10 @@ input[type=checkbox] + label:before {
 }
 
 input[type=checkbox]:checked + label:before {
+
     background: rgba(38, 75, 171, 1);
     border: 3px solid rgba(38, 75, 171, 1);
     color: white;
-}
-
-input[type=checkbox]:disabled + label:before {
-    border-color: #969696;
-}
-
-input[type=checkbox]:disabled + label[for=pumps] {
-    color: #969696;
-}
-
-input[type=checkbox]:disabled + label[for=pumps]:after {
-    color: #969696;
-    white-space: nowrap;
-    content: "(ej tillgänglig)";
-    font-size: 13px;
-}
-
-input[type=checkbox]:disabled + label[for=parking] {
-    color: #969696;
-}
-
-input[type=checkbox]:disabled + label[for=parking]:after {
-    color: #969696;
-    white-space: nowrap;
-    content: " (ej tillgänglig)";
-    font-size: 13px;
 }
 
 
@@ -396,12 +396,17 @@ main div#weather-data.loading div.head > #weather-data-toggle {
 main div#weather-data.loading div.content {
     display: none;
 }
-
 /** Weather panel loading **/
 
 main div#weather-data div.content {
     border-top: 3px solid rgba(38, 75, 171, 1);
     padding-top: 0.3em;
+}
+
+main div#weather-data div.content > img {
+    float: right;
+    width: 30px;
+    height: 30px;
 }
 
 main div#weather-data div.content > p {
@@ -447,8 +452,8 @@ main div#weather-data div.head button#weather-data-toggle {
     position: absolute;
     background-color: #f1f1f1;
     min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    font-size: 0px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    font-size: 0;
     z-index: 1000;
 }
 
@@ -563,7 +568,7 @@ main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper {
 }
 
 main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper > div {
-    flex: 1 1 100%;
+   flex: 1 1 100%;
 }
 
 main div.navigation > .main-panel > .route-setup > .input {
@@ -707,7 +712,6 @@ main img#walkingIcon{
         font-size: 1.1em;
     }
 
-
     main div#filters div.head {
     }
 
@@ -727,9 +731,6 @@ main img#walkingIcon{
     }
 }
 
-<<<<<<<<< Temporary merge branch 1
-@media (max-width: 350px) {
-=========
 @media(max-width: 450px){
 
     main div#filters, main div#route_info, main div#weather-data{
@@ -761,7 +762,6 @@ main img#walkingIcon{
 }
 
 @media(max-width: 350px){
->>>>>>>>> Temporary merge branch 2
     main div.navigation > .main-panel {
         width: 250px;
     }

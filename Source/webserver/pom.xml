@@ -45,6 +45,13 @@
 			<version>20210307</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.webjars.npm/localforage -->
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>localforage</artifactId>
+			<version>1.9.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
