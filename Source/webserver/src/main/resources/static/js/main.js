@@ -543,10 +543,10 @@ L.Routing.OpenRouteService.prototype._routeDone = function(datas, inputWaypoints
     }, context);
 }
 
-const router = L.routing.openrouteservice("", {
+const router = L.routing.openrouteservice("5b3ce3597851110001cf6248d29230ce91e840789e9e3b73cf909b78", {
     "timeout": 30 * 1000,
     "format": "json",
-    "host": "./api/routing",
+    "host": "https://api.openrouteservice.org",
     "service": "directions",
     "api_version": "v2",
     "profile": "cycling-regular",
@@ -614,7 +614,13 @@ function removeRoute() {
 }
 
 function onErrorHandler(event) {
-    console.log(event);
+    let dialogContent = {
+        "title": "Ett fel har uppstått.",
+        "text": "Var snäll och prova igen.<br><br>Felmeddelande: " + event.error.message
+    }
+
+    showDialog(dialogContent);
+    removeRoute();
 }
 
 function onRouteFound(event) {
