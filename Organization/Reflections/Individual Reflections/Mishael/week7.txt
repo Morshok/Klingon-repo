@@ -1,0 +1,11 @@
+What do I want to learn or understand better?
+I've continued to improve my agile & scrum skills and my application of them. This week, large part of the time was spent on bug hunting. I had to throughly go through the affected third party scripts. Next week is mostly polishing the product. And as always continue to improve all my skills.
+
+How can I help someone else, or the entire team, to learn something new?
+I helped members who asked me for help and I asked other if they needed. And this sprint, compared to the previous one, I was more proactive.
+
+What is my contribution towards the team’s use of Scrum?
+I participated in both the weekly meetings and I used the scrum board as intended. 
+
+What is my contribution towards the team’s deliveries?
+I contributed to the sprint reflection, finished my tasks for this sprint, and helped others complete theirs.
