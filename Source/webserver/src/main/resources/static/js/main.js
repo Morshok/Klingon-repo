@@ -7,8 +7,14 @@ const pumpIcon = L.icon({
     iconSize: [30, 30],
 });
 const locationIcon = L.icon({
-    iconUrl: '/images/locationRed.png',
-    iconSize: [25, 40],
+    iconUrl: '/images/locationDirection.png',
+    iconSize: [48, 48],
+    iconAnchor: [24, 24],
+});
+const locationIconStanding = L.icon({
+    iconUrl: '/images/locationStanding.png',
+    iconSize: [48, 48],
+    iconAnchor: [24, 24],
 });
 const bicycleStandIcon = L.icon({
     iconUrl: '/images/parking.png',
@@ -369,6 +375,20 @@ function getGeoLocation(successFn, failFn, ...args) {
     }, {
         timeout: 1000,
         maximumAge: 0,
+        enableHighAccuracy: true,
+    });
+
+    let positionWatch = navigator.geolocation.watchPosition(function(position){
+        let userRotation = position.coords.heading;
+
+        if(userRotation === null || isNaN(userRotation)){
+            userPosition.marker = userPosition.marker.setIcon(locationIconStanding);
+            userPosition.marker = userPosition.marker.setRotationAngle(0);
+        }else{
+            userPosition.marker = userPosition.marker.setIcon(locationIcon);
+            userPosition.marker = userPosition.marker.setRotationAngle(Math.floor(userRotation));
+        }
+    }, function(e){}, {
         enableHighAccuracy: true,
     });
 }
