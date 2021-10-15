@@ -20,7 +20,7 @@ Social Contract: https://github.com/Morshok/Klingon-repo/blob/master/Organizatio
 
    Main Directory: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections
    
-   Anthon: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections
+   Anthon: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Anthon
    <br>Erik: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Erik
    <br>Konrad: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Konrad
    <br>Mishael: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Mishael
