@@ -155,7 +155,12 @@ main div#route_info div.content ul li {
     justify-content: space-between;
 }
 
+main div#route_info div.content ul li > span {
+    flex: 1 1 auto;
+}
+
 main div#route_info div.content ul li i {
+    flex: 0 0 auto;
     min-width: 25px;
     text-align: center;
     margin-right: 0.1em;
