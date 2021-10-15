@@ -291,6 +291,7 @@ $("select#location-dropdown").change(function () {
     if (index && weatherObject.length > index && weatherObject[index]) {
         let data = weatherObject[index];
         $("#weather-data > .content").html(`
+            <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
             <p>Plats: ${data.location}</p>
             <p>Beskrivning: ${data.weatherDescription}</p>
             <p>Temperatur: ${data.temperature}&deg;C</p>
@@ -523,6 +524,23 @@ function startRoute(gpsLocation, startValue, endValue) {
 
     let $mode = $("main .radio-wrapper input[name='transportationMode']:checked").val();
     addRoute(startPoint, endPoint, $mode);
+}
+
+L.Routing.OpenRouteService.prototype.old_routeDone = L.Routing.OpenRouteService.prototype._routeDone;
+L.Routing.OpenRouteService.prototype._routeDone = function(datas, inputWaypoints, callback, context){
+    let routes = this.options.format === 'geojson' ? datas.features : datas.routes;
+    let routeTime = [];
+
+    routes.forEach(function(route, indx){
+        routeTime[indx] = route.summary.duration;
+    });
+
+    L.Routing.OpenRouteService.prototype.old_routeDone.call(this, datas, inputWaypoints, function(unused, alts){
+        alts.forEach(function(routeAlt, indx){
+            routeAlt.summary.totalTime = routeTime[indx];
+        });
+        callback.call(context, null, alts);
+    }, context);
 }
 
 const router = L.routing.openrouteservice("", {

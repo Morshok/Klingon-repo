@@ -110,6 +110,7 @@ public class APIDataHandler {
 
             jsonObject.put("id", weatherData.getId());
             jsonObject.put("location", weatherData.getLocation());
+            jsonObject.put("iconUrl", weatherData.getIconUrl());
             jsonObject.put("weatherDescription", weatherData.getWeatherDescription());
             jsonObject.put("temperature", weatherData.getTemperature());
             jsonObject.put("windSpeed", weatherData.getWindSpeed());
@@ -617,13 +618,16 @@ public class APIDataHandler {
                     JSONArray jsonArray = jsonObject.getJSONArray("Object");
 
                     String location = locations[i];
+                    String iconId = jsonArray.getJSONObject(0).getJSONArray("weather").getJSONObject(0).getString("icon");
+                    String iconUrl = String.format("https://openweathermap.org/img/wn/%s@2x.png", iconId);
+
                     String weatherDescription = jsonArray.getJSONObject(0).getJSONArray("weather").getJSONObject(0).getString("description");
                     double temperature = jsonArray.getJSONObject(0).getJSONObject("main").getDouble("temp");
                     double windSpeed = jsonArray.getJSONObject(0).getJSONObject("wind").getDouble("speed");
                     double windDegree = jsonArray.getJSONObject(0).getJSONObject("wind").getDouble("deg");
                     double cloudsPercentage = jsonArray.getJSONObject(0).getJSONObject("clouds").getDouble("all");
 
-                    WeatherData weatherData = new WeatherData((long) i, location, weatherDescription, temperature, windSpeed, windDegree, cloudsPercentage);
+                    WeatherData weatherData = new WeatherData((long) i, location, iconUrl, weatherDescription, temperature, windSpeed, windDegree, cloudsPercentage);
 
                     weatherDataList.add(weatherData);
 

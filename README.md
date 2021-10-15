@@ -1,5 +1,8 @@
 # Klingon-repo
 
+Definition of Done: https://github.com/Morshok/Klingon-repo/blob/master/Organization/Definition_of_done.md <br>
+Social Contract: https://github.com/Morshok/Klingon-repo/blob/master/Organization/Social%20Contract.md
+
 ## Software used:
    Github, used both as a repository, and using the projects tab as a scrum board <br>
    IntelliJ <br>
@@ -14,6 +17,16 @@
    Organization/Reflections/Individual Reflections. <br>
    When navigated over there, our individual reflections <br>
    are put in directories dedicated to each team member.
+
+   Main Directory: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections
+   
+   Anthon: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections
+   <br>Erik: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Erik
+   <br>Konrad: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Konrad
+   <br>Mishael: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Mishael
+   <br>Phong: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Phong
+
+   
 
 ## External resources used:
    Links to data include: <br>
