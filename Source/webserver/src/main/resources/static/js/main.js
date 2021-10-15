@@ -587,7 +587,13 @@ function removeRoute() {
 }
 
 function onErrorHandler(event) {
-    console.log(event);
+    let dialogContent = {
+        "title": "Ett fel har uppstått.",
+        "text": "Var snäll och prova igen.<br><br>Felmeddelande: " + event.error.message
+    }
+
+    showDialog(dialogContent);
+    removeRoute();
 }
 
 function onRouteFound(event) {
