@@ -22,6 +22,7 @@ public class WeatherData
     private Long id;
     private String location;
     private String weatherDescription;
+    private String iconUrl;
     private double temperature;
     private double windSpeed;
     private double windDegree;
@@ -36,6 +37,7 @@ public class WeatherData
      * Constructor for initializing a WeatherData instance.
      *
      * @param location              the location
+     * @param iconUrl               the weather icon's url
      * @param weatherDescription    the description of the weather
      * @param temperature           the temperature
      * @param windSpeed             the wind speed
@@ -43,13 +45,14 @@ public class WeatherData
      * @param cloudsPercentage      the percentage of the sky covered by clouds
      */
     public WeatherData(
-            Long id, String location, String weatherDescription, double temperature,
+            Long id, String location, String iconUrl, String weatherDescription, double temperature,
             double windSpeed, double windDegree, double cloudsPercentage
     )
     {
         super();
         this.id = id;
         this.location = location;
+        this.iconUrl = iconUrl;
         this.weatherDescription = weatherDescription;
         this.temperature = temperature;
         this.windSpeed = windSpeed;
@@ -70,6 +73,13 @@ public class WeatherData
      * @return  returns the location of the WeatherData object
      */
     public String getLocation() { return this.location; }
+
+    /**
+     * Method for getting the icon url.
+     *
+     * @return  returns the icon url.
+     */
+    public String getIconUrl() { return this.iconUrl; }
 
     /**
      * Method for getting the weatherDescription of the WeatherData object
@@ -116,6 +126,7 @@ public class WeatherData
     {
         return ("WeatherData{ " +
                 "location: " + location + ", " +
+                "iconUrl: " + iconUrl + ", " +
                 "weatherDescription: " + weatherDescription + ", " +
                 "temperature: " + temperature + ", " +
                 "windSpeed: " + windSpeed + ", " +
