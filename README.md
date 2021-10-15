@@ -3,12 +3,19 @@
 Definition of Done: https://github.com/Morshok/Klingon-repo/blob/master/Organization/Definition_of_done.md <br>
 Social Contract: https://github.com/Morshok/Klingon-repo/blob/master/Organization/Social%20Contract.md
 
+## Information concerning our group reflections:
+   We began uploading our group reflections one week prior to when we should have. Therefore,
+   the names of our files are in the format WeekX, where X is the week number. Thus week 3's
+   group reflection would have the name Week4 according to our way of structuring it, just
+   a thing to keep in mind. Also, if we've forgotten to turn in the group reflection for a
+   specific week in canvas, it should be in our group reflections directory here in the
+   repository, just a friendly reminder.
+
 ## Software used:
    Github, used both as a repository, and using the projects tab as a scrum board <br>
    IntelliJ <br>
    Eclipse <br>
-   Brackets <br>
-   Notepad++?!
+   Brackets
    
    *Lägg till andra program ni har använt er av i listan här //Anthon*
    
