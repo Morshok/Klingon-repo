@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-209720808-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-209720808-1');
+    </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -39,47 +50,72 @@
         </nav>
     </header>
     <main>
-        <div id="wrapper">
+        <div class="column-wrapper left">
+            <div id="level-panel">
+                <div class="upper">
+                    <div class="image">
+                        <img src="./images/user_icon.png">
+                        <p class="user-level"></p>
+                    </div>
+                    <div class="rows">
+                        <div class="title"></div>
+                        <div class="user-progress">
+                            <div class="user-exp"></div>
+                            <div class="text">
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-buttons">
+                <img src="./images/filterButton.png" id="mobileFilter" alt="filter"
+                     onclick="toggleDropDowns('filters', 'mobileFilter')">
+                <img src="./images/weatherButton.png" id="mobileWeather" alt="weather"
+                     onclick="toggleDropDowns('weather-data', 'mobileWeather')">
+            </div>
+        </div>
+        <div class="column-wrapper right">
             <div id="filters">
                 <div class="head">
                     <span>Filter:</span>
+                    <select name="cities" id="cities-dropdown" onchange="changeCity()">
+                        <option value="Göteborg"  selected="selected">Göteborg</option>
+                        <option value="Malmö">Malmö</option>
+                        <option value="Lund" >Lund</option>
+                        <option value="Stockholm" >Stockholm</option>
+                    </select>
                     <!-- Hide/show toggle -->
                     <button id="filter_toggle"><i class="fa fa-angle-down"></i></button>
+
                 </div>
                 <div class="content">
+                    <div class="cities-dropdown">
+
+                    </div>
                     <form>
-                        <input type="checkbox" id="bicycles" name="checkbox-1" value="Bicycle Stations" checked>
-                        <label for="bicycles">Bicycle Stations</label>
-                        <input type="checkbox" id="pumps" name="checkbox-2" value="Pump Stations">
-                        <label for="pumps">Pump Stations</label>
-                        <input type="checkbox" id="parking" name="checkbox-2" value="Parking Spaces">
-                        <label for="parking">Parking Spaces</label>
+                        <input type="checkbox" id="bicycles" class="checkbox-group" checked>
+                        <label for="bicycles">Cykel stationer </label>
+                        <input type="checkbox" id="pumps" class="checkbox-group">
+                        <label for="pumps">Pump stationer </label>
+                        <input type="checkbox" id="parking" class="checkbox-group">
+                        <label for="parking">Cykel parkeringar </label>
+
                     </form>
                 </div>
             </div>
-            <div id="weather-data">
+            <div id="weather-data" class="loading">
                 <div class="head">
                     <span>Vädret:</span>
+                    <img class="weather-loading" src="/images/loadingIcon.svg"/>
                     <div class="location-dropdown">
                         <select name="location" id="location-dropdown">
-                            <option value="0">Angered</option>
-                            <option value="1" selected="selected">Göteborg</option>
-                            <option value="2">Mölndal</option>
-                            <option value="3">Torslanda</option>
                         </select>
                     </div>
                     <!-- Hide/show toggle -->
-                    <button id="weather-data-toggle"><i class="fa fa-angle-down"></i></button>
+                    <button id="weather-data-toggle"><i class="fa fa-angle-up"></i></button>
                 </div>
                 <div class="content">
-                    <form>
-                        <div id="location"></div>
-                        <div id="description"></div>
-                        <div id="temperature"></div>
-                        <div id="windSpeed"></div>
-                        <div id="windDegree"></div>
-                        <div id="cloudsPercentage"></div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -106,10 +142,13 @@
                         <label><b>Färdsätt</b></label>
                         <div class="radio-wrapper">
                             <div>
+                                <i class="fa fa-bicycle" aria-hidden="true"></i>
                                 <label for="cyclingMode">Cykel</label>
-                                <input type="radio" id="cyclingMode" name="transportationMode" value="cycling-regular" checked="">
+                                <input type="radio" id="cyclingMode" name="transportationMode" value="cycling-regular"
+                                       checked="">
                             </div>
                             <div>
+                                <img src="./images/walkIcon.png" alt="walking mode" id="walkingIcon">
                                 <label for="walkingMode">Till fots</label>
                                 <input type="radio" id="walkingMode" name="transportationMode" value="foot-walking">
                             </div>
@@ -121,7 +160,7 @@
                     </div>
                 </div>
                 <div class="route-information">
-                    <p><b>Startpunkt:</b> &nbsp; <span id="route-info-start"></span> </p>
+                    <p><b>Startpunkt:</b> &nbsp; <span id="route-info-start"></span></p>
                     <p><b>Slutpunkt:</b> &nbsp; <span id="route-info-end"></span></p>
                     <hr>
                     <div class="input">
@@ -138,8 +177,11 @@
         &copy; 2021. Klingon och dess medlemmar.
         <div class="attribution">Attribution
             <div class="popup">
-                <div>Icons made by <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat
-                    Icons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+                <div>Icons made by
+                    <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat Icons</a>
+                    <a href="https://www.freepik.com" title="Freepik">Freepik</a>
+                    from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -154,6 +196,9 @@
 <script src="https://unpkg.com/@gegeweb/leaflet-routing-machine-openroute@latest/dist/leaflet-routing-openroute.min.js"></script>
 <script src='https://unpkg.com/@yaireo/relative-time'></script>
 <script src="./js/leaflet.rotatedMarker.js" type="text/javascript"></script>
+<script type="text/javascript" src="./json/user_titles.json"></script>
+<script src="./js/localforage.min.js"></script>
+<script src="./js/user_level.js"></script>
 <script src="./js/main.js" type="text/javascript"></script>
 </body>
 </html>

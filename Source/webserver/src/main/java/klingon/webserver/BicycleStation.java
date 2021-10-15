@@ -21,7 +21,8 @@ public class BicycleStation {
     private String address;
     private Integer availableBikes;
     private Timestamp lastUpdated;
-
+    private String city;
+    private String company;
 
     /**
      * Constructor for initializing the bicycle station instance
@@ -41,15 +42,19 @@ public class BicycleStation {
      * @param address        The address of the bicycle station
      * @param availableBikes The amount of available bikes at the bicycle station
      * @param lastUpdated    The timestamp last updated
+     * @param city           The city where the bicycle station is located
+     * @param company        The company which the station is owned by
      */
     public BicycleStation(Long id, Double latitude, Double longitude, String address, Integer availableBikes,
-                          Timestamp lastUpdated) {
+                          Timestamp lastUpdated, String city, String company) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
         this.availableBikes = availableBikes;
         this.lastUpdated = lastUpdated;
+        this.city = city;
+        this.company = company;
     }
 
     /**
@@ -93,7 +98,7 @@ public class BicycleStation {
      *
      * @return Returns the amount of available bicycle of this BicycleStation
      */
-    public int getAvailableBikes() {
+    public Integer getAvailableBikes() {
         return availableBikes;
     }
 
@@ -115,8 +120,33 @@ public class BicycleStation {
         return lastUpdated.toString();
     }
 
+    /**
+     * Method for setting the value of available bikes
+     *
+     * @param availableBikes the new value of available bikes
+     */
     public void setAvailableBikes(Integer availableBikes) {
         this.availableBikes = availableBikes;
+    }
+
+    /**
+     * Method for getting the city from a BicycleStation object
+     *
+     * @return Returns the city of this BicycleStation
+     */
+
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * Method for getting the company from a BicycleStation object
+     *
+     * @return Returns the company of this BicycleStation
+     */
+
+    public String getCompany() {
+        return company;
     }
 
     /**

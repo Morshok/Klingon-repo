@@ -121,11 +121,22 @@ main div.info ul li a:active {
     background: #18306f;
 }
 
-main div#wrapper {
+main div.column-wrapper {
     position: absolute;
     top: 10px;
+    z-index: 9999;
+}
+
+main div.column-wrapper.left {
+    left: 10px;
+}
+
+main div.column-wrapper.right {
     right: 10px;
-    z-index: 999;
+}
+
+main img#mobileFilter, main img#mobileRouteInfo, main img#mobileWeather {
+    display: none;
 }
 
 main div#route_info div.head span {
@@ -165,23 +176,114 @@ main div#route_info div.content ul li i.info_icon {
 }
 
 main div#route_info {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 999;
     width: 200px;
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
+    box-sizing: border-box;
+}
+
+main #level-panel {
+    padding: 5px 10px;
+    max-width: 250px;
+    position: relative;
+    color: #000;
+}
+
+main #level-panel > .upper {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+main #level-panel > .upper > .image {
+    flex: 0 0 50px;
+    position: relative;
+    text-align: center;
+    font-size: large;
+    font-size: 0.90em;
+    color: #264bab;
+}
+
+main #level-panel > .upper > .image > p{
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+main #level-panel > .upper > .image > img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+}
+
+main #level-panel > .upper > .rows {
+    flex: 1 1 100%;
+    padding: 5px;
+    font-size: large;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    align-items: flex-start;
+}
+
+main #level-panel > .upper > .rows > .title {
+    border: 3px solid #264bab;
+    background: #fff;
+    border-radius: 5px;
+    padding 3px;
+    white-space: pre;
+    min-width: 125px;
+    width: 100%;
+    font-size: 0.90em;
+    text-align: center;
+    overflow-x: hidden;
+    flex-shrink: 2;
+}
+
+main #level-panel > .upper > .rows > .user-progress {
+    min-width: 125px;
+    height: 18px;
+    border-radius: 5px;
+    margin-top: 5px;
+    border: 3px solid #264bab;
+    background: #f6fbff;
+    position: relative;
+    text-align: center;
+    width: 100%;
+    flex-shrink: 2;
+}
+
+main #level-panel > .upper > .rows > .user-progress > .user-exp {
+    height: 100%;
+    max-width: 100%;
+    width: 0;
+    background: #81fc5d;
+    position: absolute;
+    z-index: 0;
+    flex-shrink: 2;
+}
+
+main #level-panel > .upper > .rows > .user-progress > .text {
+    position: absolute;
+    margin: 0 auto;
+    width: 100%;
+    font-size: 0.95em;
+    color: rgb(38 75 171);
 }
 
 main div#filters {
+    box-sizing: border-box;
     width: 200px;
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
+    margin-bottom: 10px
 }
 
 main div#filters div.head, main div#route_info div.head {
@@ -254,7 +356,8 @@ main div#weather-data {
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
-    margin-top: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
 main div#weather-data div.head {
@@ -265,12 +368,43 @@ main div#weather-data div.head {
     align-items: center;
 }
 
-main div#weather-data div.head span {
+main div#weather-data div.head > .weather-loading {
+    display: none;
+    width: 24px;
+    height: 24px;
 }
+
+/** Weather panel loading **/
+main div#weather-data.loading div.head > .weather-loading {
+    display: block;
+}
+
+main div#weather-data.loading div.head > .location-dropdown {
+    display: none;
+}
+
+main div#weather-data.loading div.head > #weather-data-toggle {
+    display: none;
+}
+
+main div#weather-data.loading div.content {
+    display: none;
+}
+/** Weather panel loading **/
 
 main div#weather-data div.content {
     border-top: 3px solid rgba(38, 75, 171, 1);
     padding-top: 0.3em;
+}
+
+main div#weather-data div.content > img {
+    float: right;
+    width: 30px;
+    height: 30px;
+}
+
+main div#weather-data div.content > p {
+    margin: 0;
 }
 
 main div#weather-data.closed div.head {
@@ -312,8 +446,8 @@ main div#weather-data div.head button#weather-data-toggle {
     position: absolute;
     background-color: #f1f1f1;
     min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    font-size: 0px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    font-size: 0;
     z-index: 1000;
 }
 
@@ -475,7 +609,7 @@ div.dialog {
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     padding: 0.3em;
-    font-size: 1.1em;
+    font-size: 0.8em;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -520,6 +654,12 @@ div.dialog div.controls {
 div.dialog div.controls button.dialog_close_button {
     cursor: pointer;
 }
+
+main img#walkingIcon{
+    position: relative;
+    top: 5px;
+}
+
 
 
 @media (max-width: 600px) {
@@ -582,6 +722,36 @@ div.dialog div.controls button.dialog_close_button {
     }
 
     main div#weather-data div.head {
+    }
+}
+
+@media(max-width: 450px){
+
+    main div#filters, main div#route_info, main div#weather-data{
+        display: none;
+    }
+
+    main div#filters.hidden, main div#route_info.hidden, div#weather-data.hidden, main img#mobileRouteInfo.hidden {
+        display: none;
+    }
+
+    main div#filters.hidden, main div#route_info.hidden, div#weather-data.hidden, main img#mobileRouteInfo.hidden{
+        display: block;
+    }
+
+    main img#mobileFilter, main img#mobileWeather, main img#mobileRouteInfo {
+        display: block;
+        margin-top: 10px;
+        background-color: #03b721;
+        width: 45px;
+        height: 45px;
+        border-radius: 100%;
+        transition: .5s ease;
+        backface-visibility: hidden;
+    }
+
+    main img#mobileWeather.change, main img#mobileFilter.change, main img#mobileRouteInfo.change{
+        background-color: #e71b1b;
     }
 }
 

@@ -21,12 +21,11 @@ const bicycleStandIcon = L.icon({
     iconSize: [26, 26],
 })
 const noBikeIcon = L.icon({
-    iconUrl: '/images/redBicycle.png',
+    iconUrl: '/images/bicycleStationGray.png',
     iconSize: [32, 32],
 });
 
-$("button#weather-data-toggle").click(function()
-{
+$("button#weather-data-toggle").click(function () {
     $("div#weather-data").toggleClass("closed");
     $("button#weather-data-toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
@@ -35,6 +34,7 @@ const seRelTime = new RelativeTime({locale: "sv"})
 const bicycleStationGroup = L.layerGroup();
 const pumpStationGroup = L.layerGroup();
 const bicycleStandGroup = L.layerGroup();
+
 const markerGroups = [
     {
         title: "Styr & Ställ",
@@ -45,19 +45,19 @@ const markerGroups = [
         template: function (bicycleStation, baseTemplate) {
             let timeDiff = seRelTime.from(Date.parse(bicycleStation.lastUpdated));
             return baseTemplate(bicycleStation.id, bicycleStation.address,
-                `<p>Styr & Ställ</p>
+                `<p>${bicycleStation.company}</p>
                 <p>Tillgängliga cyklar: <b>${bicycleStation.availableBikes}</b></p>
                 <p>Uppdaterades: ${timeDiff}</p>`
             );
         },
         layer: bicycleStationGroup,
         icon: function (state) {
-            if (state.availableBikes < 5) {
+            if (state.availableBikes == 0) {
                 return noBikeIcon;
             }
             return bicycleIcon;
         },
-    },
+    }, 
     {
         title: "Pumpstationer",
         check: function () {
@@ -90,6 +90,8 @@ const markerGroups = [
     },
 ];
 
+
+
 let allMarkers = {};
 let userPosition = {
     marker: null,
@@ -98,10 +100,11 @@ let userPosition = {
 let searchData = [];
 let gpsEvenListenerId;
 
-window.leafletMap = L.map('map', {zoomControl: false}).setView([57.690072772287735, 11.974254546462964], 16)
+window.leafletMap = L.map('map', {zoomControl: false}).setView([57.706468214881355, 11.970101946662373], 13)
     .addLayer(L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }))
-    .addControl(L.control.zoom( { position: 'bottomright' } ));
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }))
+    .addControl(L.control.zoom({position: 'bottomright'}));
 
 function updateUserPosition(latitude, longitude) {
     userPosition.pos = {latitude: latitude, longitude: longitude};
@@ -112,6 +115,17 @@ function updateUserPosition(latitude, longitude) {
     else
         userPosition.marker.setLatLng([latitude, longitude]);
 }
+
+function checkZoom(){
+    window.leafletMap.on('zoomend', function(){
+        if(window.leafletMap.getZoom() < 14){
+            window.leafletMap.removeLayer(bicycleStandGroup);
+        }else{
+            window.leafletMap.addLayer(bicycleStandGroup);
+        }
+    });
+}
+checkZoom();
 
 function loadMarker() {
     let baseTemplate = function (id, title, content) {
@@ -138,6 +152,7 @@ function loadMarker() {
         $.ajax(markerGroup.apiPath, {
             contentType: "application/json",
             dataType: "json",
+            data: {city: $("#cities-dropdown").val() },
             complete: function (response) {
                 if (response.status === 200) {
                     let data = response.responseJSON;
@@ -157,10 +172,10 @@ function loadMarker() {
                     });
                     updateSearchResults();
                 }
+
             },
         })
     }
-
     let calledApi = false, changedData = false;
     markerGroups.forEach(function (item) {
         if (item.check()) {
@@ -168,6 +183,7 @@ function loadMarker() {
                 calledApi = true;
                 buildMarkerGroup(item);
             }
+
         } else {
             item.layer.clearLayers().remove();
             allMarkers[item.apiPath] = [];
@@ -175,59 +191,141 @@ function loadMarker() {
         }
     });
 
+
     if (calledApi !== changedData && !calledApi) {
         updateSearchResults()
     }
-}
-
-loadMarker();
-
-var index = 1;
-var repeater;
-function loadWeatherData(f_index)
-{
-    if(f_index === undefined)
-    {
-        f_index = 1;
+    if(window.leafletMap.getZoom() < 14){
+        window.leafletMap.removeLayer(bicycleStandGroup);
     }
-    
-    $.ajax("/api/weatherData",
-    {
-        contentType: "application/json",
-        dataType: "json",
-        complete: function(response)                
-        {
-                if(response.status === 200)
-                {
-                    let data = response.responseJSON;
-
-                    $('#location').html('Plats: ' + data[f_index].location);
-                    $('#description').html('Beskrivning: ' + data[f_index].weatherDescription);
-                    $('#temperature').html('Temperatur: ' + data[f_index].temperature + '&deg;C');
-                    $('#windSpeed').html('Vindhastighet: ' + data[f_index].windSpeed + 'm/s&sup2;');
-                    $('#windDegree').html('Vindriktning: ' + data[f_index].windDegree + '&deg;');
-                    $('#cloudsPercentage').html('Moln: ' + data[f_index].cloudPercentage + '%');
-                }
-        }
-    })
-
-    repeater = setTimeout(loadWeatherData, 60000);
 }
-$(document).ready(loadWeatherData(this.index));
 
-$("select#location-dropdown").change(function(event){
-    changeWeatherDataIndex($("select#location-dropdown").val());
+/** A function that disables,removes and unchecks
+ * the markers depending on the city.
+ *
+ * @param currentCity - the city value i.e 2 is Malmö and 3 is Lund
+ */
+function checkboxHandler(currentCity) {
+    //if statements that disables the markers and unchecks them depending on the city
+    if (currentCity == 'Malmö') {
+        document.getElementById('pumps').disabled = false;
+        document.getElementById('parking').disabled = true;
+        document.getElementById('parking').checked = false;
+        document.getElementById('parking').style.color = "red";
+
+
+    } else if (currentCity == 'Lund' || currentCity == 'Stockholm') {
+        document.getElementById('parking').disabled = true;
+        document.getElementById('parking').checked = false;
+        document.getElementById('pumps').disabled = true;
+        document.getElementById('pumps').checked = false;
+
+
+
+    } else {
+        document.getElementById('parking').disabled = false;
+        document.getElementById('pumps').disabled = false;
+
+    }
+    //clears previous markers
+    markerGroups.forEach(function (group) {
+        group.layer.clearLayers().remove();
+    });
+    //sets out the new markers on the map
+    loadMarker();
+}
+
+/**
+ * a function that changes the city view and implements the checkbox functions
+ */
+function changeCity() {
+    const city = document.getElementById("cities-dropdown").value;
+    if (city == 'Malmö') {
+        window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
+        checkboxHandler('Malmö');  //when a new city is choosen, the checkboxes should be unchecked
+    } else if (city == 'Lund') {
+        window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
+       checkboxHandler('Lund');
+    } else if (city == 'Stockholm') {
+        window.leafletMap.setView([59.3295521252874, 18.06861306062469], 13);
+        checkboxHandler('Stockholm');
+    } else {
+        window.leafletMap.setView([57.706468214881355, 11.970101946662373], 13); //sets the view to Gothenburg
+        checkboxHandler('Göteborg');
+    }
+}
+
+
+let weatherApiRepeater;
+let weatherObject = [];
+
+function loadWeatherData(early) {
+    clearTimeout(weatherApiRepeater);
+    $.ajax("/api/weatherData",
+        {
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                weatherObject = data;
+                if ($("#weather-data").hasClass("loading")) {
+                    let selectElement = $("select#location-dropdown");
+                    weatherObject.forEach(function (item) {
+                        let option = new Option(item.location, item.id, false, false);
+                        selectElement.append(option);
+                    })
+                    selectElement.trigger("change");
+                }
+            },
+            complete: function () {
+                if (weatherObject.length > 0) {
+                    $("#weather-data").removeClass("loading");
+                } else if (!early) {
+                    // if the weather object fails then re-schedule for earlier retrieval once
+                    clearTimeout(weatherApiRepeater);
+                    weatherApiRepeater = setTimeout(function () {
+                        loadWeatherData(true)
+                    }, 10 * 1000)
+                }
+            }
+        })
+    weatherApiRepeater = setTimeout(loadWeatherData, 60 * 1000);
+}
+
+$("select#location-dropdown").change(function () {
+    let index = $("select#location-dropdown").val();
+    console.log(weatherObject);
+    if (index && weatherObject.length > index && weatherObject[index]) {
+        let data = weatherObject[index];
+        $("#weather-data > .content").html(`
+            <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
+            <p>Plats: ${data.location}</p>
+            <p>Beskrivning: ${data.weatherDescription}</p>
+            <p>Temperatur: ${data.temperature}&deg;C</p>
+            <p>Vindhastighet: ${data.windSpeed}m/s&sup2;</p>
+            <p>Vindriktning: ${data.windDegree}&deg;</p>
+            <p>Moln: ${data.cloudPercentage}%</p>
+        `);
+    }
 });
 
-function changeWeatherDataIndex(obj)
-{
-    this.index = obj;
-    clearTimeout(repeater);
-    loadWeatherData(index);
-}
+$(document).ready(function () {
+    loadWeatherData();
+    loadMarker();
+    let changed = false;
+    $(window).on("resize", function (evt) {
+        if (window.innerWidth > 440) {
+            $(".column-wrapper.left").append($("#level-panel"));
+        } else {
+            $(".column-wrapper.right").append($("#level-panel"));
+        }
+    }).trigger("resize");
+});
+
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
+
 });
+
 
 $("button#filter_toggle").click(function () {
     $("div#filters").toggleClass("closed");
@@ -448,6 +546,23 @@ function startRoute(gpsLocation, startValue, endValue) {
     addRoute(startPoint, endPoint, $mode);
 }
 
+L.Routing.OpenRouteService.prototype.old_routeDone = L.Routing.OpenRouteService.prototype._routeDone;
+L.Routing.OpenRouteService.prototype._routeDone = function(datas, inputWaypoints, callback, context){
+    let routes = this.options.format === 'geojson' ? datas.features : datas.routes;
+    let routeTime = [];
+
+    routes.forEach(function(route, indx){
+        routeTime[indx] = route.summary.duration;
+    });
+
+    L.Routing.OpenRouteService.prototype.old_routeDone.call(this, datas, inputWaypoints, function(unused, alts){
+        alts.forEach(function(routeAlt, indx){
+            routeAlt.summary.totalTime = routeTime[indx];
+        });
+        callback.call(context, null, alts);
+    }, context);
+}
+
 const router = L.routing.openrouteservice("", {
     "timeout": 30 * 1000,
     "format": "json",
@@ -504,8 +619,12 @@ function removeRoute() {
     if (!window.leafletMap.hasLayer(pumpStationGroup))
         window.leafletMap.addLayer(pumpStationGroup)
 
+    $("main img#mobileRouteInfo").remove();
     $("main div#route_info").remove();
     $("main .navigation > .main-panel").removeClass("hasRoute");
+    
+    hasGivenUserExperience = false;
+    window.clearInterval(checkRouteFinishedRepeater);
 }
 
 function onErrorHandler(event) {
@@ -525,9 +644,9 @@ function onRouteFound(event) {
         return `
             <div id="route_info">
                 <div class="head">
-                    <span>Route information</span>
+                    <span>Rutt information</span>
                     <button id="route_info_toggle">
-                        <i class="fa fa-angle-down"></i>
+                       <i class="fa fa-angle-down"></i>
                     </button>
                 </div>
                 <div class="content">
@@ -540,12 +659,20 @@ function onRouteFound(event) {
                     </ul>
                 </div>
             </div>
+        </div>
         `
     }
 
+    let routeButton = `
+        <img src="./images/routeInfoButton.png" id="mobileRouteInfo"alt="route info"
+            onclick="toggleDropDowns('route_info', 'mobileRouteInfo')">
+        `;
+
     let routeInfoElement = routeInfoTemplate(routeInfo);
 
-    $("main").prepend(routeInfoElement);
+    $("div#mobile-buttons").append(routeButton);
+    $("main .column-wrapper.left").append(routeInfoElement);
+
 
     $("button#route_info_toggle").on("click", function () {
         $("div#route_info").toggleClass("closed");
@@ -560,9 +687,12 @@ function onRouteFound(event) {
 
         showDialog(dialogContent);
     });
+    
+    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished(end), 1000);
 }
 
 function onRoutingStarted(event, start, end) {
+    console.log(event);
     markerGroups.forEach(function (group) {
         window.leafletMap.removeLayer(group.layer);
     });
@@ -584,10 +714,50 @@ function onRoutingStarted(event, start, end) {
             }
         );
     }
-
     $("main .navigation > .main-panel").addClass("hasRoute");
     $("main .navigation > .main-panel #route-info-start").text(start.text)
     $("main .navigation > .main-panel #route-info-end").text(end.text)
+}
+
+var checkRouteFinishedRepeater;
+const distanceThreshold = 25;
+var hasGivenUserExperience = false;
+function checkRouteFinished(endPoint)
+{
+    if(!hasGivenUserExperience)
+    {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            var userLatitude = pos.coords.latitude;
+            var userLongitude = pos.coords.longitude;
+            var endPointLatitude = endPoint.latitude;
+            var endPointLongitude = endPoint.longitude;
+        
+            //Code from https://www.movable-type.co.uk/scripts/latlong.html
+            const R = 6371e3; // metres
+            const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            const distanceFromEndPoint = R * c; // in metres
+        
+            if(distanceFromEndPoint <= distanceThreshold)
+            {
+                var savedEmission = calculateEmissions(event.routes[0].summary.totalDistance);
+                var experience = Math.floor(savedEmission/10);
+                window.onFinishedRoute(experience).then(function() {
+                    window.updateUserData();
+                });
+            
+                hasGivenUserExperience = true;
+            }
+        });   
+    }
 }
 
 /** Helper functions **/
@@ -669,4 +839,81 @@ function findId(id, array) {
     })
 }
 
+function setUserTitle(level)
+{
+    fetch("./json/user_titles.json")
+        .then(response => response.json())
+        .then(data => {
+
+            var title = "";
+            if(level >= 0 && level < 100)
+            {
+                var index;
+                for(var i = 0; data.length; i++)
+                {
+                    var obj = data[i];
+
+                    if(level >= obj.levelRange.lowerBound && level <= obj.levelRange.upperBound)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                title = data[index].title;
+            }
+            else if(level >= 100)
+            {
+                title = data[data.length - 1].title;
+            }
+            else 
+            {
+                title = "Failed to load";     
+            }
+
+            $(".title").text(title); 
+    });
+}
+
+function updateUserData()
+{
+    window.getUserLevel().then(function(userLevel) {
+        setUserTitle(userLevel);  
+        
+        window.getUserExperience().then(function(userExperience) {
+            var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
+            var currentExperience = userExperience;
+            
+            $(".text").text(currentExperience + "/" + requiredExperienceToNextLevel + "xp");
+            $(".user-level").text("Lv. " + userLevel);
+            updateProgressBarWidth();
+        });
+    });
+}
+
+function updateProgressBarWidth()
+{
+    window.getUserLevel().then(function(userLevel) {
+        window.getUserExperience().then(function(userExperience) {
+            var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
+            var currentExperience = userExperience;
+            
+            var progressBarWidth = $(".user-progress").width();
+            $(".user-exp").width((currentExperience/requiredExperienceToNextLevel) * progressBarWidth);
+        }); 
+    });
+}
+
+$(document).ready(function() {
+    updateUserData();
+});
+
+$(window).resize(function() {
+    updateProgressBarWidth();
+});
+
+function toggleDropDowns(div, button){
+    $("img#" + button).toggleClass("change");
+    $("div#" + div).toggleClass("hidden");
+}
 /** Helper functions **/
