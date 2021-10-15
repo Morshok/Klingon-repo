@@ -291,6 +291,7 @@ $("select#location-dropdown").change(function () {
     if (index && weatherObject.length > index && weatherObject[index]) {
         let data = weatherObject[index];
         $("#weather-data > .content").html(`
+            <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
             <p>Plats: ${data.location}</p>
             <p>Beskrivning: ${data.weatherDescription}</p>
             <p>Temperatur: ${data.temperature}&deg;C</p>
@@ -525,6 +526,23 @@ function startRoute(gpsLocation, startValue, endValue) {
     addRoute(startPoint, endPoint, $mode);
 }
 
+L.Routing.OpenRouteService.prototype.old_routeDone = L.Routing.OpenRouteService.prototype._routeDone;
+L.Routing.OpenRouteService.prototype._routeDone = function(datas, inputWaypoints, callback, context){
+    let routes = this.options.format === 'geojson' ? datas.features : datas.routes;
+    let routeTime = [];
+
+    routes.forEach(function(route, indx){
+        routeTime[indx] = route.summary.duration;
+    });
+
+    L.Routing.OpenRouteService.prototype.old_routeDone.call(this, datas, inputWaypoints, function(unused, alts){
+        alts.forEach(function(routeAlt, indx){
+            routeAlt.summary.totalTime = routeTime[indx];
+        });
+        callback.call(context, null, alts);
+    }, context);
+}
+
 const router = L.routing.openrouteservice("5b3ce3597851110001cf6248d29230ce91e840789e9e3b73cf909b78", {
     "timeout": 30 * 1000,
     "format": "json",
@@ -584,6 +602,9 @@ function removeRoute() {
     $("main img#mobileRouteInfo").remove();
     $("main div#route_info").remove();
     $("main .navigation > .main-panel").removeClass("hasRoute");
+    
+    hasGivenUserExperience = false;
+    window.clearInterval(checkRouteFinishedRepeater);
 }
 
 function onErrorHandler(event) {
@@ -652,9 +673,12 @@ function onRouteFound(event) {
 
         showDialog(dialogContent);
     });
+    
+    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished(end), 1000);
 }
 
 function onRoutingStarted(event, start, end) {
+    console.log(event);
     markerGroups.forEach(function (group) {
         window.leafletMap.removeLayer(group.layer);
     });
@@ -681,7 +705,46 @@ function onRoutingStarted(event, start, end) {
     $("main .navigation > .main-panel #route-info-end").text(end.text)
 }
 
+var checkRouteFinishedRepeater;
+const distanceThreshold = 25;
+var hasGivenUserExperience = false;
+function checkRouteFinished(endPoint)
+{
+    if(!hasGivenUserExperience)
+    {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            var userLatitude = pos.coords.latitude;
+            var userLongitude = pos.coords.longitude;
+            var endPointLatitude = endPoint.latitude;
+            var endPointLongitude = endPoint.longitude;
+        
+            //Code from https://www.movable-type.co.uk/scripts/latlong.html
+            const R = 6371e3; // metres
+            const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
 
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            const distanceFromEndPoint = R * c; // in metres
+        
+            if(distanceFromEndPoint <= distanceThreshold)
+            {
+                var savedEmission = calculateEmissions(event.routes[0].summary.totalDistance);
+                var experience = Math.floor(savedEmission/10);
+                window.onFinishedRoute(experience).then(function() {
+                    window.updateUserData();
+                });
+            
+                hasGivenUserExperience = true;
+            }
+        });   
+    }
+}
 
 /** Helper functions **/
 function showDialog(dialogContent) {
@@ -762,9 +825,81 @@ function findId(id, array) {
     })
 }
 
+function setUserTitle(level)
+{
+    fetch("./json/user_titles.json")
+        .then(response => response.json())
+        .then(data => {
+
+            var title = "";
+            if(level >= 0 && level < 100)
+            {
+                var index;
+                for(var i = 0; data.length; i++)
+                {
+                    var obj = data[i];
+
+                    if(level >= obj.levelRange.lowerBound && level <= obj.levelRange.upperBound)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                title = data[index].title;
+            }
+            else if(level >= 100)
+            {
+                title = data[data.length - 1].title;
+            }
+            else 
+            {
+                title = "Failed to load";     
+            }
+
+            $(".title").text(title); 
+    });
+}
+
+function updateUserData()
+{
+    window.getUserLevel().then(function(userLevel) {
+        setUserTitle(userLevel);  
+        
+        window.getUserExperience().then(function(userExperience) {
+            var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
+            var currentExperience = userExperience;
+            
+            $(".text").text(currentExperience + "/" + requiredExperienceToNextLevel + "xp");
+            $(".user-level").text("Lv. " + userLevel);
+            updateProgressBarWidth();
+        });
+    });
+}
+
+function updateProgressBarWidth()
+{
+    window.getUserLevel().then(function(userLevel) {
+        window.getUserExperience().then(function(userExperience) {
+            var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
+            var currentExperience = userExperience;
+            
+            var progressBarWidth = $(".user-progress").width();
+            $(".user-exp").width((currentExperience/requiredExperienceToNextLevel) * progressBarWidth);
+        }); 
+    });
+}
+
+$(document).ready(function() {
+    updateUserData();
+});
+
+$(window).resize(function() {
+    updateProgressBarWidth();
+});
+
 function toggleDropDowns(div, button){
     $("img#" + button).toggleClass("change");
     $("div#" + div).toggleClass("hidden");
 }
-
 /** Helper functions **/
