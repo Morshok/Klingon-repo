@@ -1,0 +1,19 @@
+What do I want to learn or understand better?
+I want a better understanding of web development.
+
+How can I help someone else, or the entire team, to learn something new?
+I can be of service by providing help in the help channel in discord.
+
+What is my contribution towards the team’s use of Scrum?
+I am a part of the meetings and contribute with input and opinions.
+
+What is my contribution towards the team’s deliveries?
+This sprint's task was a bit difficult but eventually got solved. 
+The task was to only display one set of markers depending on the city. 
+For example if Gothenburg was chosen in the filter section and the checkbox 
+cykel ställ was checked then only the cykel ställ markers for Gothenburg was supposed to show.
+Whereas before it used to also show cykel ställ markers for the other cities. After spending some time on it and couldn't solve it on my own, 
+I asked for help in the channel where the team members were helpful, especially Mishael. 
+This made me finish the task in time with some additional time to implement other 
+features such as disabling the checkboxes in the filter section if cykel parkingar or pump stationer weren't available for the specific city 
+and also changing the color of the font to gray to show that it was disabled.
