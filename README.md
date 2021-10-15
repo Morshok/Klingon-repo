@@ -14,10 +14,7 @@ Social Contract: https://github.com/Morshok/Klingon-repo/blob/master/Organizatio
 ## Software used:
    Github, used both as a repository, and using the projects tab as a scrum board <br>
    IntelliJ <br>
-   Eclipse <br>
    Brackets
-   
-   *Lägg till andra program ni har använt er av i listan här //Anthon*
    
 ## Instruction for getting to individual reflections:
    To get to our individual reflections, navigate to <br>
