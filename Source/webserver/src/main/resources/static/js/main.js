@@ -525,10 +525,10 @@ function startRoute(gpsLocation, startValue, endValue) {
     addRoute(startPoint, endPoint, $mode);
 }
 
-const router = L.routing.openrouteservice("", {
+const router = L.routing.openrouteservice("5b3ce3597851110001cf6248d29230ce91e840789e9e3b73cf909b78", {
     "timeout": 30 * 1000,
     "format": "json",
-    "host": "./api/routing",
+    "host": "https://api.openrouteservice.org",
     "service": "directions",
     "api_version": "v2",
     "profile": "cycling-regular",
