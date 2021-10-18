@@ -204,22 +204,22 @@ main #level-panel > .upper {
     justify-content: center;
 }
 
-main #level-panel > .upper > .image {
+main #level-panel > .upper > .image, header nav ul li #menu-level-panel > .upper > .image {
     flex: 0 0 50px;
     position: relative;
     text-align: center;
     font-size: large;
-    font-size: 0.90em;
     color: #264bab;
 }
 
-main #level-panel > .upper > .image > p{
+main #level-panel > .upper > .image > p {
     position: absolute;
     top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
     white-space: nowrap;
     overflow: hidden;
+    font-size: 0.90em;
 }
 
 main #level-panel > .upper > .image > img {
@@ -228,7 +228,7 @@ main #level-panel > .upper > .image > img {
     border-radius: 50%;
 }
 
-main #level-panel > .upper > .rows {
+main #level-panel > .upper > .rows, header nav ul li #menu-level-panel > .upper > .rows {
     flex: 1 1 100%;
     padding: 5px;
     font-size: large;
@@ -266,7 +266,7 @@ main #level-panel > .upper > .rows > .user-progress {
     flex: 1 1 auto;
 }
 
-main #level-panel > .upper > .rows > .user-progress > .user-exp {
+main #level-panel > .upper > .rows > .user-progress > .user-exp, header nav ul li #menu-level-panel > .upper > .rows > .user-progress > .user-exp {
     height: 100%;
     max-width: 100%;
     width: 0;
@@ -278,13 +278,73 @@ main #level-panel > .upper > .rows > .user-progress > .user-exp {
     flex: 1 1 auto;
 }
 
-main #level-panel > .upper > .rows > .user-progress > .text {
+main #level-panel > .upper > .rows > .user-progress > .text, header nav ul li #menu-level-panel > .upper > .rows > .user-progress > .text {
     position: absolute;
     margin: 0 auto;
     text-align: center;
     width: 100%;
     font-size: 0.95em;
     color: rgb(38 75 171);
+}
+
+header nav ul li #menu-level-panel {
+    position: relative;
+    color: #000;
+}
+
+header nav ul li #menu-level-panel > .upper {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    background-color: lightgray;
+    justify-content: center;
+}
+
+header nav ul li #menu-level-panel > .upper > .image > p {
+    position: absolute;
+    top: 27.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 0.85em;
+}
+
+header nav ul li #menu-level-panel > .upper > .image > img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+header nav ul li #menu-level-panel > .upper > .rows > .title {
+    border: 3px solid #264bab;
+    background: #fff;
+    border-radius: 5px;
+    padding: 3px;
+    margin-right: 9px;
+    white-space: pre;
+    min-width: 75px;
+    width: 93.75%;
+    font-size: 0.95em;
+    text-align: center;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+}
+
+header nav ul li #menu-level-panel > .upper > .rows > .user-progress {
+    min-width: 75px;
+    height: 18px;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 3px;
+    margin-right: 9px;
+    border: 3px solid #264bab;
+    background: #f6fbff;
+    position: relative;
+    text-align: center;
+    width: 93.75%;
+    flex: 1 1 auto;
 }
 
 main div#filters {

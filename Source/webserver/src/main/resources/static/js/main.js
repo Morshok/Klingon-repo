@@ -885,7 +885,7 @@ function updateProgressBarWidth()
             var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
             var currentExperience = userExperience;
             
-            var progressBarWidth = document.querySelector('.user-progress').clientWidth; //$(".user-progress").clientWidth;
+            var progressBarWidth = document.querySelector('.user-progress').clientWidth;
             $(".user-exp").width((currentExperience/requiredExperienceToNextLevel) * progressBarWidth);
         }); 
     });
@@ -908,11 +908,15 @@ function updateUserDataDisplayMode(mediaQuery)
 {
     if(mediaQuery.matches)
     {
-        console.log("Hide regular level panel, show menu level panel");
+        //Hide regular level panel, show menu level panel
+        document.getElementById('level-panel').style.display = 'none';
+        document.getElementById('menu-level-panel').style.display = 'initial';
     }
     else 
     {
-        console.log("Show regular level panel, hide menu level panel");
+        //Show regular level panel, hide menu level panel
+        document.getElementById('level-panel').style.display = 'initial';
+        document.getElementById('menu-level-panel').style.display = 'none';
     }
 }
 
