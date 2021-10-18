@@ -155,8 +155,9 @@ main div#route_info div.content ul li {
     justify-content: space-between;
 }
 
-main div#route_info div.content ul li > span {
+main div#route_info div.content ul li > div {
     flex: 1 1 auto;
+    display: flex;
 }
 
 main div#route_info div.content ul li i {
@@ -181,13 +182,20 @@ main div#route_info div.content ul li i.info_icon {
 }
 
 main div#route_info {
-    width: 200px;
+    width: 130px;
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
     box-sizing: border-box;
     display: none;
+    float: right;
+}
+
+main div#route_info::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 main #level-panel {
