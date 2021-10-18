@@ -764,11 +764,11 @@ main img#walkingIcon{
         display: none;
     }
 
-    main div#filters.hidden, main div#route_info.hidden, div#weather-data.hidden, main img#mobileRouteInfo.hidden {
+    main div#filters.hidden,  div#weather-data.hidden, main img#mobileRouteInfo.hidden {
         display: none;
     }
 
-    main div#filters.hidden, main div#route_info.hidden, div#weather-data.hidden, main img#mobileRouteInfo.hidden{
+    main div#filters.hidden, div#weather-data.hidden, main img#mobileRouteInfo.hidden{
         display: block;
     }
 

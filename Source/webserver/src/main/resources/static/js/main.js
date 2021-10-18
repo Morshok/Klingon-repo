@@ -483,10 +483,10 @@ function updateSearchResults() {
     $navigationSelects.trigger("change.select2");
 }
 
+
 $("#start_route").click(function () {
     let startValue = $("#navigationStartpoint").val();
     let endValue = $("#navigationEndpoint").val();
-
     removeRoute();
     if (startValue === "null" || endValue === "null") {
         getGeoLocation(startRoute, function (error) {
@@ -541,8 +541,7 @@ function startRoute(gpsLocation, startValue, endValue) {
             longitude: find.longitude
         }
     }
-
-    let $mode = $("main .radio-wrapper input[name='transportationMode']:checked").val();
+    let $mode = $("main .radio-wrapper input[name='transportationMode']:checked").val();4
     addRoute(startPoint, endPoint, $mode);
 }
 
@@ -652,7 +651,7 @@ function onRouteFound(event) {
 
     let routeButton = `
         <img src="./images/routeInfoButton.png" id="mobileRouteInfo"alt="route info"
-            onclick="toggleDropDowns('route_info', 'mobileRouteInfo')">
+            onclick="toggleStyle('route_info', 'mobileRouteInfo')">
         `;
 
     $("div#mobile-buttons").append(routeButton);
@@ -902,5 +901,15 @@ $(window).resize(function() {
 function toggleDropDowns(div, button){
     $("img#" + button).toggleClass("change");
     $("div#" + div).toggleClass("hidden");
+}
+
+function toggleStyle(div, button){
+    $("img#" + button).toggleClass("change");
+    var x = document.getElementById(div);
+    if (x.style.display === "none") {
+       x.style.display = "block";
+     } else {
+       x.style.display = "none";
+     }
 }
 /** Helper functions **/
