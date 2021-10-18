@@ -736,7 +736,7 @@ function checkRouteFinished(endPoint)
             if(distanceFromEndPoint <= distanceThreshold)
             {
                 var savedEmission = calculateEmissions(event.routes[0].summary.totalDistance);
-                var experience = Math.floor(savedEmission/10);
+                var experience = Math.round(savedEmission/10);
                 window.onFinishedRoute(experience).then(function() {
                     window.updateUserData();
                 });
@@ -871,7 +871,7 @@ function updateUserData()
             var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
             var currentExperience = userExperience;
             
-            $(".text").text(currentExperience + "/" + requiredExperienceToNextLevel + "xp");
+            $(".text").text("Exp: " + currentExperience + "/" + requiredExperienceToNextLevel);
             $(".user-level").text("Lv. " + userLevel);
             updateProgressBarWidth();
         });
@@ -885,7 +885,7 @@ function updateProgressBarWidth()
             var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
             var currentExperience = userExperience;
             
-            var progressBarWidth = $(".user-progress").width();
+            var progressBarWidth = document.querySelector('.user-progress').clientWidth; //$(".user-progress").clientWidth;
             $(".user-exp").width((currentExperience/requiredExperienceToNextLevel) * progressBarWidth);
         }); 
     });
@@ -903,4 +903,20 @@ function toggleDropDowns(div, button){
     $("img#" + button).toggleClass("change");
     $("div#" + div).toggleClass("hidden");
 }
+
+function updateUserDataDisplayMode(mediaQuery)
+{
+    if(mediaQuery.matches)
+    {
+        console.log("Hide regular level panel, show menu level panel");
+    }
+    else 
+    {
+        console.log("Show regular level panel, hide menu level panel");
+    }
+}
+
+var mediaQuery = window.matchMedia("(max-width: 600px)");
+updateUserDataDisplayMode(mediaQuery);
+mediaQuery.addListener(updateUserDataDisplayMode);
 /** Helper functions **/

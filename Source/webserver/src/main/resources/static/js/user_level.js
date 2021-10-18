@@ -4,7 +4,7 @@ function insertUser()
         var userData = value;
         var userAlreadyExists = false;
             
-        if(userData != null) { userAlreadyExists = true; alert("User Already Exists!"); }
+        if(userData != null) { userAlreadyExists = true; }
             
         if(!userAlreadyExists)
         {
@@ -13,12 +13,14 @@ function insertUser()
                 console.log(result);
             }).catch(err => console.log(err));
         }
+        
+        printUser();
     }).catch(err => console.log(err));
 }
 
 function printUser()
 {
-    window.localforage.getItem('users').then(function(result) {
+    window.localforage.getItem('user').then(function(result) {
         console.log(result);
     }).catch(err => console.log(err));
 }
