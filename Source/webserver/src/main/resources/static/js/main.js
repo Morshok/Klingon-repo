@@ -658,8 +658,6 @@ function onRouteFound(event) {
     $("div#mobile-buttons").append(routeButton);
 
     $("main div#route_info").show();
-    
-    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished(end), 1000);
 }
 
 function onRoutingStarted(event, start, end) {
@@ -685,9 +683,12 @@ function onRoutingStarted(event, start, end) {
             }
         );
     }
+    
     $("main .navigation > .main-panel").addClass("hasRoute");
-    $("main .navigation > .main-panel #route-info-start").text(start.text)
-    $("main .navigation > .main-panel #route-info-end").text(end.text)
+    $("main .navigation > .main-panel #route-info-start").text(start.text);
+    $("main .navigation > .main-panel #route-info-end").text(end.text);
+
+    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished(end), 1000);
 }
 
 $("button#route_info_toggle").on("click", function () {
