@@ -204,11 +204,8 @@ function loadMarker() {
         }
 
     }
+        loadWeatherData();
 }
-
-window.leafletMap.on('dragend', function() {
-     console.log(window.leafletMap.getCenter());
-});
 
 /** A function that disables,removes and unchecks
  * the markers depending on the city.
@@ -271,12 +268,15 @@ let weatherObject = [];
 
 function loadWeatherData(early) {
     clearTimeout(weatherApiRepeater);
+    $("#location-dropdown").empty();
     $.ajax("/api/weatherData",
         {
             contentType: "application/json",
             dataType: "json",
+            data:{zone: $("#cities-dropdown").val()},
             success: function (data) {
                 weatherObject = data;
+                $("#weather-data").addClass("loading");
                 if ($("#weather-data").hasClass("loading")) {
                     let selectElement = $("select#location-dropdown");
                     weatherObject.forEach(function (item) {
@@ -302,24 +302,24 @@ function loadWeatherData(early) {
 }
 
 $("select#location-dropdown").change(function () {
-    let index = $("select#location-dropdown").val();
-    console.log(weatherObject);
-    if (index && weatherObject.length > index && weatherObject[index]) {
-        let data = weatherObject[index];
-        $("#weather-data > .content").html(`
-            <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
-            <p>Plats: ${data.location}</p>
-            <p>Beskrivning: ${data.weatherDescription}</p>
-            <p>Temperatur: ${data.temperature}&deg;C</p>
-            <p>Vindhastighet: ${data.windSpeed}m/s&sup2;</p>
-            <p>Vindriktning: ${data.windDegree}&deg;</p>
-            <p>Moln: ${data.cloudPercentage}%</p>
-        `);
-    }
-});
+    let city = $("#location-dropdown option:selected").text();
+    weatherObject.forEach(function (data){
+        if(city === data.location){
+            $("#weather-data > .content").html(`
+                <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
+                <p>Plats: ${data.location}</p>
+                <p>Beskrivning: ${data.weatherDescription}</p>
+                <p>Temperatur: ${data.temperature}&deg;C</p>
+                <p>Vindhastighet: ${data.windSpeed}m/s&sup2;</p>
+                <p>Vindriktning: ${data.windDegree}&deg;</p>
+                <p>Moln: ${data.cloudPercentage}%</p>
+            `);
+        }
+    })
 
+});
 $(document).ready(function () {
-    loadWeatherData();
+
     loadMarker();
     let changed = false;
     $(window).on("resize", function (evt) {

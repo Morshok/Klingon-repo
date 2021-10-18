@@ -101,8 +101,8 @@ public class APIDataHandler {
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */
     @GetMapping(path = "/weatherData", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> jsonWeatherData() {
-        Iterable<WeatherData> weatherDataIterable = WebserverApplication.getWeatherDataRepository().findAll();
+    public ResponseEntity<Object> jsonWeatherData(@RequestParam ()String zone) {
+        Iterable<WeatherData> weatherDataIterable = WebserverApplication.getWeatherDataRepository().findByZone(zone);
         JSONArray jsonArray = new JSONArray();
 
         for (WeatherData weatherData : weatherDataIterable) {
@@ -620,6 +620,12 @@ public class APIDataHandler {
                     String location = locations[i];
                     String iconId = jsonArray.getJSONObject(0).getJSONArray("weather").getJSONObject(0).getString("icon");
                     String iconUrl = String.format("https://openweathermap.org/img/wn/%s@2x.png", iconId);
+                    String zone = "";
+                    if(locations[i].equals("Angered") || locations[i].equals("Mölndal") || locations[i].equals("Torslanda")){
+                        zone = "Göteborg";
+                    }else{
+                        zone = locations[i];
+                    }
 
                     String weatherDescription = jsonArray.getJSONObject(0).getJSONArray("weather").getJSONObject(0).getString("description");
                     double temperature = jsonArray.getJSONObject(0).getJSONObject("main").getDouble("temp");
@@ -627,7 +633,7 @@ public class APIDataHandler {
                     double windDegree = jsonArray.getJSONObject(0).getJSONObject("wind").getDouble("deg");
                     double cloudsPercentage = jsonArray.getJSONObject(0).getJSONObject("clouds").getDouble("all");
 
-                    WeatherData weatherData = new WeatherData((long) i, location, iconUrl, weatherDescription, temperature, windSpeed, windDegree, cloudsPercentage);
+                    WeatherData weatherData = new WeatherData((long) i, location, iconUrl, weatherDescription,zone, temperature, windSpeed, windDegree, cloudsPercentage);
 
                     weatherDataList.add(weatherData);
 

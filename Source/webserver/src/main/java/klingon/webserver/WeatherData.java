@@ -23,6 +23,7 @@ public class WeatherData
     private String location;
     private String weatherDescription;
     private String iconUrl;
+    private String zone;
     private double temperature;
     private double windSpeed;
     private double windDegree;
@@ -45,7 +46,7 @@ public class WeatherData
      * @param cloudsPercentage      the percentage of the sky covered by clouds
      */
     public WeatherData(
-            Long id, String location, String iconUrl, String weatherDescription, double temperature,
+            Long id, String location, String iconUrl, String weatherDescription,String zone, double temperature,
             double windSpeed, double windDegree, double cloudsPercentage
     )
     {
@@ -53,6 +54,7 @@ public class WeatherData
         this.id = id;
         this.location = location;
         this.iconUrl = iconUrl;
+        this.zone = zone;
         this.weatherDescription = weatherDescription;
         this.temperature = temperature;
         this.windSpeed = windSpeed;
