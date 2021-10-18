@@ -892,7 +892,7 @@ function updateProgressBarWidth()
 }
 
 $(document).ready(function() {
-    updateUserData();
+    window.insertUser().then(() => updateUserData());
 });
 
 $(window).resize(function() {
