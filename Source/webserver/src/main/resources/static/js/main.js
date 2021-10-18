@@ -196,9 +196,19 @@ function loadMarker() {
         updateSearchResults()
     }
     if(window.leafletMap.getZoom() < 14){
-        window.leafletMap.removeLayer(bicycleStandGroup);
+        if(document.getElementById("parking").checked)
+        {
+            window.leafletMap.setView(window.leafletMap.getCenter(), 14);
+        }else{
+            window.leafletMap.removeLayer(bicycleStandGroup);
+        }
+
     }
 }
+
+window.leafletMap.on('dragend', function() {
+     console.log(window.leafletMap.getCenter());
+});
 
 /** A function that disables,removes and unchecks
  * the markers depending on the city.
@@ -244,7 +254,7 @@ function changeCity() {
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
         checkboxHandler('Malmö');  //when a new city is choosen, the checkboxes should be unchecked
     } else if (city == 'Lund') {
-        window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
+        window.leafletMap.setView([55.708232229334506, 13.189239734535668], 13);
        checkboxHandler('Lund');
     } else if (city == 'Stockholm') {
         window.leafletMap.setView([59.3295521252874, 18.06861306062469], 13);
@@ -332,11 +342,6 @@ $("button#filter_toggle").click(function () {
     $("button#filter_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
 
-
-$("button#menu_toggle").click(function () {
-    $("nav ul").toggleClass("visible");
-    $("nav button#menu_toggle .fa").toggleClass("fa-bars fa-times");
-});
 
 /**
  *
