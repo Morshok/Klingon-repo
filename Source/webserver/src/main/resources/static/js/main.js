@@ -546,7 +546,7 @@ function startRoute(gpsLocation, startValue, endValue) {
             longitude: find.longitude
         }
     }
-    let $mode = $("main .radio-wrapper input[name='transportationMode']:checked").val();4
+    let $mode = $("main .radio-wrapper input[name='transportationMode']:checked").val();
     addRoute(startPoint, endPoint, $mode);
 }
 

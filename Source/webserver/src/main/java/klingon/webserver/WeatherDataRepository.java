@@ -3,8 +3,8 @@ package klingon.webserver;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.Collection;
+
 /**
  * The WeatherDataRepository interface is currently
  * an empty interface JPA repository, which provides
