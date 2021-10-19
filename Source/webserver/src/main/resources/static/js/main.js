@@ -26,7 +26,7 @@ const noBikeIcon = L.icon({
 });
 const endPoint = L.icon({
     iconUrl: '/images/locationRed.png',
-    iconSize: [32, 32],
+    iconSize: [25, 40],
 });
 
 $("button#weather-data-toggle").click(function () {
@@ -548,6 +548,11 @@ function startRoute(gpsLocation, startValue, endValue) {
         }
     }
 
+    if(endValue === startValue){
+        showDialog({title: "Fel", "text": "Samma startpunkt och slutpunkt"})
+        return;
+    }
+
     let $mode = $("main .radio-wrapper input[name='transportationMode']:checked").val();
     addRoute(startPoint, endPoint, $mode);
 }
@@ -604,7 +609,17 @@ function addRoute(start, end, transportationMode) {
         addWaypoints: false,
         lineOptions: {
             styles: [{color: 'black', opacity: 0.15, weight: 9}, {color: 'white', opacity: 0.8, weight: 6}, {color: 'blue', opacity: 1, weight: 2}]
-        }
+        },
+        createMarker: function(i, wp) {
+            var options = {
+                    draggable: this.draggableWaypoints,
+                    ... wp.options
+            };
+            marker = L.marker(wp.latLng, options)
+                .bindPopup(wp.name);
+
+            return marker;
+        },
     }).on('routingerror', function (e) {
         onErrorHandler(e);
     }).on('routesfound', function (e) {
