@@ -776,8 +776,13 @@ main img#walkingIcon {
 
     main img#mobileFilter, main img#mobileWeather, main img#mobileRouteInfo {
         display: block;
-        margin-top: 10px;
+        margin-top:10px;
         background-color: #fff;
+       /*
+       margin-top: 381px;
+       margin-bottom: -376px;
+       margin-left: 321px;
+       */
         width: 33px;
         height: 33px;
         border-radius: 50%;
@@ -785,7 +790,7 @@ main img#walkingIcon {
         transition: .5s ease;
         backface-visibility: hidden;
         z-index: 1000;
-        padding: 0;
+        padding: 1.1px;
 
     }
 
@@ -799,7 +804,7 @@ main img#walkingIcon {
         margin: 0.1em;
         cursor: pointer;
         padding: 0em;
-        font-size: 15px;
+        font-size: 14px;
     }
 
     input[type=checkbox] {
