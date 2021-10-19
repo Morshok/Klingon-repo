@@ -903,24 +903,3 @@ function toggleDropDowns(div, button){
     $("img#" + button).toggleClass("change");
     $("div#" + div).toggleClass("hidden");
 }
-
-function updateUserDataDisplayMode(mediaQuery)
-{
-    if(mediaQuery.matches)
-    {
-        //Hide regular level panel, show menu level panel
-        document.getElementById('level-panel').style.display = 'none';
-        document.getElementById('menu-level-panel').style.display = 'initial';
-    }
-    else 
-    {
-        //Show regular level panel, hide menu level panel
-        document.getElementById('level-panel').style.display = 'initial';
-        document.getElementById('menu-level-panel').style.display = 'none';
-    }
-}
-
-var mediaQuery = window.matchMedia("(max-width: 600px)");
-updateUserDataDisplayMode(mediaQuery);
-mediaQuery.addListener(updateUserDataDisplayMode);
-/** Helper functions **/
