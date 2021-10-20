@@ -204,8 +204,15 @@ function loadMarker() {
         updateSearchResults()
     }
     if(window.leafletMap.getZoom() < 14){
-        window.leafletMap.removeLayer(bicycleStandGroup);
+        if(document.getElementById("parking").checked)
+        {
+            window.leafletMap.setView(window.leafletMap.getCenter(), 14);
+        }else{
+            window.leafletMap.removeLayer(bicycleStandGroup);
+        }
+
     }
+        loadWeatherData();
 }
 
 /** A function that disables,removes and unchecks
@@ -252,7 +259,7 @@ function changeCity() {
         window.leafletMap.setView([55.59349148990642, 13.006630817073233], 13);
         checkboxHandler('Malmö');  //when a new city is choosen, the checkboxes should be unchecked
     } else if (city == 'Lund') {
-        window.leafletMap.setView([55.708232229334506, 13.189239734535668], 14);
+        window.leafletMap.setView([55.708232229334506, 13.189239734535668], 13);
        checkboxHandler('Lund');
     } else if (city == 'Stockholm') {
         window.leafletMap.setView([59.3295521252874, 18.06861306062469], 13);
@@ -269,12 +276,15 @@ let weatherObject = [];
 
 function loadWeatherData(early) {
     clearTimeout(weatherApiRepeater);
+    $("#location-dropdown").empty();
     $.ajax("/api/weatherData",
         {
             contentType: "application/json",
             dataType: "json",
+            data:{zone: $("#cities-dropdown").val()},
             success: function (data) {
                 weatherObject = data;
+                $("#weather-data").addClass("loading");
                 if ($("#weather-data").hasClass("loading")) {
                     let selectElement = $("select#location-dropdown");
                     weatherObject.forEach(function (item) {
@@ -300,24 +310,24 @@ function loadWeatherData(early) {
 }
 
 $("select#location-dropdown").change(function () {
-    let index = $("select#location-dropdown").val();
-    console.log(weatherObject);
-    if (index && weatherObject.length > index && weatherObject[index]) {
-        let data = weatherObject[index];
-        $("#weather-data > .content").html(`
-            <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
-            <p>Plats: ${data.location}</p>
-            <p>Beskrivning: ${data.weatherDescription}</p>
-            <p>Temperatur: ${data.temperature}&deg;C</p>
-            <p>Vindhastighet: ${data.windSpeed}m/s&sup2;</p>
-            <p>Vindriktning: ${data.windDegree}&deg;</p>
-            <p>Moln: ${data.cloudPercentage}%</p>
-        `);
-    }
-});
+    let city = $("#location-dropdown option:selected").text();
+    weatherObject.forEach(function (data){
+        if(city === data.location){
+            $("#weather-data > .content").html(`
+                <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
+                <p>Plats: ${data.location}</p>
+                <p>Beskrivning: ${data.weatherDescription}</p>
+                <p>Temperatur: ${data.temperature}&deg;C</p>
+                <p>Vindhastighet: ${data.windSpeed}m/s&sup2;</p>
+                <p>Vindriktning: ${data.windDegree}&deg;</p>
+                <p>Moln: ${data.cloudPercentage}%</p>
+            `);
+        }
+    })
 
+});
 $(document).ready(function () {
-    loadWeatherData();
+
     loadMarker();
     let changed = false;
     $(window).on("resize", function (evt) {
@@ -340,11 +350,6 @@ $("button#filter_toggle").click(function () {
     $("button#filter_toggle i.fa").toggleClass("fa-angle-down fa-angle-up");
 });
 
-
-$("button#menu_toggle").click(function () {
-    $("nav ul").toggleClass("visible");
-    $("nav button#menu_toggle .fa").toggleClass("fa-bars fa-times");
-});
 
 /**
  *
@@ -500,10 +505,10 @@ function updateSearchResults() {
     $navigationSelects.trigger("change.select2");
 }
 
+
 $("#start_route").click(function () {
     let startValue = $("#navigationStartpoint").val();
     let endValue = $("#navigationEndpoint").val();
-
     removeRoute();
     if (startValue === "null" || endValue === "null") {
         getGeoLocation(startRoute, function (error) {
@@ -562,12 +567,12 @@ function startRoute(gpsLocation, startValue, endValue) {
             longitude: find.longitude
         }
     }
-
+  
     if(endValue === startValue){
         showDialog({title: "Fel", "text": "Samma startpunkt och slutpunkt"})
         return;
     }
-
+  
     let $mode = $("main .radio-wrapper input[name='transportationMode']:checked").val();
     addRoute(startPoint, endPoint, $mode);
 }
@@ -688,7 +693,7 @@ function onRouteFound(event) {
 
     let routeButton = `
         <img src="./images/routeInfoButton.png" id="mobileRouteInfo"alt="route info"
-            onclick="toggleDropDowns('route_info', 'mobileRouteInfo')">
+            onclick="toggleStyle('route_info', 'mobileRouteInfo')">
         `;
 
     $("div#mobile-buttons").append(routeButton);
@@ -939,4 +944,17 @@ $(window).resize(function() {
 function toggleDropDowns(div, button){
     $("img#" + button).toggleClass("change");
     $("div#" + div).toggleClass("hidden");
+
+}
+
+function toggleStyle(div, button){
+    $("img#" + button).toggleClass("change");
+    var x = document.getElementById(div);
+    if (x.style.display === "none") {
+       x.style.display = "block";
+     } else {
+       x.style.display = "none";
+     }
+}
+/** Helper functions **/
 }
