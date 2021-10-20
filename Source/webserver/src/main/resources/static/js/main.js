@@ -680,11 +680,11 @@ function onErrorHandler(event) {
 }
 
 function onRouteFound(event) {
-    $("#route_distance").text(formatDistanceFromMeters(event.routes[0].summary.totalDistance));
-    $("#route_time").text(formatTimeFromSeconds(event.routes[0].summary.totalTime));
-    $("#route_ascend").text((event.routes[0].summary.totalAscend === undefined) ? "0 m" : event.routes[0].summary.totalAscend + " m");
-    $("#route_descend").text((event.routes[0].summary.totalDescend === undefined) ? "0 m" : event.routes[0].summary.totalDescend + " m");
-    $("#route_emission").text(calculateEmissions(event.routes[0].summary.totalDistance));
+    $("#route_distance").html(formatDistanceFromMeters(event.routes[0].summary.totalDistance, true));
+    $("#route_time").html(formatTimeFromSeconds(event.routes[0].summary.totalTime));
+    $("#route_ascend").html((event.routes[0].summary.totalAscend === undefined) ? "0 m" : event.routes[0].summary.totalAscend + " m");
+    $("#route_descend").html((event.routes[0].summary.totalDescend === undefined) ? "0 m" : event.routes[0].summary.totalDescend + " m");
+    $("#route_emission").html(calculateEmissions(event.routes[0].summary.totalDistance));
 
     let routeButton = `
         <img src="./images/routeInfoButton.png" id="mobileRouteInfo"alt="route info"
@@ -832,22 +832,23 @@ function formatTimeFromSeconds(totSeconds, template) {
     return template;
 }
 
-function formatDistanceFromMeters(totMeters, template) {
+function formatDistanceFromMeters(totMeters, separateRows) {
     let kilometers = Math.floor(totMeters / 1000);
     let meters = Math.floor(totMeters % 1000);
 
-    if (template === undefined) {
-        template = "";
+    template = "";
 
-        if (kilometers > 0) {
-            template += kilometers + " km ";
+    if (kilometers > 0) {
+        template += kilometers + " km ";
+
+        if(separateRows == true){
+            template += "<br>";
+        }else{
+            template += " ";
         }
-
-        template += meters + " m";
-    } else {
-        template = template.replace("%km", kilometers);
-        template = template.replace("%m", meters);
     }
+
+    template += meters + " m";
 
     return template;
 }
