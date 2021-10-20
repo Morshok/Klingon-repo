@@ -24,6 +24,13 @@ const noBikeIcon = L.icon({
     iconUrl: '/images/bicycleStationGray.png',
     iconSize: [32, 32],
 });
+const endPoint = L.icon({
+    iconUrl: '/images/red-marker.png',
+    iconSize:    [25, 41],
+    iconAnchor:  [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+});
 
 $("button#weather-data-toggle").click(function () {
     $("div#weather-data").toggleClass("closed");
@@ -154,6 +161,7 @@ function loadMarker() {
             dataType: "json",
             data: {city: $("#cities-dropdown").val() },
             complete: function (response) {
+                allMarkers[markerGroup.apiPath] = []; // reset all markers for this group
                 if (response.status === 200) {
                     let data = response.responseJSON;
                     data.forEach(function (station) {
@@ -424,10 +432,11 @@ $(".navigation-select").select2({
         let availableBikesStr = item.availableBikes ? `<p>Tillg. cyklar:&nbsp; <b>${item.availableBikes}</b></p>` : "";
         let distance = item.distance;
         let distanceStr = distance > 0 ? `<p>Avstånd:&nbsp; ${formatDistanceFromMeters(distance)}</p>` : "";
+        let title = item.company ?? item.groupTitle;
 
         return $(`
             <div class="select2-result-item">
-                <label><i>${item.groupTitle}</i> - <b>${item.address}</b></label>
+                <label><i>${title}</i> - <b>${item.address}</b></label>
                 <div class="panel">
                     ${availableBikesStr}
                     ${distanceStr}
@@ -542,6 +551,11 @@ function startRoute(gpsLocation, startValue, endValue) {
         }
     }
 
+    if(endValue === startValue){
+        showDialog({title: "Fel", "text": "Samma startpunkt och slutpunkt"})
+        return;
+    }
+
     let $mode = $("main .radio-wrapper input[name='transportationMode']:checked").val();
     addRoute(startPoint, endPoint, $mode);
 }
@@ -579,7 +593,7 @@ const router = L.routing.openrouteservice("5b3ce3597851110001cf6248d29230ce91e84
         "elevation": "true",
         "maneuvers": "true",
         "preference": "recommended",
-    }
+    },
 });
 
 window.routeControl = null;
@@ -591,14 +605,24 @@ function addRoute(start, end, transportationMode) {
         router: router,
         defaultErrorHandler: false,
         waypoints: [
-            L.latLng(start.latitude, start.longitude),
-            L.latLng(end.latitude, end.longitude)
+            new L.Routing.Waypoint([start.latitude, start.longitude], start.text),
+            new L.Routing.Waypoint([end.latitude, end.longitude], end.text, {icon: endPoint}),
         ],
         draggableWaypoints: false,
         addWaypoints: false,
         lineOptions: {
             styles: [{color: 'black', opacity: 0.15, weight: 9}, {color: 'white', opacity: 0.8, weight: 6}, {color: 'blue', opacity: 1, weight: 2}]
-        }
+        },
+        createMarker: function(i, wp) {
+            var options = {
+                    draggable: this.draggableWaypoints,
+                    ... wp.options
+            };
+            marker = L.marker(wp.latLng, options)
+                .bindPopup(wp.name);
+
+            return marker;
+        },
     }).on('routingerror', function (e) {
         onErrorHandler(e);
     }).on('routesfound', function (e) {
