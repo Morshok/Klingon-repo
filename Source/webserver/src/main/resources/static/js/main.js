@@ -423,6 +423,14 @@ $("button#navigation_button").click(function () {
     $("main .navigation > .main-panel").toggle();
 });
 
+function hideMobileClutter(){
+    $("main .navigation > .main-panel").hide();
+
+    $("div#route_info").addClass("closed");
+    $("button#route_info_toggle i.fa").removeClass("fa-angle-down");
+    $("button#route_info_toggle i.fa").addClass("fa-angle-up");
+}
+
 $(".navigation-select").select2({
     width: "calc(100% - 10px)",
     templateResult: function (result) {
@@ -503,6 +511,10 @@ $("#start_route").click(function () {
         }, startValue, endValue)
     } else {
         startRoute(null, startValue, endValue)
+    }
+
+    if(window.innerWidth < 450){
+        hideMobileClutter();
     }
 });
 
