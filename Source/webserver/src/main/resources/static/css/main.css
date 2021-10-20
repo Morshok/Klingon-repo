@@ -155,8 +155,9 @@ main div#route_info div.content ul li {
     justify-content: space-between;
 }
 
-main div#route_info div.content ul li > span {
+main div#route_info div.content ul li > div {
     flex: 1 1 auto;
+    display: flex;
 }
 
 main div#route_info div.content ul li i {
@@ -181,19 +182,26 @@ main div#route_info div.content ul li i.info_icon {
 }
 
 main div#route_info {
-    width: 200px;
+    width: 130px;
     background: white;
     border: 3px solid rgba(38, 75, 171, 1);
     font-size: 1.1em;
     padding: 0.3em;
     box-sizing: border-box;
     display: none;
+    float: right;
+}
+
+main div#route_info::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 main #level-panel {
-    padding: 5px 10px;
     max-width: 250px;
     position: relative;
+    display: initial;
     color: #000;
 }
 
@@ -201,33 +209,38 @@ main #level-panel > .upper {
     display: flex;
     width: 100%;
     align-items: center;
+    justify-content: center;
+    background-color: floralwhite;
+    border: 3px solid rgba(38, 75, 171, 1);
 }
 
-main #level-panel > .upper > .image {
-    flex: 0 0 50px;
-    position: relative;
+main #level-panel > .upper > .image, header nav ul li #menu-level-panel > .upper > .image {
+    flex: 0 0 64px;
+    position: relative;  
     text-align: center;
     font-size: large;
-    font-size: 0.90em;
     color: #264bab;
+    justify-content: center;
 }
 
-main #level-panel > .upper > .image > p{
+main #level-panel > .upper > .image > p {
     position: absolute;
-    top: 25%;
+    top: 28.5%;
     left: 50%;
     transform: translate(-50%, -50%);
     white-space: nowrap;
     overflow: hidden;
+    font-size: 0.90em;
 }
 
 main #level-panel > .upper > .image > img {
     width: 64px;
     height: 64px;
     border-radius: 50%;
+    padding-top: 4px;
 }
 
-main #level-panel > .upper > .rows {
+main #level-panel > .upper > .rows, header nav ul li #menu-level-panel > .upper > .rows {
     flex: 1 1 100%;
     padding: 5px;
     font-size: large;
@@ -244,11 +257,11 @@ main #level-panel > .upper > .rows > .title {
     padding: 3px;
     white-space: pre;
     min-width: 125px;
-    width: 100%;
-    font-size: 0.90em;
+    width: 91.75%;
+    font-size: 0.95em;
     text-align: center;
     overflow-x: hidden;
-    flex-shrink: 2;
+    flex: 1 1 auto;
 }
 
 main #level-panel > .upper > .rows > .user-progress {
@@ -256,30 +269,95 @@ main #level-panel > .upper > .rows > .user-progress {
     height: 18px;
     border-radius: 5px;
     margin-top: 5px;
+    padding: 3px;
     border: 3px solid #264bab;
     background: #f6fbff;
     position: relative;
     text-align: center;
-    width: 100%;
-    flex-shrink: 2;
+    width: 91.75%;
+    flex: 1 1 auto;
 }
 
-main #level-panel > .upper > .rows > .user-progress > .user-exp {
+main #level-panel > .upper > .rows > .user-progress > .user-exp, header nav ul li #menu-level-panel > .upper > .rows > .user-progress > .user-exp {
     height: 100%;
     max-width: 100%;
     width: 0;
     background: #81fc5d;
     position: absolute;
+    left: 0%;
+    top: 0%;
     z-index: 0;
-    flex-shrink: 2;
+    flex: 1 1 auto;
 }
 
-main #level-panel > .upper > .rows > .user-progress > .text {
+main #level-panel > .upper > .rows > .user-progress > .text, header nav ul li #menu-level-panel > .upper > .rows > .user-progress > .text {
     position: absolute;
     margin: 0 auto;
+    text-align: center;
     width: 100%;
     font-size: 0.95em;
     color: rgb(38 75 171);
+}
+
+header nav ul li #menu-level-panel {
+    position: relative;
+    color: #000;
+    display: none;
+}
+
+header nav ul li #menu-level-panel > .upper {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #264bab;
+}
+
+header nav ul li #menu-level-panel > .upper > .image > p {
+    position: absolute;
+    top: 27.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 0.85em;
+}
+
+header nav ul li #menu-level-panel > .upper > .image > img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+header nav ul li #menu-level-panel > .upper > .rows > .title {
+    border: 3px solid #264bab;
+    background: #fff;
+    border-radius: 5px;
+    padding: 3px;
+    margin-right: 9px;
+    white-space: pre;
+    min-width: 75px;
+    width: 93.75%;
+    font-size: 0.95em;
+    text-align: center;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+}
+
+header nav ul li #menu-level-panel > .upper > .rows > .user-progress {
+    min-width: 75px;
+    height: 18px;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 3px;
+    margin-right: 9px;
+    border: 3px solid #264bab;
+    background: #f6fbff;
+    position: relative;
+    text-align: center;
+    width: 93.75%;
+    flex: 1 1 auto;
 }
 
 main div#filters {
@@ -346,33 +424,35 @@ input[type=checkbox]:checked + label:before {
     border: 3px solid rgba(38, 75, 171, 1);
     color: white;
 }
-input[type=checkbox]:disabled + label:before{
-    border-color: gray;
+
+input[type=checkbox]:disabled + label:before {
+    border-color: #9d9d9d;
 }
 
-input[type=checkbox]:disabled + label[for=pumps]{
-    color: gray;
+input[type=checkbox]:disabled + label[for=pumps] {
+    color: #9d9d9d;
 
 }
-input[type=checkbox]:disabled + label[for=pumps]:after{
-    color: gray;
+
+input[type=checkbox]:disabled + label[for=pumps]:after {
+    color: #9d9d9d;
     white-space: nowrap;
     content: "(ej tillgänglig)";
     font-size: 13px;
 }
 
-input[type=checkbox]:disabled + label[for=parking]{
-    color: gray;
+input[type=checkbox]:disabled + label[for=parking] {
+    color: #9d9d9d;
 
 
 }
-input[type=checkbox]:disabled + label[for=parking]:after{
-    color: gray;
+
+input[type=checkbox]:disabled + label[for=parking]:after {
+    color: #9d9d9d;
     white-space: nowrap;
     content: " (ej tillgänglig)";
     font-size: 13px;
 }
-
 
 
 main div#filters.closed div.head, main div#route_info.closed div.head {
@@ -423,6 +503,7 @@ main div#weather-data.loading div.head > #weather-data-toggle {
 main div#weather-data.loading div.content {
     display: none;
 }
+
 /** Weather panel loading **/
 
 main div#weather-data div.content {
@@ -479,7 +560,7 @@ main div#weather-data div.head button#weather-data-toggle {
     position: absolute;
     background-color: #f1f1f1;
     min-width: 100px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     font-size: 0;
     z-index: 1000;
 }
@@ -595,7 +676,7 @@ main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper {
 }
 
 main div.navigation > .main-panel > .route-setup > .input > .radio-wrapper > div {
-   flex: 1 1 100%;
+    flex: 1 1 100%;
 }
 
 main div.navigation > .main-panel > .route-setup > .input {
@@ -688,11 +769,10 @@ div.dialog div.controls button.dialog_close_button {
     cursor: pointer;
 }
 
-main img#walkingIcon{
+main img#walkingIcon {
     position: relative;
     top: 5px;
 }
-
 
 
 @media (max-width: 600px) {
@@ -712,7 +792,7 @@ main img#walkingIcon{
         flex-direction: column;
         height: 100vh;
         min-width: 60%;
-        z-index: 1001;
+        z-index: 99999;
         padding: 0;
         transform: translateX(-100%);
         transition: transform 0.2s ease;
@@ -723,10 +803,14 @@ main img#walkingIcon{
         transform: translateX(0);
     }
 
-    header nav ul li {
-
+    header nav ul li #menu-level-panel {
+        display: initial;
     }
-
+    
+    main #level-panel {
+        display: none;
+    }
+    
     header nav ul li a {
         color: black;
     }
@@ -758,9 +842,8 @@ main img#walkingIcon{
     }
 }
 
-@media(max-width: 450px){
-
-    main div#filters, main div#route_info, main div#weather-data{
+@media (max-width: 450px) {
+    main div#filters, main div#route_info, main div#weather-data {
         display: none;
     }
 
@@ -775,20 +858,79 @@ main img#walkingIcon{
     main img#mobileFilter, main img#mobileWeather, main img#mobileRouteInfo {
         display: block;
         margin-top: 10px;
-        background-color: #03b721;
-        width: 45px;
-        height: 45px;
-        border-radius: 100%;
+        background-color: #fff;
+        width: 33px;
+        height: 33px;
+        border-radius: 50%;
+        box-shadow: 0 2px 2px rgba(0, 0, 0, 0.20), 0 2px 2px rgba(0, 0, 0, 0.20);
         transition: .5s ease;
         backface-visibility: hidden;
+        z-index: 1000;
+        padding: 1.1px;
+
     }
 
-    main img#mobileWeather.change, main img#mobileFilter.change, main img#mobileRouteInfo.change{
-        background-color: #e71b1b;
+    main img#mobileFilter, main img#mobileWeather, main img#mobileRouteInfo:not([disabled]):hover {
+        transform: scale(0.95);
+        transition: all 0.5s;
+    }
+
+    input[type=checkbox] + label {
+        display: inline-block;
+        margin: 0.1em;
+        cursor: pointer;
+        padding: 0em;
+        font-size: 14px;
+    }
+
+    input[type=checkbox] {
+        display: none;
+    }
+
+    input[type=checkbox] + label:before {
+        content: "\2713";
+        border: 3px solid rgba(38, 75, 171, 1);
+        border-radius: 0.1em;
+        display: block;
+        width: 1em;
+        height: 1em;
+        padding-left: 0.2em;
+        padding-bottom: 0.2em;
+        margin-left: auto;
+        margin-right: auto;
+        vertical-align: bottom;
+        color: transparent;
+        transition: 0.2s;
+    }
+
+    input[type=checkbox]:checked + label:before {
+        background: rgba(38, 75, 171, 1);
+        border: 3px solid rgba(38, 75, 171, 1);
+        color: white;
+    }
+
+    input[type=checkbox]:disabled + label:before {
+        border-color: #9d9d9d;
+    }
+
+    input[type=checkbox]:disabled + label[for=pumps] {
+        color: #9d9d9d;
+    }
+
+    input[type=checkbox]:disabled + label[for=pumps]:after {
+        display: none;
+    }
+
+    input[type=checkbox]:disabled + label[for=parking] {
+        color: #9d9d9d;
+    }
+
+    input[type=checkbox]:disabled + label[for=parking]:after {
+        display: none;
     }
 }
 
-@media(max-width: 350px){
+@media (max-width: 350px) {
     main div.navigation > .main-panel {
         width: 250px;
     }

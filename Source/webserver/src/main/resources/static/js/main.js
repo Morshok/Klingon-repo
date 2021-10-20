@@ -24,6 +24,13 @@ const noBikeIcon = L.icon({
     iconUrl: '/images/bicycleStationGray.png',
     iconSize: [32, 32],
 });
+const endPoint = L.icon({
+    iconUrl: '/images/red-marker.png',
+    iconSize:    [25, 41],
+    iconAnchor:  [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+});
 
 $("button#weather-data-toggle").click(function () {
     $("div#weather-data").toggleClass("closed");
@@ -154,6 +161,7 @@ function loadMarker() {
             dataType: "json",
             data: {city: $("#cities-dropdown").val() },
             complete: function (response) {
+                allMarkers[markerGroup.apiPath] = []; // reset all markers for this group
                 if (response.status === 200) {
                     let data = response.responseJSON;
                     data.forEach(function (station) {
@@ -420,6 +428,14 @@ $("button#navigation_button").click(function () {
     $("main .navigation > .main-panel").toggle();
 });
 
+function hideMobileClutter(){
+    $("main .navigation > .main-panel").hide();
+
+    $("div#route_info").addClass("closed");
+    $("button#route_info_toggle i.fa").removeClass("fa-angle-down");
+    $("button#route_info_toggle i.fa").addClass("fa-angle-up");
+}
+
 $(".navigation-select").select2({
     width: "calc(100% - 10px)",
     templateResult: function (result) {
@@ -429,10 +445,11 @@ $(".navigation-select").select2({
         let availableBikesStr = item.availableBikes ? `<p>Tillg. cyklar:&nbsp; <b>${item.availableBikes}</b></p>` : "";
         let distance = item.distance;
         let distanceStr = distance > 0 ? `<p>Avstånd:&nbsp; ${formatDistanceFromMeters(distance)}</p>` : "";
+        let title = item.company ?? item.groupTitle;
 
         return $(`
             <div class="select2-result-item">
-                <label><i>${item.groupTitle}</i> - <b>${item.address}</b></label>
+                <label><i>${title}</i> - <b>${item.address}</b></label>
                 <div class="panel">
                     ${availableBikesStr}
                     ${distanceStr}
@@ -500,6 +517,10 @@ $("#start_route").click(function () {
     } else {
         startRoute(null, startValue, endValue)
     }
+
+    if(window.innerWidth < 450){
+        hideMobileClutter();
+    }
 });
 
 $("#stop_route").click(function () {
@@ -546,6 +567,12 @@ function startRoute(gpsLocation, startValue, endValue) {
             longitude: find.longitude
         }
     }
+  
+    if(endValue === startValue){
+        showDialog({title: "Fel", "text": "Samma startpunkt och slutpunkt"})
+        return;
+    }
+  
     let $mode = $("main .radio-wrapper input[name='transportationMode']:checked").val();
     addRoute(startPoint, endPoint, $mode);
 }
@@ -583,7 +610,7 @@ const router = L.routing.openrouteservice("5b3ce3597851110001cf6248d29230ce91e84
         "elevation": "true",
         "maneuvers": "true",
         "preference": "recommended",
-    }
+    },
 });
 
 window.routeControl = null;
@@ -595,14 +622,24 @@ function addRoute(start, end, transportationMode) {
         router: router,
         defaultErrorHandler: false,
         waypoints: [
-            L.latLng(start.latitude, start.longitude),
-            L.latLng(end.latitude, end.longitude)
+            new L.Routing.Waypoint([start.latitude, start.longitude], start.text),
+            new L.Routing.Waypoint([end.latitude, end.longitude], end.text, {icon: endPoint}),
         ],
         draggableWaypoints: false,
         addWaypoints: false,
         lineOptions: {
             styles: [{color: 'black', opacity: 0.15, weight: 9}, {color: 'white', opacity: 0.8, weight: 6}, {color: 'blue', opacity: 1, weight: 2}]
-        }
+        },
+        createMarker: function(i, wp) {
+            var options = {
+                    draggable: this.draggableWaypoints,
+                    ... wp.options
+            };
+            marker = L.marker(wp.latLng, options)
+                .bindPopup(wp.name);
+
+            return marker;
+        },
     }).on('routingerror', function (e) {
         onErrorHandler(e);
     }).on('routesfound', function (e) {
@@ -648,11 +685,11 @@ function onErrorHandler(event) {
 }
 
 function onRouteFound(event) {
-    $("#route_distance").text(formatDistanceFromMeters(event.routes[0].summary.totalDistance));
-    $("#route_time").text(formatTimeFromSeconds(event.routes[0].summary.totalTime));
-    $("#route_ascend").text((event.routes[0].summary.totalAscend === undefined) ? "0 m" : event.routes[0].summary.totalAscend + " m");
-    $("#route_descend").text((event.routes[0].summary.totalDescend === undefined) ? "0 m" : event.routes[0].summary.totalDescend + " m");
-    $("#route_emission").text(calculateEmissions(event.routes[0].summary.totalDistance));
+    $("#route_distance").html(formatDistanceFromMeters(event.routes[0].summary.totalDistance, true));
+    $("#route_time").html(formatTimeFromSeconds(event.routes[0].summary.totalTime));
+    $("#route_ascend").html((event.routes[0].summary.totalAscend === undefined) ? "0 m" : event.routes[0].summary.totalAscend + " m");
+    $("#route_descend").html((event.routes[0].summary.totalDescend === undefined) ? "0 m" : event.routes[0].summary.totalDescend + " m");
+    $("#route_emission").html(calculateEmissions(event.routes[0].summary.totalDistance));
 
     let routeButton = `
         <img src="./images/routeInfoButton.png" id="mobileRouteInfo"alt="route info"
@@ -740,7 +777,7 @@ function checkRouteFinished(endPoint)
             if(distanceFromEndPoint <= distanceThreshold)
             {
                 var savedEmission = calculateEmissions(event.routes[0].summary.totalDistance);
-                var experience = Math.floor(savedEmission/10);
+                var experience = Math.round(savedEmission/10);
                 window.onFinishedRoute(experience).then(function() {
                     window.updateUserData();
                 });
@@ -800,22 +837,23 @@ function formatTimeFromSeconds(totSeconds, template) {
     return template;
 }
 
-function formatDistanceFromMeters(totMeters, template) {
+function formatDistanceFromMeters(totMeters, separateRows) {
     let kilometers = Math.floor(totMeters / 1000);
     let meters = Math.floor(totMeters % 1000);
 
-    if (template === undefined) {
-        template = "";
+    template = "";
 
-        if (kilometers > 0) {
-            template += kilometers + " km ";
+    if (kilometers > 0) {
+        template += kilometers + " km ";
+
+        if(separateRows == true){
+            template += "<br>";
+        }else{
+            template += " ";
         }
-
-        template += meters + " m";
-    } else {
-        template = template.replace("%km", kilometers);
-        template = template.replace("%m", meters);
     }
+
+    template += meters + " m";
 
     return template;
 }
@@ -875,7 +913,7 @@ function updateUserData()
             var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
             var currentExperience = userExperience;
             
-            $(".text").text(currentExperience + "/" + requiredExperienceToNextLevel + "xp");
+            $(".text").text("Exp: " + currentExperience + "/" + requiredExperienceToNextLevel);
             $(".user-level").text("Lv. " + userLevel);
             updateProgressBarWidth();
         });
@@ -889,14 +927,14 @@ function updateProgressBarWidth()
             var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
             var currentExperience = userExperience;
             
-            var progressBarWidth = $(".user-progress").width();
+            var progressBarWidth = document.querySelector('.user-progress').clientWidth;
             $(".user-exp").width((currentExperience/requiredExperienceToNextLevel) * progressBarWidth);
         }); 
     });
 }
 
 $(document).ready(function() {
-    updateUserData();
+    window.insertUser().then(() => updateUserData());
 });
 
 $(window).resize(function() {
@@ -906,6 +944,7 @@ $(window).resize(function() {
 function toggleDropDowns(div, button){
     $("img#" + button).toggleClass("change");
     $("div#" + div).toggleClass("hidden");
+
 }
 
 function toggleStyle(div, button){
@@ -918,3 +957,4 @@ function toggleStyle(div, button){
      }
 }
 /** Helper functions **/
+}
