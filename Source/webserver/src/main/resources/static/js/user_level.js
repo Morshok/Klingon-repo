@@ -132,34 +132,6 @@ function onFinishedRoute(routeExperience) {
 
 function getUserLevel()
 {
-    /*
-    return window.localforage.getItem(localForageCid.objectName).then(function(value) {
-        var obj = JSON.parse(value);
-        var clientId = obj.clientId;
-        
-        var fetchedUserLevel = window.localforage.getItem('users').then(function(value) {
-            var userData = value;
-            
-            var index;
-            for(var i = 0; i < value.length; i++)
-            {
-                if(clientId == value[i].Id)
-                {
-                    index = i;
-                    break;
-                }
-            }
-            
-            var userLevel = value[index].level;
-            return userLevel;
-        }).catch(err => console.log(err));
-        
-        return fetchedUserLevel;
-    }).then(function(result) {
-        return result;
-    }).catch(err => console.log(err));
-    */
-    
     return window.localforage.getItem('user').then(function(value) {
         var userData = value;
             
@@ -170,34 +142,6 @@ function getUserLevel()
 
 function getUserExperience()
 {
-    /*
-    return window.localforage.getItem(localForageCid.objectName).then(function(value) {
-        var obj = JSON.parse(value);
-        var clientId = obj.clientId;
-        
-        var fetchedUserExperience = window.localforage.getItem('users').then(function(value) {
-            var userData = value;
-            
-            var index;
-            for(var i = 0; i < value.length; i++)
-            {
-                if(clientId == value[i].Id)
-                {
-                    index = i;
-                    break;
-                }
-            }
-            
-            var userExperience = value[index].experience;
-            return userExperience;
-        }).catch(err => console.log(err));
-        
-        return fetchedUserExperience;
-    }).then(function(result) {
-        return result;
-    }).catch(err => console.log(err));
-    */
-    
     return window.localforage.getItem('user').then(function(value) {
         var userData = value;
             
@@ -208,32 +152,6 @@ function getUserExperience()
 
 function setUserLevel(level)
 {
-    /*
-    window.localforage.getItem(localForageCid.objectName).then(function(value) {
-        var obj = JSON.parse(value);
-        var clientId = obj.clientId;
-        
-        window.localforage.getItem('users').then(function(value) {
-            var userData = value;
-            
-            var index;
-            for(var i = 0; i < value.length; i++)
-            {
-                if(clientId == value[i].Id)
-                {
-                    index = i;
-                }
-            }
-                    
-            userData[index].level = level;
-            
-            window.localforage.setItem('users', userData).then(function(result) {
-                console.log(result);
-            }).catch(err => console.log(err));
-        }).catch(err => console.log(err));
-    }).catch(err => console.log(err));
-    */
-    
     window.localforage.getItem('user').then(function(value) {
         var userData = value;
         userData[0].level = level;
@@ -246,32 +164,6 @@ function setUserLevel(level)
 
 function setUserExperience(experience)
 {
-    /*
-    window.localforage.getItem(localForageCid.objectName).then(function(value) {
-        var obj = JSON.parse(value);
-        var clientId = obj.clientId;
-        
-        window.localforage.getItem('users').then(function(value) {
-            var userData = value;
-            
-            var index;
-            for(var i = 0; i < value.length; i++)
-            {
-                if(clientId == value[i].Id)
-                {
-                    index = i;
-                }
-            }
-                    
-            userData[index].experience = experience;
-            
-            window.localforage.setItem('users', userData).then(function(result) {
-                console.log(result);
-            }).catch(err => console.log(err));
-        }).catch(err => console.log(err));
-    }).catch(err => console.log(err));
-    */
-    
     window.localforage.getItem('user').then(function(value) {
         var userData = value;
         userData[0].experience = experience;

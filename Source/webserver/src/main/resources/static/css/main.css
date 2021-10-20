@@ -208,7 +208,7 @@ main #level-panel > .upper {
 
 main #level-panel > .upper > .image, header nav ul li #menu-level-panel > .upper > .image {
     flex: 0 0 64px;
-    position: relative;
+    position: relative;  
     text-align: center;
     font-size: large;
     color: #264bab;
