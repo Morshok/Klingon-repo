@@ -279,66 +279,8 @@ function changeCity() {
     }
 }
 
-
-let weatherApiRepeater;
-let weatherObject = [];
-
-function loadWeatherData(early) {
-    clearTimeout(weatherApiRepeater);
-    $("#location-dropdown").empty();
-    $.ajax("/api/weatherData",
-        {
-            contentType: "application/json",
-            dataType: "json",
-            data:{zone: $("#cities-dropdown").val()},
-            success: function (data) {
-                weatherObject = data;
-                $("#weather-data").addClass("loading");
-                if ($("#weather-data").hasClass("loading")) {
-                    let selectElement = $("select#location-dropdown");
-                    weatherObject.forEach(function (item) {
-                        let option = new Option(item.location, item.id, false, false);
-                        selectElement.append(option);
-                    })
-                    selectElement.trigger("change");
-                }
-            },
-            complete: function () {
-                if (weatherObject.length > 0) {
-                    $("#weather-data").removeClass("loading");
-                } else if (!early) {
-                    // if the weather object fails then re-schedule for earlier retrieval once
-                    clearTimeout(weatherApiRepeater);
-                    weatherApiRepeater = setTimeout(function () {
-                        loadWeatherData(true)
-                    }, 10 * 1000)
-                }
-            }
-        })
-    weatherApiRepeater = setTimeout(loadWeatherData, 60 * 1000);
-}
-
-$("select#location-dropdown").change(function () {
-    let city = $("#location-dropdown option:selected").text();
-    weatherObject.forEach(function (data){
-        if(city === data.location){
-            $("#weather-data > .content").html(`
-                <img src="${data.iconUrl}"  crossorigin="anonymous" referrerpolicy="no-referrer">
-                <p>Plats: ${data.location}</p>
-                <p>Beskrivning: ${data.weatherDescription}</p>
-                <p>Temperatur: ${data.temperature}&deg;C</p>
-                <p>Vindhastighet: ${data.windSpeed}m/s&sup2;</p>
-                <p>Vindriktning: ${data.windDegree}&deg;</p>
-                <p>Moln: ${data.cloudPercentage}%</p>
-            `);
-        }
-    })
-
-});
 $(document).ready(function () {
-
     loadMarker();
-    let changed = false;
     $(window).on("resize", function (evt) {
         if (window.innerWidth > 440) {
             $(".column-wrapper.left").append($("#level-panel"));

@@ -105,8 +105,8 @@ public class APIDataHandler {
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */
     @GetMapping(path = "/weatherData", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> jsonWeatherData(@RequestParam() String zone) {
-        Iterable<WeatherData> weatherDataIterable = WebserverApplication.getWeatherDataRepository().findByZone(zone);
+    public ResponseEntity<Object> jsonWeatherData() {
+        Iterable<WeatherData> weatherDataIterable = WebserverApplication.getWeatherDataRepository().findAll();
         JSONArray jsonArray = new JSONArray();
 
         for (WeatherData weatherData : weatherDataIterable) {
@@ -120,7 +120,7 @@ public class APIDataHandler {
             jsonObject.put("windSpeed", weatherData.getWindSpeed());
             jsonObject.put("windDegree", weatherData.getWindDegree());
             jsonObject.put("cloudPercentage", weatherData.getCloudsPercentage());
-
+            jsonObject.put("zone", weatherData.getZone());
             jsonArray.put(jsonObject.toMap());
         }
 
