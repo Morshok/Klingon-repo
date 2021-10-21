@@ -134,9 +134,6 @@ public class WeatherData {
         return this.cloudsPercentage;
     }
 
-    public String getZone() {
-        return zone;
-    }
 
     /**
      * Method for getting the WeatherData object in String format
