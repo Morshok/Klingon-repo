@@ -1,19 +1,19 @@
 [
   {
     "levelRange": {"lowerBound": 0, "upperBound":  9},
-    "title": "Polluter"
+    "title": "Förorenare"
   },
   {
     "levelRange": {"lowerBound": 10, "upperBound":  19},
-    "title": "Recovering Polluter"
+    "title": "Återhämtande Förorenare"
   },
   {
     "levelRange": {"lowerBound": 20, "upperBound":  29},
-    "title": "Occasional Pedestrian"
+    "title": "Oregelbunden gängare"
   },
   {
     "levelRange": {"lowerBound": 30, "upperBound":  39},
-    "title": "Regular Pedestrian"
+    "title": "Regelbunden gängare"
   },
   {
     "levelRange": {"lowerBound": 40, "upperBound":  49},
@@ -25,22 +25,22 @@
   },
   {
     "levelRange": {"lowerBound": 60, "upperBound":  69},
-    "title": "Ecosystematically Correct"
+    "title": "Ecosystematiskt Korrekt"
   },
   {
     "levelRange": {"lowerBound": 70, "upperBound":  79},
-    "title": "Anti-Polluter"
+    "title": "Anti-Förorenare"
   },
   {
     "levelRange": {"lowerBound": 80, "upperBound":  89},
-    "title": "Environmental Activist"
+    "title": "Miljöaktivist"
   },
   {
     "levelRange": {"lowerBound": 90, "upperBound":  99},
-    "title": "Redeemer of Human Misconduct"
+    "title": "Frälsare av Mänsklig Vanskötsel"
   },
   {
     "levelRange": {"lowerBound": 100},
-    "title": "Saviour of the Earth"
+    "title": "Räddare av Jorden"
   }
 ]

@@ -956,6 +956,3 @@ function toggleStyle(div, button){
        x.style.display = "none";
      }
 }
-/** Helper functions **/
-
-
