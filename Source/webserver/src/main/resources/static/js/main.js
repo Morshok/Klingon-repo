@@ -221,7 +221,6 @@ function loadMarker() {
         }
 
     }
-        loadWeatherData();
 }
 
 /** A function that disables,removes and unchecks
@@ -285,21 +284,19 @@ let weatherObject = [];
 
 function loadWeatherData(early) {
     clearTimeout(weatherApiRepeater);
-    $("#location-dropdown").empty();
     $.ajax("/api/weatherData",
         {
             contentType: "application/json",
             dataType: "json",
-            data:{zone: $("#cities-dropdown").val()},
             success: function (data) {
                 weatherObject = data;
-                $("#weather-data").addClass("loading");
                 if ($("#weather-data").hasClass("loading")) {
                     let selectElement = $("select#location-dropdown");
                     weatherObject.forEach(function (item) {
                         let option = new Option(item.location, item.id, false, false);
                         selectElement.append(option);
                     })
+                    $("select#cities-dropdown").trigger("change");
                     selectElement.trigger("change");
                 }
             },
@@ -318,8 +315,35 @@ function loadWeatherData(early) {
     weatherApiRepeater = setTimeout(loadWeatherData, 60 * 1000);
 }
 
+$("select#cities-dropdown").change(function (){
+    let city = $("select#cities-dropdown option:selected").text();
+    let zone;
+    weatherObject.forEach(function (data){
+        if(city === data.location){
+            zone = data.zone;
+        }
+    });
+
+    weatherObject.forEach(function (data){
+        let dropdown = document.getElementById("location-dropdown");
+        for(let i = 0; i < dropdown.options.length; i++){
+            if(dropdown.options[i].text === data.location){
+                if(data.zone === zone){
+                    if(dropdown.options[i].text === city){
+                        dropdown.options[i].selected = "selected";
+                    }
+                    dropdown.options[i].style.display = "block";
+                }else{
+                    dropdown.options[i].style.display = "none";
+                }
+                break;
+            }
+        }
+   });
+});
+
 $("select#location-dropdown").change(function () {
-    let city = $("#location-dropdown option:selected").text();
+    let city = $("select#location-dropdown option:selected").text();
     weatherObject.forEach(function (data){
         if(city === data.location){
             $("#weather-data > .content").html(`
@@ -336,7 +360,7 @@ $("select#location-dropdown").change(function () {
 
 });
 $(document).ready(function () {
-
+    loadWeatherData();
     loadMarker();
     let changed = false;
     $(window).on("resize", function (evt) {
