@@ -362,7 +362,6 @@ $("select#location-dropdown").change(function () {
 $(document).ready(function () {
     loadWeatherData();
     loadMarker();
-    let changed = false;
     $(window).on("resize", function (evt) {
         if (window.innerWidth > 440) {
             $(".column-wrapper.left").append($("#level-panel"));
@@ -374,7 +373,6 @@ $(document).ready(function () {
 
 $("#pumps, #bicycles, #parking").change(function () {
     loadMarker();
-
 });
 
 
@@ -449,7 +447,6 @@ $("button#navigation_button").click(function () {
 
 function hideMobileClutter(){
     $("main .navigation > .main-panel").hide();
-
     $("div#route_info").addClass("closed");
     $("button#route_info_toggle i.fa").removeClass("fa-angle-down");
     $("button#route_info_toggle i.fa").addClass("fa-angle-up");
@@ -495,7 +492,7 @@ $("main #map").on("click", ".navigation-routing-point", function () {
     }
     $("main .navigation > .main-panel").show();
     window.leafletMap.closePopup();
-})
+});
 
 
 function updateSearchResults() {
