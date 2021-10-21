@@ -1,4 +1,4 @@
-package klingon.webserver;
+package klingon.webserver.Beans;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

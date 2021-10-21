@@ -1,4 +1,7 @@
-package klingon.webserver;
+package klingon.webserver.Beans;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

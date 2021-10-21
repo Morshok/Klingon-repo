@@ -1,15 +1,19 @@
 package klingon.webserver;
 
+import klingon.webserver.Beans.BicycleStand;
+import klingon.webserver.Beans.BicycleStation;
+import klingon.webserver.Beans.PumpStation;
+import klingon.webserver.Beans.WeatherData;
+import klingon.webserver.Repositories.BicycleStandRepository;
+import klingon.webserver.Repositories.BicycleStationRepository;
+import klingon.webserver.Repositories.PumpStationRepository;
+import klingon.webserver.Repositories.WeatherDataRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.*;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

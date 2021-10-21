@@ -1,5 +1,9 @@
 package klingon.webserver;
 
+import klingon.webserver.Beans.BicycleStand;
+import klingon.webserver.Beans.BicycleStation;
+import klingon.webserver.Beans.PumpStation;
+import klingon.webserver.Beans.WeatherData;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;

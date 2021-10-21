@@ -1,5 +1,6 @@
-package klingon.webserver;
+package klingon.webserver.Repositories;
 
+import klingon.webserver.Beans.BicycleStand;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
