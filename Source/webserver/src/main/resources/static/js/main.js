@@ -137,7 +137,9 @@ function checkZoom(){
         if(window.leafletMap.getZoom() < 14){
             window.leafletMap.removeLayer(bicycleStandGroup);
         }else{
-            window.leafletMap.addLayer(bicycleStandGroup);
+            if(window.routeControl == null){
+                window.leafletMap.addLayer(bicycleStandGroup);
+            }
         }
     });
 }
@@ -660,6 +662,9 @@ function removeRoute() {
 
     if (!window.leafletMap.hasLayer(pumpStationGroup))
         window.leafletMap.addLayer(pumpStationGroup)
+
+    if (!window.leafletMap.hasLayer(bicycleStandGroup))
+        window.leafletMap.addLayer(bicycleStandGroup)
 
     $("main img#mobileRouteInfo").remove();
     $("main div#route_info").hide();
