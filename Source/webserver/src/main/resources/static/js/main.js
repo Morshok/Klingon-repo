@@ -113,7 +113,7 @@ window.leafletMap = L.map('map', {zoomControl: false}).setView([57.7064682148813
     }))
     .addControl(L.control.zoom({position: 'bottomright'}));
 
-function updateUserPosition(latitude, longitude) {
+function updateUserPosition(latitude, longitude, heading) {
     userPosition.pos = {latitude: latitude, longitude: longitude};
     if (!userPosition.marker)
         userPosition.marker = L.marker([latitude, longitude], {icon: locationIcon})
@@ -121,6 +121,15 @@ function updateUserPosition(latitude, longitude) {
             .addTo(window.leafletMap);
     else
         userPosition.marker.setLatLng([latitude, longitude]);
+
+    let userRotation = heading;
+    if(userRotation === null || isNaN(userRotation)){
+        userPosition.marker = userPosition.marker.setIcon(locationIconStanding);
+        userPosition.marker = userPosition.marker.setRotationAngle(0);
+    }else{
+        userPosition.marker = userPosition.marker.setIcon(locationIcon);
+        userPosition.marker = userPosition.marker.setRotationAngle(Math.floor(userRotation));
+    }
 }
 
 function checkZoom(){
@@ -372,7 +381,7 @@ function getGeoLocation(successFn, failFn, ...args) {
     }
 
     navigator.geolocation.getCurrentPosition(function (pos) {
-        updateUserPosition(pos.coords.latitude, pos.coords.longitude);
+        updateUserPosition(pos.coords.latitude, pos.coords.longitude, pos.coords.heading);
         searchData.forEach(function (item) {
             item.distance = window.leafletMap.distance([item.latitude, item.longitude], [userPosition.pos.latitude, userPosition.pos.longitude]);
         });
@@ -388,20 +397,6 @@ function getGeoLocation(successFn, failFn, ...args) {
     }, {
         timeout: 1000,
         maximumAge: 0,
-        enableHighAccuracy: true,
-    });
-
-    let positionWatch = navigator.geolocation.watchPosition(function(position){
-        let userRotation = position.coords.heading;
-
-        if(userRotation === null || isNaN(userRotation)){
-            userPosition.marker = userPosition.marker.setIcon(locationIconStanding);
-            userPosition.marker = userPosition.marker.setRotationAngle(0);
-        }else{
-            userPosition.marker = userPosition.marker.setIcon(locationIcon);
-            userPosition.marker = userPosition.marker.setRotationAngle(Math.floor(userRotation));
-        }
-    }, function(e){}, {
         enableHighAccuracy: true,
     });
 }
@@ -712,7 +707,7 @@ function onRoutingStarted(event, start, end) {
     } else {
         gpsEvenListenerId = navigator.geolocation.watchPosition(
             function (pos) {
-                updateUserPosition(pos.coords.latitude, pos.coords.longitude);
+                updateUserPosition(pos.coords.latitude, pos.coords.longitude, pos.coords.heading);
             },
             function (error) {
                 console.log(error);
