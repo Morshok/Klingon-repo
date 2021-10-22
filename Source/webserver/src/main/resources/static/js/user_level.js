@@ -115,29 +115,22 @@ function onFinishedRoute(routeExperience) {
             
         var userLevel = userData.level;
         var userExperience = userData.experience;
-        
-        var requiredExperienceToLevelUp = totalExperience(userLevel + 1);
-        userExperience = userExperience + routeExperience;
 
-        if(userExperience >= requiredExperienceToLevelUp)
-        {
-            var levelAfterExperienceIncrease = totalLevels(userExperience + totalExperience(userLevel));
-            var newExperienceProgress = totalExperience(levelAfterExperienceIncrease + 1) - totalExperience(levelAfterExperienceIncrease);
+        var xpInLevel = userExperience - totalLevels(userLevel);
 
-            setUserLevel(levelAfterExperienceIncrease).then(function(){
-                setUserExperience(newExperienceProgress).then(function(){
-                    window.updateUserData();
-                });
-            });
-            console.log("Level up");
-        }else{
+        var xpInLevelWithRoute = xpInLevel + routeExperience;
+
+        while(xpInLevelWithRoute >= totalExperience(userLevel + 1)){
+            userLevel += 1
+        }
+
+        userExperience = xpInLevelWithRoute;
+
+        setUserLevel(totalLevels(userExperience)).then(function(){
             setUserExperience(userExperience).then(function(){
                 window.updateUserData();
             });
-            console.log("No level up");
-        }
-
-        console.log("Runs");
+        });
     }).catch(err => console.log(err));
 }
 

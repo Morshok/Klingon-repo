@@ -642,7 +642,7 @@ function onRouteFound(end, event) {
 
     $("main div#route_info").show();
 
-    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished(end, event), 1000);
+    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished, 1000, end, event);
 }
 
 function onRoutingStarted(event, start, end) {
@@ -694,41 +694,36 @@ const distanceThreshold = 25;
 var hasGivenUserExperience = false;
 function checkRouteFinished(endPoint, event)
 {
-    if(!hasGivenUserExperience)
-    {
-        navigator.geolocation.getCurrentPosition(function(pos) {
-            var userLatitude = pos.coords.latitude;
-            var userLongitude = pos.coords.longitude;
-            var endPointLatitude = endPoint.latitude;
-            var endPointLongitude = endPoint.longitude;
-        
-            //Code from https://www.movable-type.co.uk/scripts/latlong.html
-            const R = 6371e3; // metres
-            const φ1 = userLatitude * Math.PI/180; // φ, λ in radians
-            const φ2 = endPointLatitude * Math.PI/180;
-            const Δφ = (endPointLatitude-userLatitude) * Math.PI/180;
-            const Δλ = (endPointLongitude-userLongitude) * Math.PI/180;
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        var userLatitude = pos.coords.latitude;
+        var userLongitude = pos.coords.longitude;
+        var endPointLatitude = endPoint.latitude;
+        var endPointLongitude = endPoint.longitude;
 
+        //Code from https://www.movable-type.co.uk/scripts/latlong.html
+        const R = 6371e3; // metres
+        const φ1 = userLatitude * Math.PI/180; // φ, λ in radians
+        const φ2 = endPointLatitude * Math.PI/180;
+        const Δφ = (endPointLatitude-userLatitude) * Math.PI/180;
+        const Δλ = (endPointLongitude-userLongitude) * Math.PI/180;
 
-            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                      Math.cos(φ1) * Math.cos(φ2) *
-                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                  Math.cos(φ1) * Math.cos(φ2) *
+                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-            const distanceFromEndPoint = R * c; // in metres
-        
-            if(distanceFromEndPoint <= distanceThreshold)
-            {
-                var savedEmission = calculateEmissions(event.routes[0].summary.totalDistance);
-                //savedEmission = savedEmission.replace(" g");
-                savedEmission = parseInt(savedEmission);
-                var experience = Math.round(savedEmission/10);
-                window.onFinishedRoute(experience);
-            
-                hasGivenUserExperience = true;
-            }
-        });   
-    }
+        const distanceFromEndPoint = R * c; // in metres
+
+        if(distanceFromEndPoint <= distanceThreshold)
+        {
+            var savedEmission = calculateEmissions(event.routes[0].summary.totalDistance);
+            savedEmission = parseInt(savedEmission);
+            var experience = Math.round(savedEmission/10);
+            window.onFinishedRoute(experience);
+
+            window.clearInterval(checkRouteFinishedRepeater);
+        }
+    });
 }
 
 /** Helper functions **/
@@ -854,7 +849,7 @@ function updateUserData()
         
         window.getUserExperience().then(function(userExperience) {
             var requiredExperienceToNextLevel = window.requiredExperienceToNextLevel(userLevel);
-            var currentExperience = userExperience;
+            var currentExperience = userExperience - window.totalExperience(userLevel);
             
             $(".text").text("Exp: " + currentExperience + "/" + requiredExperienceToNextLevel);
             $(".user-level").text("Lv. " + userLevel);
