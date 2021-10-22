@@ -582,7 +582,7 @@ function addRoute(start, end, transportationMode) {
     }).on('routingerror', function (e) {
         onErrorHandler(e);
     }).on('routesfound', function (e) {
-        onRouteFound(e);
+        onRouteFound(e, end);
     }).on('routingstart', function (e) {
         onRoutingStarted(e, start, end);
     }).addTo(window.leafletMap);
@@ -626,7 +626,7 @@ function onErrorHandler(event) {
     removeRoute();
 }
 
-function onRouteFound(event) {
+function onRouteFound(event, end) {
     $("#route_distance").html(formatDistanceFromMeters(event.routes[0].summary.totalDistance, true));
     $("#route_time").html(formatTimeFromSeconds(event.routes[0].summary.totalTime));
     $("#route_ascend").html((event.routes[0].summary.totalAscend === undefined) ? "0 m" : event.routes[0].summary.totalAscend + " m");
@@ -641,6 +641,9 @@ function onRouteFound(event) {
     $("div#mobile-buttons").append(routeButton);
 
     $("main div#route_info").show();
+    
+    var totalDistance = event.routes[0].summary.totalDistance;
+    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished(end, totalDistance), 1000);
 }
 
 function onRoutingStarted(event, start, end) {
@@ -670,8 +673,6 @@ function onRoutingStarted(event, start, end) {
     $("main .navigation > .main-panel").addClass("hasRoute");
     $("main .navigation > .main-panel #route-info-start").text(start.text);
     $("main .navigation > .main-panel #route-info-end").text(end.text);
-
-    checkRouteFinishedRepeater = window.setInterval(checkRouteFinished(end), 1000);
 }
 
 $("button#route_info_toggle").on("click", function () {
@@ -692,7 +693,7 @@ $("i#co2_info_toggle").on("click", function () {
 var checkRouteFinishedRepeater;
 const distanceThreshold = 25;
 var hasGivenUserExperience = false;
-function checkRouteFinished(endPoint)
+function checkRouteFinished(endPoint, totalDistance)
 {
     if(!hasGivenUserExperience)
     {
@@ -704,10 +705,10 @@ function checkRouteFinished(endPoint)
         
             //Code from https://www.movable-type.co.uk/scripts/latlong.html
             const R = 6371e3; // metres
-            const φ1 = lat1 * Math.PI/180; // φ, λ in radians
-            const φ2 = lat2 * Math.PI/180;
-            const Δφ = (lat2-lat1) * Math.PI/180;
-            const Δλ = (lon2-lon1) * Math.PI/180;
+            const φ1 = userLatitude * Math.PI/180; // φ, λ in radians
+            const φ2 = endPointLatitude * Math.PI/180;
+            const Δφ = (endPointLatitude-userLatitude) * Math.PI/180;
+            const Δλ = (endPointLongitude-userLongitude) * Math.PI/180;
 
             const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
                       Math.cos(φ1) * Math.cos(φ2) *
@@ -718,7 +719,7 @@ function checkRouteFinished(endPoint)
         
             if(distanceFromEndPoint <= distanceThreshold)
             {
-                var savedEmission = calculateEmissions(event.routes[0].summary.totalDistance);
+                var savedEmission = calculateEmissions(totalDistance);
                 var experience = Math.round(savedEmission/10);
                 window.onFinishedRoute(experience).then(function() {
                     window.updateUserData();
