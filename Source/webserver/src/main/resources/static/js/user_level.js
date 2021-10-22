@@ -118,15 +118,26 @@ function onFinishedRoute(routeExperience) {
         
         var requiredExperienceToLevelUp = totalExperience(userLevel + 1);
         userExperience = userExperience + routeExperience;
-            
+
         if(userExperience >= requiredExperienceToLevelUp)
         {
-            var levelAfterExperienceIncrease = totalLevels(userExperience);
+            var levelAfterExperienceIncrease = totalLevels(userExperience + totalExperience(userLevel));
             var newExperienceProgress = totalExperience(levelAfterExperienceIncrease + 1) - totalExperience(levelAfterExperienceIncrease);
-                
-            setUserLevel(levelAfterExperienceIncrease);
-            setUserExperience(newExperienceProgress);
+
+            setUserLevel(levelAfterExperienceIncrease).then(function(){
+                setUserExperience(newExperienceProgress).then(function(){
+                    window.updateUserData();
+                });
+            });
+            console.log("Level up");
+        }else{
+            setUserExperience(userExperience).then(function(){
+                window.updateUserData();
+            });
+            console.log("No level up");
         }
+
+        console.log("Runs");
     }).catch(err => console.log(err));
 }
 
@@ -152,7 +163,7 @@ function getUserExperience()
 
 function setUserLevel(level)
 {
-    window.localforage.getItem('user').then(function(value) {
+    return window.localforage.getItem('user').then(function(value) {
         var userData = value;
         userData[0].level = level;
             
@@ -164,7 +175,7 @@ function setUserLevel(level)
 
 function setUserExperience(experience)
 {
-    window.localforage.getItem('user').then(function(value) {
+    return window.localforage.getItem('user').then(function(value) {
         var userData = value;
         userData[0].experience = experience;
             
