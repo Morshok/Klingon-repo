@@ -10,6 +10,8 @@ Social Contract: https://github.com/Morshok/Klingon-repo/blob/master/Organizatio
    a thing to keep in mind. Also, if we've forgotten to turn in the group reflection for a
    specific week in canvas, it should be in our group reflections directory here in the
    repository, just a friendly reminder.
+   
+   Team Reflection Directory: [(link)](https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Group%20Reflections)
 
 ## Software used:
    Github, used both as a repository, and using the projects tab as a scrum board <br>
@@ -30,7 +32,21 @@ Social Contract: https://github.com/Morshok/Klingon-repo/blob/master/Organizatio
    <br>Mishael: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Mishael
    <br>Phong: https://github.com/Morshok/Klingon-repo/tree/master/Organization/Reflections/Individual%20Reflections/Phong
 
-   
+## Breakdown of contributions
+Please see the insights tab [(link)](https://github.com/Morshok/Klingon-repo/graphs/contributors)
+
+## Installation/usage
+Either download the jar file from release [(link)](https://github.com/Morshok/Klingon-repo/releases) or use the `maven package` command and then get the jar file from the `./Source/webserver/target` directory.
+
+The jar file can be run with the following command: `java -Dfile.encoding=UTF-8 -jar webserver-0.0.1-SNAPSHOT.jar`, the DFile flag is optional but might result in problems with swedish characters.
+
+Once the application is finished starting, preferably wait a minute or two to let the server request the necessary data from the different api's and then navigate to `localhost:8080` in your browser to see the webpage.
+
+## Technical documentation
+Generate javadoc is available at [(link)](https://github.com/Morshok/Klingon-repo/tree/master/Source/webserver/Javadoc)<br>
+Java files used to generate javadoc are available at: [(link)](https://github.com/Morshok/Klingon-repo/tree/master/Source/webserver/src/main/java/klingon/webserver)
+
+Parts of the javascript files found [here](https://github.com/Morshok/Klingon-repo/tree/master/Source/webserver/src/main/resources/static/js) are commented however these comments were not part of the social contract and therefore not mandatory.
 
 ## External resources used:
    Links to data include: <br>
