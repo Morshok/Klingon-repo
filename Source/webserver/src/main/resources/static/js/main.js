@@ -715,7 +715,7 @@ function checkRouteFinished(endPoint, totalDistance)
                       Math.sin(Δλ/2) * Math.sin(Δλ/2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-            const distanceFromEndPoint = R * c; // in metres
+            const distanceFromEndPoint = Math.abs(R * c); // in metres
         
             if(distanceFromEndPoint <= distanceThreshold)
             {
