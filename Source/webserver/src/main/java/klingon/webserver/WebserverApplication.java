@@ -33,6 +33,11 @@ public class WebserverApplication {
     private static BicycleStandRepository bicycleStandRepository;
     private static WeatherDataRepository weatherDataRepository;
 
+    /**
+     * Main entry method to application.
+     *
+     * @param args program arguments
+     */
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(WebserverApplication.class, args);
         bicycleStationRepository = context.getBean(BicycleStationRepository.class);
@@ -81,16 +86,25 @@ public class WebserverApplication {
     // The spring cron expression should be formatted as follows:
     // seconds minutes hours day_of_month month day(s)_of_week.
 
+    /**
+     * Updates bicycle stations.
+     */
     @Scheduled(cron = "0 */5 * * * *")
     protected void updateBicycleStations() {
         populateBicycleStations();
     }
 
+    /**
+     * Updates pump stations.
+     */
     @Scheduled(cron = "0 0 8 * * 1")
     protected void updatePumpStations() {
         populatePumpStations();
     }
 
+    /**
+     * Updates weather data.
+     */
     @Scheduled(cron = "0 */5 * * * *")
     protected void updateWeatherData() {
         populateWeatherData();
@@ -128,6 +142,9 @@ public class WebserverApplication {
         populateWeatherData();
     }
 
+    /**
+     * Initializes the database on application startup.
+     */
     @EventListener(ContextStartedEvent.class)
     protected void onApplicationStartup() {
         initDatabase();

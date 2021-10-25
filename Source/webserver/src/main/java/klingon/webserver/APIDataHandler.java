@@ -50,6 +50,7 @@ public class APIDataHandler {
      * GET request that adds all bicycle station to http://localhost:8080/api/bicycleStations
      * and gives a JSONArray of the bicycle stations from the repository
      *
+     * @param city the city
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */
     @GetMapping(path = "/bicycleStations", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -79,6 +80,7 @@ public class APIDataHandler {
      * GET request that adds all bicycle station to http://localhost:8080/api/pumpStations
      * and gives a JSONArray of the pump stations from the repository
      *
+     * @param city the city
      * @return a ResponseEntity that contains a JSONArray and sets HttpStatus to OK
      */
     @GetMapping(path = "/pumpStations", produces = MediaType.APPLICATION_JSON_VALUE)

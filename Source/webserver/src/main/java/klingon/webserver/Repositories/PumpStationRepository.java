@@ -17,8 +17,13 @@ import java.util.Collection;
  * @version 2021-09-15
  */
 @Repository
-public interface PumpStationRepository extends CrudRepository<PumpStation, Long>
-{
+public interface PumpStationRepository extends CrudRepository<PumpStation, Long> {
+    /**
+     * Method for getting pump stations by city.
+     *
+     * @param city the city
+     * @return a collection of pump stations for given city
+     */
     @Query("SELECT station FROM PumpStation station WHERE station.city = ?1")
     Collection<PumpStation> findByCity(String city);
 }

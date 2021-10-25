@@ -38,9 +38,11 @@ public class WeatherData {
     /**
      * Constructor for initializing a WeatherData instance.
      *
+     * @param id                 the id
      * @param location           the location
      * @param iconUrl            the weather icon's url
      * @param weatherDescription the description of the weather
+     * @param zone               the zone
      * @param temperature        the temperature
      * @param windSpeed          the wind speed
      * @param windDegree         the degree at which the wind is blowing, in degrees
@@ -135,6 +137,11 @@ public class WeatherData {
     }
 
 
+    /**
+     * Method for getting the zone of the WeatherData object
+     *
+     * @return returns the zone of the WeatherData object
+     */
     public String getZone() {
         return zone;
     }

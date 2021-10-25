@@ -15,6 +15,12 @@ import java.util.Collection;
  */
 @Repository
 public interface BicycleStationRepository extends CrudRepository<BicycleStation, Long> {
+    /**
+     * Method for getting bicycle stations by city.
+     *
+     * @param city the city
+     * @return a collection of bicycle stations for given city
+     */
     @Query("SELECT station FROM BicycleStation station WHERE station.city = ?1")
     Collection<BicycleStation> findByCity(String city);
 }

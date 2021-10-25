@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"klingon.webserver"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"klingon.webserver"},{"l":"klingon.webserver.Beans"},{"l":"klingon.webserver.Repositories"}];updateSearchResults();
