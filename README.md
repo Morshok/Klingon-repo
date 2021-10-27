@@ -35,6 +35,8 @@ Social Contract: https://github.com/Morshok/Klingon-repo/blob/master/Organizatio
 ## Breakdown of contributions
 Please see the insights tab [(link)](https://github.com/Morshok/Klingon-repo/graphs/contributors)
 
+![image](https://user-images.githubusercontent.com/31326411/139036528-e5c0f179-8549-4550-ac5c-1bfd05b4f6b2.png)
+
 ## Installation/usage
 Either download the jar file from release [(link)](https://github.com/Morshok/Klingon-repo/releases) or use the `maven package` command and then get the jar file from the `./Source/webserver/target` directory.
 
